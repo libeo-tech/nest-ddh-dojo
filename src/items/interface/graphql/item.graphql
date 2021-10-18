@@ -1,0 +1,12 @@
+type Item {
+  id: ID!
+  name: String!
+}
+
+type Mutation {
+  generateRandomItem: Boolean!
+}
+
+type Query {
+  getAllItems: [Item!]!
+}
