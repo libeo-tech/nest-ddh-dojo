@@ -1,0 +1,14 @@
+type Hero {
+  id: ID!
+  name: String!
+  level: Int!
+  inventory: [Item]
+}
+
+type Mutation {
+  createHero(name: String!): Boolean!
+}
+
+type Query {
+  getHero(id: ID!): Hero!
+}
