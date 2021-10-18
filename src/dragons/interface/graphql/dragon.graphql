@@ -1,0 +1,23 @@
+enum ColorEnum {
+  RED
+  GREEN
+  BLUE
+  YELLOW
+  WHITE
+  BLACK
+}
+
+type Dragon {
+  id: ID!
+  level: Int!
+  color: ColorEnum
+}
+
+type Mutation {
+  generateRandomDragon: Boolean!
+  slayDragon(heroId: ID!, dragonId: ID!): Boolean!
+}
+
+type Query {
+  getAllDragons: [Dragon!]!
+}
