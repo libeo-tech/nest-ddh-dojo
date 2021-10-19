@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroPorts } from '../../ports/hero.ports';
 import { LevelUpCommand } from './level-up.command';
 
@@ -14,6 +15,9 @@ export class LevelUpCommandHandler implements ICommandHandler<LevelUpCommand> {
     const { heroId } = payload;
 
     const hero = await this.heroPorts.getHeroById(heroId);
+    if (!hero) {
+      throw new HeroNotFoundError(heroId);
+    }
     await this.heroPorts.updateHero(heroId, { level: hero.level + 1 });
   }
 }
