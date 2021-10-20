@@ -10,6 +10,9 @@ export class Hero extends Base {
   @Column({ type: 'varchar' })
   name!: string;
 
+  @Column({ type: 'bigint', default: 0 })
+  xp!: number;
+
   @Column({ type: 'bigint', default: 1 })
   level!: number;
 

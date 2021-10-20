@@ -5,7 +5,7 @@
   "username": "",
   "password": "",
   "database": "pchab",
-  "entities": ["dist/src/**/*.entity.js"],
+  "entities": ["dist/src/**/*.orm-entity.js"],
   "migrations": ["dist/migrations/*.js"],
   "cli": {
     "migrationsDir": "migrations"
