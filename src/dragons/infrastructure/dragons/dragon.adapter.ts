@@ -13,7 +13,7 @@ export class DragonAdapter implements DragonPorts {
     private dragonsRepository: Repository<DragonOrmEntity>,
   ) {}
 
-  async getDragon(dragonId: Dragon['id']): Promise<Dragon> {
+  async getDragonById(dragonId: Dragon['id']): Promise<Dragon> {
     const dragon = await this.dragonsRepository.findOne(dragonId);
     return mapDragonOrmEntityToDragonEntity(dragon);
   }

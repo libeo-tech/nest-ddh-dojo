@@ -2,7 +2,7 @@ import { Hero } from '../../domain/hero.entity';
 import { heroFixtureFactory } from '../../domain/hero.fixture-factory';
 import { HeroPorts } from './hero.ports';
 
-export class HeroMockAdapter extends HeroPorts {
+export class HeroMockAdapter implements HeroPorts {
   heroes: Record<Hero['id'], Hero> = {} as Record<Hero['id'], Hero>;
   getHeroes(): Promise<Hero[]> {
     return Promise.resolve(Object.values(this.heroes));
