@@ -2,6 +2,7 @@ import { Logger } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonSlainEvent } from '../../../domain/dragon.events';
+import { Reward, rewardFactory } from '../../../domain/reward/reward';
 import { DragonPorts } from '../../ports/dragon.ports';
 import { SlayDragonCommand } from './slay-dragon.command';
 
@@ -25,7 +26,10 @@ export class SlayDragonCommandHandler
       throw new DragonNotFoundError(dragonId);
     }
 
+    const reward = rewardFactory(dragon.level);
     await this.dragonPorts.deleteDragon(dragonId);
-    await this.eventBus.publish(new DragonSlainEvent({ heroId, dragon }));
+    await this.eventBus.publish(
+      new DragonSlainEvent({ heroId, dragonId, reward }),
+    );
   }
 }

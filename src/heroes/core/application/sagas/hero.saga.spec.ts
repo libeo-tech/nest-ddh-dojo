@@ -1,5 +1,6 @@
 import { lastValueFrom, of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
+import { generateRandomNumber } from '../../../../common/utils/random/random-number';
 import { Dragon } from '../../../../dragons/core/domain/dragon.entity';
 import { dragonEntityFactory } from '../../../../dragons/core/domain/dragon.entity-factory';
 import { DragonSlainEvent } from '../../../../dragons/core/domain/dragon.events';
@@ -27,14 +28,22 @@ describe('hero saga', () => {
   });
 
   it('should trigger xp gain for hero that slays a dragon', () => {
+    const xpGain = generateRandomNumber(1, 100);
     testScheduler.run(({ hot, expectObservable }) => {
       const events$ = hot('-s-s-|', {
-        s: new DragonSlainEvent({ heroId: hero.id, dragon }),
+        s: new DragonSlainEvent({
+          heroId: hero.id,
+          dragonId: dragon.id,
+          reward: { xpGain },
+        }),
       });
 
       const output$ = saga.dragonSlain(events$);
       expectObservable(output$).toBe('-x-x-|', {
-        x: new GainXpCommand({ heroId: hero.id, xpDelta: 10 * dragon.level }),
+        x: new GainXpCommand({
+          heroId: hero.id,
+          xpDelta: xpGain,
+        }),
       });
     });
   });

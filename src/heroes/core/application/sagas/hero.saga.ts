@@ -20,9 +20,13 @@ export class HeroSagas {
         ({
           payload: {
             heroId,
-            dragon: { level: dragonLevel },
+            reward: { xpGain },
           },
-        }) => new GainXpCommand({ heroId, xpDelta: 10 * dragonLevel }),
+        }) =>
+          new GainXpCommand({
+            heroId,
+            xpDelta: xpGain,
+          }),
       ),
     );
   };
