@@ -1,5 +1,5 @@
 import { Hero } from './hero.entity';
 
 export class HeroGainedXpEvent {
-  constructor(public readonly heroId: Hero['id']) {}
+  constructor(public readonly payload: { heroId: Hero['id'] }) {}
 }

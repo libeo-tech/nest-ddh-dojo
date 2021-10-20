@@ -10,7 +10,10 @@ export class ItemSagas {
   dragonKilled = (events$: Observable<any>): Observable<ICommand> => {
     return events$.pipe(
       ofType(DragonSlainEvent),
-      map(({ heroId }) => new GenerateRandomItemCommand({ ownerId: heroId })),
+      map(
+        ({ payload: { heroId } }) =>
+          new GenerateRandomItemCommand({ ownerId: heroId }),
+      ),
     );
   };
 }

@@ -5,10 +5,13 @@ import { Hero } from './hero.entity';
 const exampleNames = ['John', 'Bob', 'Steve'];
 let heroTestId = 0;
 
-export const heroFixtureFactory = (heroProperties: Partial<Hero>): Hero => {
+export const heroFixtureFactory = (
+  heroProperties: Partial<Hero> = {},
+): Hero => {
   heroTestId += 1;
   return Object.assign(new Hero(), {
     id: `heroId${heroTestId}`,
+    xp: 0,
     level: generateRandomNumber(1, 10),
     name: getRandomArrayValue(exampleNames),
     ...heroProperties,

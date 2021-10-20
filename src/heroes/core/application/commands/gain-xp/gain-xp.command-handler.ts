@@ -23,6 +23,6 @@ export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
       throw new HeroNotFoundError(heroId);
     }
     await this.heroPorts.updateHero(heroId, { xp: hero.xp + xpDelta });
-    await this.eventBus.publish(new HeroGainedXpEvent(heroId));
+    await this.eventBus.publish(new HeroGainedXpEvent({ heroId }));
   }
 }

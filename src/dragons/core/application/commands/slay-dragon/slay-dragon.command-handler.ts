@@ -20,6 +20,6 @@ export class SlayDragonCommandHandler
     const { heroId, dragonId } = payload;
 
     await this.dragonPorts.deleteDragon(dragonId);
-    await this.eventBus.publish(new DragonSlainEvent(heroId, dragonId));
+    await this.eventBus.publish(new DragonSlainEvent({ heroId, dragonId }));
   }
 }

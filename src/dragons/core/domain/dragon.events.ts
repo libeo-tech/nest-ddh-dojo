@@ -4,7 +4,9 @@ import { Dragon } from '../../infrastructure/dragons/dragon.orm-entity';
 
 export class DragonSlainEvent implements IEvent {
   constructor(
-    public readonly heroId: Hero['id'],
-    public readonly dragonId: Dragon['id'],
+    public readonly payload: {
+      heroId: Hero['id'];
+      dragonId: Dragon['id'];
+    },
   ) {}
 }
