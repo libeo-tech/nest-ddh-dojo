@@ -9,13 +9,15 @@ import { heroFixtureFactory } from '../../domain/hero.fixture-factory';
 import { getXpNeededForNextLevel } from '../../domain/xp/xp.service';
 import { GainXpCommand } from '../commands/gain-xp/gain-xp.command';
 import { LevelUpCommand } from '../commands/level-up/level-up.command';
-import { heroMockAdapter } from '../ports/hero.mock-adapter';
+import { HeroMockAdapter } from '../ports/hero.mock-adapter';
 import { HeroSagas } from './hero.saga';
 
 describe('hero saga', () => {
   let testScheduler: TestScheduler;
   const hero: Hero = heroFixtureFactory();
   const dragon: Dragon = dragonEntityFactory();
+
+  const heroMockAdapter = new HeroMockAdapter();
   const saga = new HeroSagas(heroMockAdapter);
 
   beforeEach(() => {

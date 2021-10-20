@@ -2,11 +2,12 @@ import { generateRandomNumber } from '../../../../../common/utils/random/random-
 import { eventBusMock } from '../../../../../common/utils/test/event-bus.mock';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
-import { heroMockAdapter } from '../../ports/hero.mock-adapter';
+import { HeroMockAdapter } from '../../ports/hero.mock-adapter';
 import { GainXpCommand } from './gain-xp.command';
 import { GainXpCommandHandler } from './gain-xp.command-handler';
 
 describe('gain xp command', () => {
+  const heroMockAdapter = new HeroMockAdapter();
   const gainXpHandler = new GainXpCommandHandler(heroMockAdapter, eventBusMock);
 
   it('should increase the xp of a hero by xpDelta', async () => {
