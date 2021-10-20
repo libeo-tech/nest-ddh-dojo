@@ -38,6 +38,7 @@ export interface IQuery {
 export interface Hero {
     id: string;
     name: string;
+    xp: number;
     level: number;
     inventory?: Nullable<Nullable<Item>[]>;
 }

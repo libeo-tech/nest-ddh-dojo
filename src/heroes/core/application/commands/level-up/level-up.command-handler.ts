@@ -1,6 +1,10 @@
 import { Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { HeroNotFoundError } from '../../../domain/hero.error';
+import {
+  HeroDoesNotHaveEnoughXp,
+  HeroNotFoundError,
+} from '../../../domain/hero.error';
+import { getXpNeededForNextLevel } from '../../../domain/xp/xp.service';
 import { HeroPorts } from '../../ports/hero.ports';
 import { LevelUpCommand } from './level-up.command';
 
@@ -18,6 +22,14 @@ export class LevelUpCommandHandler implements ICommandHandler<LevelUpCommand> {
     if (!hero) {
       throw new HeroNotFoundError(heroId);
     }
-    await this.heroPorts.updateHero(heroId, { level: hero.level + 1 });
+
+    const xpForlevelUp = getXpNeededForNextLevel(hero.level);
+    if (hero.xp < xpForlevelUp) {
+      throw new HeroDoesNotHaveEnoughXp(heroId);
+    }
+
+    await this.heroPorts.updateHero(heroId, {
+      level: hero.level + 1,
+    });
   }
 }

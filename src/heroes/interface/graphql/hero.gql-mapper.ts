@@ -9,6 +9,7 @@ export const mapHeroEntityToHeroSchema = (
   return {
     id: heroEntity.id,
     name: heroEntity.name,
+    xp: heroEntity.xp,
     level: heroEntity.level,
     inventory,
   };

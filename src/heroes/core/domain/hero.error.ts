@@ -14,3 +14,12 @@ export class HeroNotFoundError extends HeroError {
     super(heroId, `Hero with id ${heroId} does not exist`);
   }
 }
+
+export class HeroDoesNotHaveEnoughXp extends HeroError {
+  constructor(heroId: Hero['id']) {
+    super(
+      heroId,
+      `Hero with id ${heroId} does not have enough xp to reach the next level`,
+    );
+  }
+}
