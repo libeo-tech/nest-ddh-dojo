@@ -13,6 +13,7 @@ describe('level up command', () => {
 
     const { level: newLevel } = await heroMockAdapter.getHeroById(heroId);
     expect(newLevel).toEqual(level + 1);
+    await heroMockAdapter.deleteHero(heroId);
   });
 
   it('should throw if the hero does not exist', async () => {
