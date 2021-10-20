@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonSlainEvent } from '../../../domain/dragon.events';
 import { DragonPorts } from '../../ports/dragon.ports';
 import { SlayDragonCommand } from './slay-dragon.command';
@@ -19,7 +20,12 @@ export class SlayDragonCommandHandler
     this.logger.log(`> SlayDragonCommand: ${JSON.stringify(payload)}`);
     const { heroId, dragonId } = payload;
 
+    const dragon = await this.dragonPorts.getDragonById(dragonId);
+    if (!dragon) {
+      throw new DragonNotFoundError(dragonId);
+    }
+
     await this.dragonPorts.deleteDragon(dragonId);
-    await this.eventBus.publish(new DragonSlainEvent({ heroId, dragonId }));
+    await this.eventBus.publish(new DragonSlainEvent({ heroId, dragon }));
   }
 }

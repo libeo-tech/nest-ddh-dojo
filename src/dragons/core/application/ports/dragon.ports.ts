@@ -1,7 +1,7 @@
 import { Dragon } from '../../domain/dragon.entity';
 
 export abstract class DragonPorts {
-  abstract getDragon(dragonId: Dragon['id']): Promise<Dragon>;
+  abstract getDragonById(dragonId: Dragon['id']): Promise<Dragon>;
   abstract getAllDragons(): Promise<Dragon[]>;
   abstract createDragon(dragonProperties: Partial<Dragon>): Promise<Dragon>;
   abstract updateDragon(

@@ -6,7 +6,10 @@ export class DragonSlainEvent implements IEvent {
   constructor(
     public readonly payload: {
       heroId: Hero['id'];
-      dragonId: Dragon['id'];
+      dragon: {
+        id: Dragon['id'];
+        level: Dragon['level'];
+      };
     },
   ) {}
 }
