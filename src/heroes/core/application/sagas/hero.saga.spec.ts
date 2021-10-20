@@ -29,12 +29,12 @@ describe('hero saga', () => {
   it('should trigger xp gain for hero that slays a dragon', () => {
     testScheduler.run(({ hot, expectObservable }) => {
       const events$ = hot('-s-s-|', {
-        s: new DragonSlainEvent({ heroId: hero.id, dragonId: dragon.id }),
+        s: new DragonSlainEvent({ heroId: hero.id, dragon }),
       });
 
       const output$ = saga.dragonSlain(events$);
       expectObservable(output$).toBe('-x-x-|', {
-        x: new GainXpCommand({ heroId: hero.id, xpDelta: 10 }),
+        x: new GainXpCommand({ heroId: hero.id, xpDelta: 10 * dragon.level }),
       });
     });
   });

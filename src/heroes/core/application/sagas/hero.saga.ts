@@ -17,7 +17,12 @@ export class HeroSagas {
     return events$.pipe(
       ofType(DragonSlainEvent),
       map(
-        ({ payload: { heroId } }) => new GainXpCommand({ heroId, xpDelta: 10 }),
+        ({
+          payload: {
+            heroId,
+            dragon: { level: dragonLevel },
+          },
+        }) => new GainXpCommand({ heroId, xpDelta: 10 * dragonLevel }),
       ),
     );
   };
