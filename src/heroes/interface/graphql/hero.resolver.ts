@@ -10,6 +10,7 @@ import {
 } from '../../core/application/queries/get-hero-by-id/get-hero-by-id.query';
 import { CreateHeroCommand } from '../../core/application/commands/create-hero/create-hero.command';
 import { ItemPresenter } from '../../../items/interface/presenter/item.presenter';
+import { withSpan } from '../../../common/utils/trace/honeycomb';
 
 @Resolver('hero')
 export class HeroResolver {
@@ -22,6 +23,7 @@ export class HeroResolver {
   ) {}
 
   @Query()
+  @withSpan()
   public async getHero(@Args('id') heroId: Hero['id']): Promise<HeroSchema> {
     const { hero } = await this.queryBus.execute<
       GetHeroByIdQuery,
@@ -32,6 +34,7 @@ export class HeroResolver {
   }
 
   @Mutation()
+  @withSpan()
   public async createHero(
     @Args('name') heroName: Hero['name'],
   ): Promise<boolean> {

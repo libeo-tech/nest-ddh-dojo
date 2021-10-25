@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroGainedXpEvent } from '../../../domain/hero.events';
 import { HeroPorts } from '../../ports/hero.ports';
@@ -14,6 +15,7 @@ export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
 
   private readonly logger = new Logger(GainXpCommandHandler.name);
 
+  @withSpan()
   public async execute({ payload }: GainXpCommand): Promise<void> {
     this.logger.log(`> GainXpCommand: ${JSON.stringify(payload)}`);
     const { heroId, xpDelta } = payload;

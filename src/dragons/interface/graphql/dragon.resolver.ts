@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { withSpan } from '../../../common/utils/trace/honeycomb';
 import { Dragon as DragonSchema } from '../../../graphql';
 import { Hero } from '../../../heroes/infrastructure/heroes/hero.orm-entity';
 import { GenerateRandomDragonCommand } from '../../core/application/commands/generate-random-dragon/generate-random-dragon.command';
@@ -22,6 +23,7 @@ export class DragonResolver {
   ) {}
 
   @Query()
+  @withSpan()
   public async getAllDragons(): Promise<DragonSchema[]> {
     const { dragons } = await this.queryBus.execute<
       GetAllDragonsQuery,
@@ -31,12 +33,14 @@ export class DragonResolver {
   }
 
   @Mutation()
+  @withSpan()
   public async generateRandomDragon(): Promise<boolean> {
     await this.commandBus.execute(new GenerateRandomDragonCommand());
     return true;
   }
 
   @Mutation()
+  @withSpan()
   public async slayDragon(
     @Args('dragonId') dragonId: Dragon['id'],
     @Args('heroId') heroId: Hero['id'],

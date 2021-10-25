@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Mutation, Query, Resolver } from '@nestjs/graphql';
+import { withSpan } from '../../../common/utils/trace/honeycomb';
 import { Item as ItemSchema } from '../../../graphql';
 import { GenerateRandomItemCommand } from '../../core/application/commands/generate-random-item/generate-random-item.command';
 import {
@@ -19,6 +20,7 @@ export class ItemResolver {
   ) {}
 
   @Query()
+  @withSpan()
   public async getAllItems(): Promise<ItemSchema[]> {
     const { items } = await this.queryBus.execute<
       GetAllItemsQuery,
@@ -28,6 +30,7 @@ export class ItemResolver {
   }
 
   @Mutation()
+  @withSpan()
   public async generateRandomItem(): Promise<boolean> {
     await this.commandBus.execute(new GenerateRandomItemCommand({}));
     return true;

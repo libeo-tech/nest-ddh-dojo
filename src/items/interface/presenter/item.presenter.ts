@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
+import { withSpans } from '../../../common/utils/trace/honeycomb';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import {
   GetHeroItemsQuery,
@@ -8,6 +9,7 @@ import {
 import { Item } from '../../core/domain/item.entity';
 
 @Injectable()
+@withSpans()
 export class ItemPresenter {
   private readonly logger = new Logger(ItemPresenter.name);
 

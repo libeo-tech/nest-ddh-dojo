@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import {
   HeroDoesNotHaveEnoughXp,
   HeroNotFoundError,
@@ -14,6 +15,7 @@ export class LevelUpCommandHandler implements ICommandHandler<LevelUpCommand> {
 
   private readonly logger = new Logger(LevelUpCommandHandler.name);
 
+  @withSpan()
   public async execute({ payload }: LevelUpCommand): Promise<void> {
     this.logger.log(`> LevelUpCommand: ${JSON.stringify(payload)}`);
     const { heroId } = payload;

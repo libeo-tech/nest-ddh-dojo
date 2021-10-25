@@ -1,8 +1,9 @@
 import { Logger } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonSlainEvent } from '../../../domain/dragon.events';
-import { Reward, rewardFactory } from '../../../domain/reward/reward';
+import { rewardFactory } from '../../../domain/reward/reward';
 import { DragonPorts } from '../../ports/dragon.ports';
 import { SlayDragonCommand } from './slay-dragon.command';
 
@@ -17,6 +18,7 @@ export class SlayDragonCommandHandler
 
   private readonly logger = new Logger(SlayDragonCommandHandler.name);
 
+  @withSpan()
   public async execute({ payload }: SlayDragonCommand): Promise<void> {
     this.logger.log(`> SlayDragonCommand: ${JSON.stringify(payload)}`);
     const { heroId, dragonId } = payload;

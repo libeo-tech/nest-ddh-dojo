@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { withSpans } from '../../../common/utils/trace/honeycomb';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { ItemPorts } from '../../core/application/ports/item.ports';
 import { Item } from '../../core/domain/item.entity';
@@ -8,6 +9,7 @@ import { Item as ItemOrmEntity } from './item.orm-entity';
 import { mapItemOrmEntityToItemEntity } from './item.orm-mapper';
 
 @Injectable()
+@withSpans()
 export class ItemAdapter implements ItemPorts {
   constructor(
     @InjectRepository(ItemOrmEntity)

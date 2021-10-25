@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { withSpans } from '../../../common/utils/trace/honeycomb';
 import { DragonPorts } from '../../core/application/ports/dragon.ports';
 import { Dragon } from '../../core/domain/dragon.entity';
 import { Dragon as DragonOrmEntity } from './dragon.orm-entity';
 import { mapDragonOrmEntityToDragonEntity } from './dragon.orm-mapper';
 
 @Injectable()
+@withSpans()
 export class DragonAdapter implements DragonPorts {
   constructor(
     @InjectRepository(DragonOrmEntity)

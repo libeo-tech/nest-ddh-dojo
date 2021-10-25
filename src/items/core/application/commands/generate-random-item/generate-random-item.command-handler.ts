@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { itemEntityFactory } from '../../../domain/item.entity-factory';
 import { ItemPorts } from '../../ports/item.ports';
 import { GenerateRandomItemCommand } from './generate-random-item.command';
@@ -12,6 +13,7 @@ export class GenerateRandomItemCommandHandler
 
   private readonly logger = new Logger(GenerateRandomItemCommandHandler.name);
 
+  @withSpan()
   public async execute({ payload }: GenerateRandomItemCommand): Promise<void> {
     this.logger.log(`> GenerateRandomItemCommand`);
     const { ownerId } = payload;

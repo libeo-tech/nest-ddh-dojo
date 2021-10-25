@@ -1,5 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { DragonPorts } from '../../ports/dragon.ports';
 import {
   GetAllDragonsQuery,
@@ -14,6 +15,7 @@ export class GetAllDragonsQueryHandler
 
   private readonly logger = new Logger(GetAllDragonsQueryHandler.name);
 
+  @withSpan()
   public async execute(): Promise<GetAllDragonsQueryResult> {
     this.logger.log(`> GetAllDragonsQuery`);
 
