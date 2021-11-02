@@ -3,6 +3,7 @@ import { dragonEntityFactory } from '../../domain/dragon.entity-factory';
 import { DragonPorts } from './dragon.ports';
 
 export class DragonMockAdapter implements DragonPorts {
+  currentId = 0;
   dragons: Record<Dragon['id'], Dragon> = {} as Record<Dragon['id'], Dragon>;
   getAllDragons(): Promise<Dragon[]> {
     return Promise.resolve(Object.values(this.dragons));
@@ -12,8 +13,9 @@ export class DragonMockAdapter implements DragonPorts {
   }
   createDragon(dragonProperties: Partial<Dragon>): Promise<Dragon> {
     const newDragon = dragonEntityFactory(dragonProperties);
-    this.dragons[newDragon.id] = newDragon;
-    return Promise.resolve(newDragon);
+    const id = newDragon.id ?? `dragon${this.currentId++}`;
+    this.dragons[id] = { ...newDragon, id };
+    return Promise.resolve(this.dragons[id]);
   }
   updateDragon(
     dragonId: Dragon['id'],

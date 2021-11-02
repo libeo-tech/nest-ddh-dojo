@@ -2,7 +2,7 @@ import { getRandomArrayValue } from '../../../common/utils/random/random-array';
 import { generateRandomNumber } from '../../../common/utils/random/random-number';
 import { Hero } from './hero.entity';
 
-const exampleNames = ['John', 'Bob', 'Steve'];
+const exampleNames = ['Batman', 'Robin'];
 let heroTestId = 0;
 
 export const heroFixtureFactory = (

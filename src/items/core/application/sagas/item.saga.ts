@@ -7,7 +7,7 @@ import { GenerateRandomItemCommand } from '../commands/generate-random-item/gene
 @Injectable()
 export class ItemSagas {
   @Saga()
-  dragonKilled = (events$: Observable<any>): Observable<ICommand> => {
+  dragonSlain = (events$: Observable<any>): Observable<ICommand> => {
     return events$.pipe(
       ofType(DragonSlainEvent),
       map(
