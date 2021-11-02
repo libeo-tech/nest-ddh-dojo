@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
+import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroPorts } from '../../ports/hero.ports';
 import {
   GetHeroByIdQuery,
@@ -23,6 +24,9 @@ export class GetHeroByIdQueryHandler
     const { heroId } = payload;
 
     const hero = await this.heroPort.getHeroById(heroId);
+    if (!hero) {
+      throw new HeroNotFoundError(heroId);
+    }
     return new GetHeroByIdQueryResult(hero);
   }
 }

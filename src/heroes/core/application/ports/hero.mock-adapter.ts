@@ -7,7 +7,7 @@ export class HeroMockAdapter implements HeroPorts {
   getHeroes(): Promise<Hero[]> {
     return Promise.resolve(Object.values(this.heroes));
   }
-  getHeroById(heroId: Hero['id']): Promise<Hero> {
+  getHeroById(heroId: Hero['id']): Promise<Hero | undefined> {
     return Promise.resolve(this.heroes[heroId]);
   }
   addHero(heroProperties: Partial<Hero>): Promise<Hero> {
@@ -15,7 +15,10 @@ export class HeroMockAdapter implements HeroPorts {
     this.heroes[newHero.id] = newHero;
     return Promise.resolve(newHero);
   }
-  updateHero(heroId: Hero['id'], heroProperties: Partial<Hero>): Promise<Hero> {
+  updateHero(
+    heroId: Hero['id'],
+    heroProperties: Partial<Hero>,
+  ): Promise<Hero | undefined> {
     this.heroes[heroId] = { ...this.heroes[heroId], ...heroProperties };
     return Promise.resolve(this.heroes[heroId]);
   }

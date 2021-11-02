@@ -1,4 +1,9 @@
-import { Logger } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Hero as HeroSchema } from '../../../graphql';
@@ -11,6 +16,7 @@ import {
 import { CreateHeroCommand } from '../../core/application/commands/create-hero/create-hero.command';
 import { ItemPresenter } from '../../../items/interface/presenter/item.presenter';
 import { withSpan } from '../../../common/utils/trace/honeycomb';
+import { HeroNotFoundError } from '../../core/domain/hero.error';
 
 @Resolver('hero')
 export class HeroResolver {
@@ -25,12 +31,20 @@ export class HeroResolver {
   @Query()
   @withSpan()
   public async getHero(@Args('id') heroId: Hero['id']): Promise<HeroSchema> {
-    const { hero } = await this.queryBus.execute<
-      GetHeroByIdQuery,
-      GetHeroByIdQueryResult
-    >(new GetHeroByIdQuery({ heroId }));
-    const inventory = await this.itemPresenter.getHeroInventory(heroId);
-    return mapHeroEntityToHeroSchema(hero, inventory);
+    try {
+      const { hero } = await this.queryBus.execute<
+        GetHeroByIdQuery,
+        GetHeroByIdQueryResult
+      >(new GetHeroByIdQuery({ heroId }));
+      const inventory = await this.itemPresenter.getHeroInventory(heroId);
+      return mapHeroEntityToHeroSchema(hero, inventory);
+    } catch (error) {
+      this.logger.error(error);
+      if (error instanceof HeroNotFoundError) {
+        throw new NotFoundException(error.message);
+      }
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Mutation()
