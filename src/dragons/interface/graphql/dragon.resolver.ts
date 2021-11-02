@@ -1,4 +1,9 @@
-import { Logger } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { withSpan } from '../../../common/utils/trace/honeycomb';
@@ -10,6 +15,7 @@ import {
   GetAllDragonsQuery,
   GetAllDragonsQueryResult,
 } from '../../core/application/queries/get-all-dragons/get-all-dragons.query';
+import { DragonNotFoundError } from '../../core/domain/dragon.error';
 import { Dragon } from '../../infrastructure/dragons/dragon.orm-entity';
 import { mapDragonEntityToDragonSchema } from './dragon.gql-mapper';
 
@@ -45,7 +51,17 @@ export class DragonResolver {
     @Args('dragonId') dragonId: Dragon['id'],
     @Args('heroId') heroId: Hero['id'],
   ): Promise<boolean> {
-    await this.commandBus.execute(new SlayDragonCommand({ dragonId, heroId }));
-    return true;
+    try {
+      await this.commandBus.execute(
+        new SlayDragonCommand({ dragonId, heroId }),
+      );
+      return true;
+    } catch (error) {
+      this.logger.error(error);
+      if (error instanceof DragonNotFoundError) {
+        throw new NotFoundException(error.message);
+      }
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

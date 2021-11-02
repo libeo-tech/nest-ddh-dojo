@@ -15,9 +15,9 @@ export class DragonAdapter implements DragonPorts {
     private dragonsRepository: Repository<DragonOrmEntity>,
   ) {}
 
-  async getDragonById(dragonId: Dragon['id']): Promise<Dragon> {
+  async getDragonById(dragonId: Dragon['id']): Promise<Dragon | undefined> {
     const dragon = await this.dragonsRepository.findOne(dragonId);
-    return mapDragonOrmEntityToDragonEntity(dragon);
+    return !!dragon ? mapDragonOrmEntityToDragonEntity(dragon) : undefined;
   }
 
   async getAllDragons(): Promise<Dragon[]> {
@@ -33,10 +33,10 @@ export class DragonAdapter implements DragonPorts {
   async updateDragon(
     dragonId: Dragon['id'],
     dragonProperties: Partial<Dragon>,
-  ): Promise<Dragon> {
+  ): Promise<Dragon | undefined> {
     await this.dragonsRepository.update(dragonId, dragonProperties);
     const dragon = await this.dragonsRepository.findOne(dragonId);
-    return mapDragonOrmEntityToDragonEntity(dragon);
+    return !!dragon ? mapDragonOrmEntityToDragonEntity(dragon) : undefined;
   }
 
   async deleteDragon(dragonId: Dragon['id']): Promise<void> {

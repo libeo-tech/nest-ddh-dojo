@@ -8,7 +8,7 @@ export class DragonMockAdapter implements DragonPorts {
   getAllDragons(): Promise<Dragon[]> {
     return Promise.resolve(Object.values(this.dragons));
   }
-  getDragonById(dragonId: Dragon['id']): Promise<Dragon> {
+  getDragonById(dragonId: Dragon['id']): Promise<Dragon | undefined> {
     return Promise.resolve(this.dragons[dragonId]);
   }
   createDragon(dragonProperties: Partial<Dragon>): Promise<Dragon> {
@@ -20,7 +20,7 @@ export class DragonMockAdapter implements DragonPorts {
   updateDragon(
     dragonId: Dragon['id'],
     dragonProperties: Partial<Dragon>,
-  ): Promise<Dragon> {
+  ): Promise<Dragon | undefined> {
     this.dragons[dragonId] = { ...this.dragons[dragonId], ...dragonProperties };
     return Promise.resolve(this.dragons[dragonId]);
   }
