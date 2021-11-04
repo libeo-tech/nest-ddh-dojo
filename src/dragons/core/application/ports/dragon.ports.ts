@@ -1,12 +1,4 @@
+import { BasePorts } from '../../../../common/core/ports/base.ports';
 import { Dragon } from '../../domain/dragon.entity';
 
-export abstract class DragonPorts {
-  abstract getDragonById(dragonId: Dragon['id']): Promise<Dragon | undefined>;
-  abstract getAllDragons(): Promise<Dragon[]>;
-  abstract createDragon(dragonProperties: Partial<Dragon>): Promise<Dragon>;
-  abstract updateDragon(
-    dragonId: Dragon['id'],
-    dragonProperties: Partial<Dragon>,
-  ): Promise<Dragon | undefined>;
-  abstract deleteDragon(dragonId: Dragon['id']): Promise<void>;
-}
+export abstract class DragonPorts extends BasePorts<Dragon> {}

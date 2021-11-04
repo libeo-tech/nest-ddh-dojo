@@ -1,4 +1,4 @@
-import { DragonMockAdapter } from '../../ports/dragon.mock-adapter';
+import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-adapter';
 import { GetAllDragonsQueryHandler } from './get-all-dragons.query-handler';
 
 describe('get all dragons query', () => {
@@ -9,8 +9,8 @@ describe('get all dragons query', () => {
 
   it('should return all dragons', async () => {
     const [dragon1, dragon2] = await Promise.all([
-      dragonMockAdapter.createDragon({}),
-      dragonMockAdapter.createDragon({}),
+      dragonMockAdapter.create({}),
+      dragonMockAdapter.create({}),
     ]);
 
     const { dragons } = await getAllDragonsQueryHandler.execute();

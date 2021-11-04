@@ -1,6 +1,6 @@
 import { IEvent } from '@nestjs/cqrs';
-import { Hero } from '../../../heroes/infrastructure/heroes/hero.orm-entity';
-import { Dragon } from '../../infrastructure/dragons/dragon.orm-entity';
+import { Hero } from '../../../heroes/core/domain/hero.entity';
+import { Dragon } from './dragon.entity';
 import { Reward } from './reward/reward';
 
 export class DragonSlainEvent implements IEvent {

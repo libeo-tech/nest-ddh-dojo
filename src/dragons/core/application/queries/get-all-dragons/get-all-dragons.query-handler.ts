@@ -19,7 +19,7 @@ export class GetAllDragonsQueryHandler
   public async execute(): Promise<GetAllDragonsQueryResult> {
     this.logger.log(`> GetAllDragonsQuery`);
 
-    const dragons = await this.dragonPorts.getAllDragons();
+    const dragons = await this.dragonPorts.getAll();
     return new GetAllDragonsQueryResult(dragons);
   }
 }

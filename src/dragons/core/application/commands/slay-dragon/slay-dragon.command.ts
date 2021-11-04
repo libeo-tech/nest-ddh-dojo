@@ -1,6 +1,6 @@
 import { ICommand } from '@nestjs/cqrs';
-import { Hero } from '../../../../../heroes/infrastructure/heroes/hero.orm-entity';
-import { Dragon } from '../../../../infrastructure/dragons/dragon.orm-entity';
+import { Hero } from '../../../../../heroes/core/domain/hero.entity';
+import { Dragon } from '../../../domain/dragon.entity';
 
 export class SlayDragonCommand implements ICommand {
   constructor(

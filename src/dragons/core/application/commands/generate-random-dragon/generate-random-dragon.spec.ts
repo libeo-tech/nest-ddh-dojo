@@ -1,4 +1,4 @@
-import { DragonMockAdapter } from '../../ports/dragon.mock-adapter';
+import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-adapter';
 import { GenerateRandomDragonCommandHandler } from './generate-random-dragon.command-handler';
 
 describe('generate random dragon command', () => {
@@ -9,10 +9,10 @@ describe('generate random dragon command', () => {
   it('should create a random dragon', async () => {
     await generateRandomDragonCommandHandler.execute();
 
-    const dragons = await dragonMockAdapter.getAllDragons();
+    const dragons = await dragonMockAdapter.getAll();
     expect(dragons).toHaveLength(1);
     expect(dragons[0]).toHaveProperty('level');
     expect(dragons[0]).toHaveProperty('color');
-    dragonMockAdapter.deleteDragon(dragons[0].id);
+    dragonMockAdapter.delete(dragons[0].id);
   });
 });

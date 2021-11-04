@@ -2,7 +2,7 @@ import { eventBusMock } from '../../../../../common/utils/test/event-bus.mock';
 import { heroFixtureFactory } from '../../../../../heroes/core/domain/hero.fixture-factory';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
-import { DragonMockAdapter } from '../../ports/dragon.mock-adapter';
+import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-adapter';
 import { SlayDragonCommand } from './slay-dragon.command';
 import { SlayDragonCommandHandler } from './slay-dragon.command-handler';
 
@@ -15,12 +15,12 @@ describe('slay dragon command', () => {
   );
 
   it('should delete the dragon if it exists', async () => {
-    const { id: dragonId } = await dragonMockAdapter.createDragon({});
+    const { id: dragonId } = await dragonMockAdapter.create({});
     await slayDragonHandler.execute(
       new SlayDragonCommand({ dragonId, heroId }),
     );
 
-    const dragon = await dragonMockAdapter.getDragonById(dragonId);
+    const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon).not.toBeDefined();
   });
 

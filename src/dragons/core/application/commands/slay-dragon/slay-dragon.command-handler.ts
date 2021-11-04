@@ -23,13 +23,13 @@ export class SlayDragonCommandHandler
     this.logger.log(`> SlayDragonCommand: ${JSON.stringify(payload)}`);
     const { heroId, dragonId } = payload;
 
-    const dragon = await this.dragonPorts.getDragonById(dragonId);
+    const dragon = await this.dragonPorts.getById(dragonId);
     if (!dragon) {
       throw new DragonNotFoundError(dragonId);
     }
 
     const reward = rewardFactory(dragon.level);
-    await this.dragonPorts.deleteDragon(dragonId);
+    await this.dragonPorts.delete(dragonId);
     await this.eventBus.publish(
       new DragonSlainEvent({ heroId, dragonId, reward }),
     );

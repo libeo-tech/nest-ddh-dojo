@@ -15,22 +15,22 @@ export class DragonAdapter implements DragonPorts {
     private dragonsRepository: Repository<DragonOrmEntity>,
   ) {}
 
-  async getDragonById(dragonId: Dragon['id']): Promise<Dragon | undefined> {
+  async getById(dragonId: Dragon['id']): Promise<Dragon | undefined> {
     const dragon = await this.dragonsRepository.findOne(dragonId);
     return !!dragon ? mapDragonOrmEntityToDragonEntity(dragon) : undefined;
   }
 
-  async getAllDragons(): Promise<Dragon[]> {
+  async getAll(): Promise<Dragon[]> {
     const dragons = await this.dragonsRepository.find();
     return dragons.map(mapDragonOrmEntityToDragonEntity);
   }
 
-  async createDragon(dragonProperties: Partial<Dragon>): Promise<Dragon> {
+  async create(dragonProperties: Partial<Dragon>): Promise<Dragon> {
     const dragon = await this.dragonsRepository.save(dragonProperties);
     return mapDragonOrmEntityToDragonEntity(dragon);
   }
 
-  async updateDragon(
+  async update(
     dragonId: Dragon['id'],
     dragonProperties: Partial<Dragon>,
   ): Promise<Dragon | undefined> {
@@ -39,7 +39,7 @@ export class DragonAdapter implements DragonPorts {
     return !!dragon ? mapDragonOrmEntityToDragonEntity(dragon) : undefined;
   }
 
-  async deleteDragon(dragonId: Dragon['id']): Promise<void> {
+  async delete(dragonId: Dragon['id']): Promise<void> {
     await this.dragonsRepository.delete(dragonId);
   }
 }

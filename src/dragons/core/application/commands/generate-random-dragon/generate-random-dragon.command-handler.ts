@@ -18,6 +18,6 @@ export class GenerateRandomDragonCommandHandler
     this.logger.log(`> GenerateRandomDragonCommand`);
 
     const randomDragon = dragonEntityFactory();
-    await this.dragonPorts.createDragon(randomDragon);
+    await this.dragonPorts.create(randomDragon);
   }
 }

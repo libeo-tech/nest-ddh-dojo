@@ -1,10 +1,10 @@
 import { Dragon as DragonEntity } from '../../core/domain/dragon.entity';
 import { Column, Entity } from 'typeorm';
-import { Base } from '../../../common/core/domain/base.entity';
+import { BaseOrmEntity } from '../../../common/infrastructure/base.orm-entity';
 import { DragonColor } from '../../core/domain/dragon.entity';
 
 @Entity()
-export class Dragon extends Base {
+export class Dragon extends BaseOrmEntity {
   id!: DragonEntity['id'];
 
   @Column({ type: 'bigint', default: 1 })
