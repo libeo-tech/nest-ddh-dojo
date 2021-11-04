@@ -1,7 +1,7 @@
 import { Hero as HeroEntity } from '../../core/domain/hero.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseOrmEntity } from '../../../common/infrastructure/base.orm-entity';
-import { Item } from '../../../items/infrastructure/items/item.orm-entity';
+import { Item } from '../../../items/infrastructure/typeorm/item.orm-entity';
 
 @Entity()
 export class Hero extends BaseOrmEntity {

@@ -28,22 +28,31 @@ export class ItemAdapter implements ItemPorts {
     return items.map(mapItemOrmEntityToItemEntity);
   }
 
-  async getItemById(itemId: Item['id']): Promise<Item> {
+  async getById(itemId: Item['id']): Promise<Item | undefined> {
     const item = await this.itemsRepository.findOne(itemId);
-    return mapItemOrmEntityToItemEntity(item);
+    return !!item ? mapItemOrmEntityToItemEntity(item) : undefined;
   }
 
-  async getAllItems(): Promise<Item[]> {
+  async getAll(): Promise<Item[]> {
     const items = await this.itemsRepository.find();
     return items.map(mapItemOrmEntityToItemEntity);
   }
 
-  async createItem(itemProperties: Partial<Item>): Promise<Item> {
+  async create(itemProperties: Partial<Item>): Promise<Item> {
     const item = await this.itemsRepository.save(itemProperties);
     return mapItemOrmEntityToItemEntity(item);
   }
 
-  async deleteItem(itemId: Item['id']): Promise<void> {
+  async update(
+    itemId: Item['id'],
+    itemProperties: Partial<Item>,
+  ): Promise<Item | undefined> {
+    await this.itemsRepository.update(itemId, itemProperties);
+    const item = await this.itemsRepository.findOne(itemId);
+    return !!item ? mapItemOrmEntityToItemEntity(item) : undefined;
+  }
+
+  async delete(itemId: Item['id']): Promise<void> {
     await this.itemsRepository.delete(itemId);
   }
 }

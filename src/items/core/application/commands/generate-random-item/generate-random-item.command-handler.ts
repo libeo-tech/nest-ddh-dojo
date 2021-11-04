@@ -19,7 +19,7 @@ export class GenerateRandomItemCommandHandler
     const { ownerId } = payload;
 
     const randomItem = itemEntityFactory();
-    const item = await this.itemPorts.createItem(randomItem);
+    const item = await this.itemPorts.create(randomItem);
     await this.itemPorts.attributeOwnerOfItem(item.id, ownerId);
   }
 }

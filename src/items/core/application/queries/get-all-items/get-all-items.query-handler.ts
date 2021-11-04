@@ -19,7 +19,7 @@ export class GetAllItemsQueryHandler
   public async execute(): Promise<GetAllItemsQueryResult> {
     this.logger.log(`> GetAllItemsQuery`);
 
-    const items = await this.itemPorts.getAllItems();
+    const items = await this.itemPorts.getAll();
     return new GetAllItemsQueryResult(items);
   }
 }

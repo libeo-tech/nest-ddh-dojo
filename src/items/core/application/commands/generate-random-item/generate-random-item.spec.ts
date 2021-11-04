@@ -1,5 +1,5 @@
 import { heroFixtureFactory } from '../../../../../heroes/core/domain/hero.fixture-factory';
-import { ItemMockAdapter } from '../../ports/item.mock-adapter';
+import { ItemMockAdapter } from '../../../../infrastructure/mock/item.mock-adapter';
 import { GenerateRandomItemCommand } from './generate-random-item.command';
 import { GenerateRandomItemCommandHandler } from './generate-random-item.command-handler';
 
@@ -18,6 +18,6 @@ describe('generate random item command', () => {
 
     const items = await itemMockAdapter.getItemsByOwnerId(hero.id);
     expect(items).toHaveLength(1);
-    itemMockAdapter.deleteItem(items[0].id);
+    itemMockAdapter.delete(items[0].id);
   });
 });

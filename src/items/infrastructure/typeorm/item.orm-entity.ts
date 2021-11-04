@@ -1,10 +1,10 @@
 import { Item as ItemEntity } from '../../core/domain/item.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { Base } from '../../../common/core/domain/base.entity';
+import { BaseOrmEntity } from '../../../common/infrastructure/base.orm-entity';
 import { Hero } from '../../../heroes/infrastructure/typeorm/hero.orm-entity';
 
 @Entity()
-export class Item extends Base {
+export class Item extends BaseOrmEntity {
   id!: ItemEntity['id'];
 
   @Column({ type: 'varchar' })
