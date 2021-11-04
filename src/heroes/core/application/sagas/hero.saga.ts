@@ -36,7 +36,7 @@ export class HeroSagas {
     return events$.pipe(
       ofType(HeroGainedXpEvent),
       mergeMap(({ payload: { heroId } }) =>
-        from(this.heroPorts.getHeroById(heroId)).pipe(
+        from(this.heroPorts.getById(heroId)).pipe(
           filter(doesHeroLevelUp),
           map(() => new LevelUpCommand({ heroId })),
         ),

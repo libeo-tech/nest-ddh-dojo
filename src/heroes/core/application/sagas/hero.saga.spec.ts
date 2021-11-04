@@ -10,7 +10,7 @@ import { heroFixtureFactory } from '../../domain/hero.fixture-factory';
 import { getXpNeededForNextLevel } from '../../domain/xp/xp.service';
 import { GainXpCommand } from '../commands/gain-xp/gain-xp.command';
 import { LevelUpCommand } from '../commands/level-up/level-up.command';
-import { HeroMockAdapter } from '../ports/hero.mock-adapter';
+import { HeroMockAdapter } from '../../../infrastructure/mock/hero.mock-adapter';
 import { HeroSagas } from './hero.saga';
 
 describe('hero saga', () => {
@@ -49,9 +49,9 @@ describe('hero saga', () => {
   });
 
   it('should trigger a level-up if hero has gained enough xp', async () => {
-    heroMockAdapter.addHero(hero);
+    heroMockAdapter.create(hero);
     const xpDelta = getXpNeededForNextLevel(hero.level) - hero.xp;
-    heroMockAdapter.updateHero(hero.id, { xp: hero.xp + xpDelta });
+    heroMockAdapter.update(hero.id, { xp: hero.xp + xpDelta });
 
     const observable = saga.xpGain(
       of(new HeroGainedXpEvent({ heroId: hero.id })),
@@ -59,18 +59,18 @@ describe('hero saga', () => {
     const result = await lastValueFrom(observable);
     expect(result).toEqual(new LevelUpCommand({ heroId: hero.id }));
 
-    heroMockAdapter.deleteHero(hero.id);
+    heroMockAdapter.delete(hero.id);
   });
 
   it('should not trigger a level-up if hero does not have enough xp', async () => {
-    heroMockAdapter.addHero(hero);
-    heroMockAdapter.updateHero(hero.id, { xp: 0 });
+    heroMockAdapter.create(hero);
+    heroMockAdapter.update(hero.id, { xp: 0 });
 
     const observable = saga.xpGain(
       of(new HeroGainedXpEvent({ heroId: hero.id })),
     );
     await expect(lastValueFrom(observable)).rejects.toThrow();
 
-    heroMockAdapter.deleteHero(hero.id);
+    heroMockAdapter.delete(hero.id);
   });
 });

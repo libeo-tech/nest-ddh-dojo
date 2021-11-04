@@ -7,7 +7,7 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Hero as HeroSchema } from '../../../graphql';
-import { Hero } from '../../infrastructure/heroes/hero.orm-entity';
+import { Hero } from '../../infrastructure/typeorm/hero.orm-entity';
 import { mapHeroEntityToHeroSchema } from './hero.gql-mapper';
 import {
   GetHeroByIdQuery,

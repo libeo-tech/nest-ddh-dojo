@@ -20,7 +20,7 @@ export class LevelUpCommandHandler implements ICommandHandler<LevelUpCommand> {
     this.logger.log(`> LevelUpCommand: ${JSON.stringify(payload)}`);
     const { heroId } = payload;
 
-    const hero = await this.heroPorts.getHeroById(heroId);
+    const hero = await this.heroPorts.getById(heroId);
     if (!hero) {
       throw new HeroNotFoundError(heroId);
     }
@@ -30,7 +30,7 @@ export class LevelUpCommandHandler implements ICommandHandler<LevelUpCommand> {
       throw new HeroDoesNotHaveEnoughXp(heroId);
     }
 
-    await this.heroPorts.updateHero(heroId, {
+    await this.heroPorts.update(heroId, {
       level: hero.level + 1,
     });
   }

@@ -12,7 +12,7 @@ import {
 export class GetHeroByIdQueryHandler
   implements IQueryHandler<GetHeroByIdQuery>
 {
-  constructor(private readonly heroPort: HeroPorts) {}
+  constructor(private readonly heroPorts: HeroPorts) {}
 
   private readonly logger = new Logger(GetHeroByIdQueryHandler.name);
 
@@ -23,7 +23,7 @@ export class GetHeroByIdQueryHandler
     this.logger.log(`> GetHeroByIdQuery: ${JSON.stringify(payload)}`);
     const { heroId } = payload;
 
-    const hero = await this.heroPort.getHeroById(heroId);
+    const hero = await this.heroPorts.getById(heroId);
     if (!hero) {
       throw new HeroNotFoundError(heroId);
     }

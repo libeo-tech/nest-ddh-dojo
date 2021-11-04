@@ -1,6 +1,6 @@
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
-import { HeroMockAdapter } from '../../ports/hero.mock-adapter';
+import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapter';
 import { GetHeroByIdQuery } from './get-hero-by-id.query';
 import { GetHeroByIdQueryHandler } from './get-hero-by-id.query-handler';
 
@@ -9,13 +9,13 @@ describe('get all hero query', () => {
   const getHeroByIdQueryHandler = new GetHeroByIdQueryHandler(heroMockAdapter);
 
   it('should get a hero by Id', async () => {
-    const batman = await heroMockAdapter.addHero({});
+    const batman = await heroMockAdapter.create({});
 
     const { hero } = await getHeroByIdQueryHandler.execute(
       new GetHeroByIdQuery({ heroId: batman.id }),
     );
     expect(hero).toMatchObject(batman);
-    heroMockAdapter.deleteHero(batman.id);
+    heroMockAdapter.delete(batman.id);
   });
 
   it('should throw if the hero does not exist', async () => {

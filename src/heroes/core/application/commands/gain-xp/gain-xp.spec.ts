@@ -2,7 +2,7 @@ import { generateRandomNumber } from '../../../../../common/utils/random/random-
 import { eventBusMock } from '../../../../../common/utils/test/event-bus.mock';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
-import { HeroMockAdapter } from '../../ports/hero.mock-adapter';
+import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapter';
 import { GainXpCommand } from './gain-xp.command';
 import { GainXpCommandHandler } from './gain-xp.command-handler';
 
@@ -12,12 +12,12 @@ describe('gain xp command', () => {
 
   it('should increase the xp of a hero by xpDelta', async () => {
     const xpDelta = generateRandomNumber(1, 100);
-    const { id: heroId, xp } = await heroMockAdapter.addHero({});
+    const { id: heroId, xp } = await heroMockAdapter.create({});
     await gainXpHandler.execute(new GainXpCommand({ heroId, xpDelta }));
 
-    const { xp: newXp } = await heroMockAdapter.getHeroById(heroId);
+    const { xp: newXp } = await heroMockAdapter.getById(heroId);
     expect(newXp).toEqual(xp + xpDelta);
-    await heroMockAdapter.deleteHero(heroId);
+    await heroMockAdapter.delete(heroId);
   });
 
   it('should throw if the hero does not exist', async () => {

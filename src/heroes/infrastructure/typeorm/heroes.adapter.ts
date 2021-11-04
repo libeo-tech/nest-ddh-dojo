@@ -14,22 +14,22 @@ export class HeroAdapter implements HeroPorts {
     @InjectRepository(HeroOrmEntity)
     private heroesRepository: Repository<HeroOrmEntity>,
   ) {}
-  async getHeroById(heroId: Hero['id']): Promise<Hero | undefined> {
+  async getById(heroId: Hero['id']): Promise<Hero | undefined> {
     const hero = await this.heroesRepository.findOne(heroId);
     return !!hero ? mapHeroOrmEntityToHeroEntity(hero) : undefined;
   }
 
-  async getHeroes(): Promise<Hero[]> {
+  async getAll(): Promise<Hero[]> {
     const heroes = await this.heroesRepository.find();
     return heroes.map(mapHeroOrmEntityToHeroEntity);
   }
 
-  async addHero(heroProperties: Partial<Hero>): Promise<Hero> {
+  async create(heroProperties: Partial<Hero>): Promise<Hero> {
     const hero = await this.heroesRepository.save(heroProperties);
     return mapHeroOrmEntityToHeroEntity(hero);
   }
 
-  async updateHero(
+  async update(
     heroId: Hero['id'],
     heroProperties: Partial<Hero>,
   ): Promise<Hero | undefined> {
@@ -38,7 +38,7 @@ export class HeroAdapter implements HeroPorts {
     return !!hero ? mapHeroOrmEntityToHeroEntity(hero) : undefined;
   }
 
-  async deleteHero(heroId: Hero['id']): Promise<void> {
+  async delete(heroId: Hero['id']): Promise<void> {
     await this.heroesRepository.delete(heroId);
   }
 }

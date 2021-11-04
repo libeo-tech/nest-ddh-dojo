@@ -1,5 +1,5 @@
 import { ICommand } from '@nestjs/cqrs';
-import { Hero } from '../../../../infrastructure/heroes/hero.orm-entity';
+import { Hero } from '../../../../infrastructure/typeorm/hero.orm-entity';
 
 export class LevelUpCommand implements ICommand {
   constructor(

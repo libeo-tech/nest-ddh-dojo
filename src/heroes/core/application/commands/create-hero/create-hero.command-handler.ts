@@ -17,6 +17,6 @@ export class CreateHeroCommandHandler
     this.logger.log(`> CreateHeroCommand: ${JSON.stringify(payload)}`);
     const { name } = payload;
 
-    await this.heroPorts.addHero({ name, level: 1 });
+    await this.heroPorts.create({ name, level: 1 });
   }
 }

@@ -1,4 +1,4 @@
-import { HeroMockAdapter } from '../../ports/hero.mock-adapter';
+import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapter';
 import { CreateHeroCommand } from './create-hero.command';
 import { CreateHeroCommandHandler } from './create-hero.command-handler';
 
@@ -14,9 +14,9 @@ describe('create hero command', () => {
     });
     await createHeroCommandHandler.execute(command);
 
-    const heroes = await heroMockAdapter.getHeroes();
+    const heroes = await heroMockAdapter.getAll();
     expect(heroes).toHaveLength(1);
     expect(heroes[0].name).toBe('Batman');
-    heroMockAdapter.deleteHero(heroes[0].id);
+    heroMockAdapter.delete(heroes[0].id);
   });
 });
