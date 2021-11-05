@@ -11,11 +11,9 @@ import { mapHeroOrmEntityToHeroEntity } from './hero.orm-mapper';
 @withSpans()
 export class HeroAdapter extends BaseOrmAdapter<Hero, HeroOrmEntity> {
   mapOrmEntityToEntity = mapHeroOrmEntityToHeroEntity;
-  mapEntityPropertiesToOrmEntityProperties(
+  mapEntityPropertiesToOrmEntityProperties = (
     entityProperties: Partial<Hero>,
-  ): DeepPartial<HeroOrmEntity> {
-    return entityProperties;
-  }
+  ): DeepPartial<HeroOrmEntity> => entityProperties;
   entitiesRepository = this.heroesRepository;
   constructor(
     @InjectRepository(HeroOrmEntity)

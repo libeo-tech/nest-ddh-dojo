@@ -12,11 +12,9 @@ import { mapItemOrmEntityToItemEntity } from './item.orm-mapper';
 @withSpans()
 export class ItemAdapter extends BaseOrmAdapter<Item, ItemOrmEntity> {
   mapOrmEntityToEntity = mapItemOrmEntityToItemEntity;
-  mapEntityPropertiesToOrmEntityProperties(
+  mapEntityPropertiesToOrmEntityProperties = (
     entityProperties: Partial<Item>,
-  ): DeepPartial<ItemOrmEntity> {
-    return entityProperties;
-  }
+  ): DeepPartial<ItemOrmEntity> => entityProperties;
   entitiesRepository = this.itemsRepository;
   constructor(
     @InjectRepository(ItemOrmEntity)

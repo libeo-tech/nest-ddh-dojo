@@ -49,10 +49,8 @@ export class HeroResolver {
 
   @Mutation()
   @withSpan()
-  public async createHero(
-    @Args('name') heroName: Hero['name'],
-  ): Promise<boolean> {
-    await this.commandBus.execute(new CreateHeroCommand({ name: heroName }));
+  public async createHero(@Args('name') name: Hero['name']): Promise<boolean> {
+    await this.commandBus.execute(new CreateHeroCommand({ name }));
     return true;
   }
 }

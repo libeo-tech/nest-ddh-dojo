@@ -11,11 +11,9 @@ import { mapDragonOrmEntityToDragonEntity } from './dragon.orm-mapper';
 @withSpans()
 export class DragonAdapter extends BaseOrmAdapter<Dragon, DragonOrmEntity> {
   mapOrmEntityToEntity = mapDragonOrmEntityToDragonEntity;
-  mapEntityPropertiesToOrmEntityProperties(
+  mapEntityPropertiesToOrmEntityProperties = (
     entityProperties: Partial<Dragon>,
-  ): DeepPartial<DragonOrmEntity> {
-    return entityProperties;
-  }
+  ): DeepPartial<DragonOrmEntity> => entityProperties;
   entitiesRepository = this.dragonsRepository;
   constructor(
     @InjectRepository(DragonOrmEntity)
