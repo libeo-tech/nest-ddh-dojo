@@ -1,17 +1,24 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import {
+  GetByIdPort,
+  UpdatePort,
+} from '../../../../../common/core/ports/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
+import { Hero } from '../../../domain/hero.entity';
 import {
   HeroDoesNotHaveEnoughXp,
   HeroNotFoundError,
 } from '../../../domain/hero.error';
 import { getXpNeededForNextLevel } from '../../../domain/xp/xp.service';
-import { HeroPorts } from '../../ports/hero.ports';
 import { LevelUpCommand } from './level-up.command';
 
 @CommandHandler(LevelUpCommand)
 export class LevelUpCommandHandler implements ICommandHandler<LevelUpCommand> {
-  constructor(private readonly heroPorts: HeroPorts) {}
+  constructor(
+    @Inject(Hero.name)
+    private readonly heroPorts: GetByIdPort<Hero> & UpdatePort<Hero>,
+  ) {}
 
   private readonly logger = new Logger(LevelUpCommandHandler.name);
 

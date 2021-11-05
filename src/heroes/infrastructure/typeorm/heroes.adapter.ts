@@ -1,44 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
+import { BaseOrmAdapter } from '../../../common/infrastructure/base.orm-adapter';
 import { withSpans } from '../../../common/utils/trace/honeycomb';
-import { HeroPorts } from '../../core/application/ports/hero.ports';
 import { Hero } from '../../core/domain/hero.entity';
 import { Hero as HeroOrmEntity } from './hero.orm-entity';
 import { mapHeroOrmEntityToHeroEntity } from './hero.orm-mapper';
 
 @Injectable()
 @withSpans()
-export class HeroAdapter implements HeroPorts {
+export class HeroAdapter extends BaseOrmAdapter<Hero, HeroOrmEntity> {
+  mapOrmEntityToEntity = mapHeroOrmEntityToHeroEntity;
+  mapEntityPropertiesToOrmEntityProperties(
+    entityProperties: Partial<Hero>,
+  ): DeepPartial<HeroOrmEntity> {
+    return entityProperties;
+  }
+  entitiesRepository = this.heroesRepository;
   constructor(
     @InjectRepository(HeroOrmEntity)
     private heroesRepository: Repository<HeroOrmEntity>,
-  ) {}
-  async getById(heroId: Hero['id']): Promise<Hero | undefined> {
-    const hero = await this.heroesRepository.findOne(heroId);
-    return !!hero ? mapHeroOrmEntityToHeroEntity(hero) : undefined;
-  }
-
-  async getAll(): Promise<Hero[]> {
-    const heroes = await this.heroesRepository.find();
-    return heroes.map(mapHeroOrmEntityToHeroEntity);
-  }
-
-  async create(heroProperties: Partial<Hero>): Promise<Hero> {
-    const hero = await this.heroesRepository.save(heroProperties);
-    return mapHeroOrmEntityToHeroEntity(hero);
-  }
-
-  async update(
-    heroId: Hero['id'],
-    heroProperties: Partial<Hero>,
-  ): Promise<Hero | undefined> {
-    await this.heroesRepository.update(heroId, heroProperties);
-    const hero = await this.heroesRepository.findOne(heroId);
-    return !!hero ? mapHeroOrmEntityToHeroEntity(hero) : undefined;
-  }
-
-  async delete(heroId: Hero['id']): Promise<void> {
-    await this.heroesRepository.delete(heroId);
+  ) {
+    super();
   }
 }

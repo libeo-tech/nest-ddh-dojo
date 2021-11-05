@@ -1,8 +1,9 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { GetByIdPort } from '../../../../../common/core/ports/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
+import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
-import { HeroPorts } from '../../ports/hero.ports';
 import {
   GetHeroByIdQuery,
   GetHeroByIdQueryResult,
@@ -12,7 +13,9 @@ import {
 export class GetHeroByIdQueryHandler
   implements IQueryHandler<GetHeroByIdQuery>
 {
-  constructor(private readonly heroPorts: HeroPorts) {}
+  constructor(
+    @Inject(Hero.name) private readonly heroPorts: GetByIdPort<Hero>,
+  ) {}
 
   private readonly logger = new Logger(GetHeroByIdQueryHandler.name);
 

@@ -1,14 +1,17 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CreatePort } from '../../../../../common/core/ports/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
-import { HeroPorts } from '../../ports/hero.ports';
+import { Hero } from '../../../domain/hero.entity';
 import { CreateHeroCommand } from './create-hero.command';
 
 @CommandHandler(CreateHeroCommand)
 export class CreateHeroCommandHandler
   implements ICommandHandler<CreateHeroCommand>
 {
-  constructor(private readonly heroPorts: HeroPorts) {}
+  constructor(
+    @Inject(Hero.name) private readonly heroPorts: CreatePort<Hero>,
+  ) {}
 
   private readonly logger = new Logger(CreateHeroCommandHandler.name);
 

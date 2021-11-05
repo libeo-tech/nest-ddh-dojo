@@ -1,15 +1,20 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import {
+  GetByIdPort,
+  UpdatePort,
+} from '../../../../../common/core/ports/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
+import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroGainedXpEvent } from '../../../domain/hero.events';
-import { HeroPorts } from '../../ports/hero.ports';
 import { GainXpCommand } from './gain-xp.command';
 
 @CommandHandler(GainXpCommand)
 export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
   constructor(
-    private readonly heroPorts: HeroPorts,
+    @Inject(Hero.name)
+    private readonly heroPorts: GetByIdPort<Hero> & UpdatePort<Hero>,
     private readonly eventBus: EventBus,
   ) {}
 
