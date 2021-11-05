@@ -1,7 +1,8 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
-import { ItemPorts } from '../../ports/item.ports';
+import { ItemWithOwner } from '../../../domain/item.entity';
+import { ItemWithOwnerPorts } from '../../ports/item-with-owner.ports';
 import {
   GetHeroItemsQuery,
   GetHeroItemsQueryResult,
@@ -11,7 +12,13 @@ import {
 export class GetHeroItemsQueryHandler
   implements IQueryHandler<GetHeroItemsQuery>
 {
-  constructor(private readonly itemPorts: ItemPorts) {}
+  constructor(
+    @Inject(ItemWithOwner.name)
+    private readonly itemWithOwnerPorts: Pick<
+      ItemWithOwnerPorts,
+      'getItemsByOwnerId'
+    >,
+  ) {}
 
   private readonly logger = new Logger(GetHeroItemsQueryHandler.name);
 
@@ -22,7 +29,7 @@ export class GetHeroItemsQueryHandler
     this.logger.log(`> GetHeroItemsQuery: ${JSON.stringify(payload)}`);
     const { ownerId } = payload;
 
-    const items = await this.itemPorts.getItemsByOwnerId(ownerId);
+    const items = await this.itemWithOwnerPorts.getItemsByOwnerId(ownerId);
     return new GetHeroItemsQueryResult(items);
   }
 }

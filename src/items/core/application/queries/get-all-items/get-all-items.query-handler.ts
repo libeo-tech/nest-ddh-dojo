@@ -1,7 +1,8 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { GetAllPort } from '../../../../../common/core/ports/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
-import { ItemPorts } from '../../ports/item.ports';
+import { Item } from '../../../domain/item.entity';
 import {
   GetAllItemsQuery,
   GetAllItemsQueryResult,
@@ -11,7 +12,9 @@ import {
 export class GetAllItemsQueryHandler
   implements IQueryHandler<GetAllItemsQuery>
 {
-  constructor(private readonly itemPorts: ItemPorts) {}
+  constructor(
+    @Inject(Item.name) private readonly itemPorts: GetAllPort<Item>,
+  ) {}
 
   private readonly logger = new Logger(GetAllItemsQueryHandler.name);
 

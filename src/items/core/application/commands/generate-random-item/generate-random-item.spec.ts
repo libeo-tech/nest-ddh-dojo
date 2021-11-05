@@ -7,9 +7,10 @@ describe('generate random item command', () => {
   const itemMockAdapter = new ItemMockAdapter();
   const generateRandomItemCommandHandler = new GenerateRandomItemCommandHandler(
     itemMockAdapter,
+    itemMockAdapter,
   );
 
-  it('should generate a new random item', async () => {
+  it('should give a new random item to a hero', async () => {
     const hero = heroFixtureFactory();
     const generateRandomItemCommand = new GenerateRandomItemCommand({
       ownerId: hero.id,
