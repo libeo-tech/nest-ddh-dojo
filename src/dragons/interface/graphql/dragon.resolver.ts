@@ -57,6 +57,7 @@ export class DragonResolver {
       );
       return true;
     } catch (error) {
+      console.error(error);
       this.logger.error(error);
       if (error instanceof DragonNotFoundError) {
         throw new NotFoundException(error.message);
