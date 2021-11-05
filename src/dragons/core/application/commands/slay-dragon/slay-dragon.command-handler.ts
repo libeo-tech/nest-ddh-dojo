@@ -1,10 +1,14 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import {
+  DeletePort,
+  GetByIdPort,
+} from '../../../../../common/core/ports/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
+import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonSlainEvent } from '../../../domain/dragon.events';
 import { rewardFactory } from '../../../domain/reward/reward';
-import { DragonPorts } from '../../ports/dragon.ports';
 import { SlayDragonCommand } from './slay-dragon.command';
 
 @CommandHandler(SlayDragonCommand)
@@ -12,7 +16,8 @@ export class SlayDragonCommandHandler
   implements ICommandHandler<SlayDragonCommand>
 {
   constructor(
-    private readonly dragonPorts: DragonPorts,
+    @Inject(Dragon.name)
+    private readonly dragonPorts: GetByIdPort<Dragon> & DeletePort<Dragon>,
     private readonly eventBus: EventBus,
   ) {}
 

@@ -1,15 +1,18 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CreatePort } from '../../../../../common/core/ports/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
+import { Dragon } from '../../../domain/dragon.entity';
 import { dragonEntityFactory } from '../../../domain/dragon.entity-factory';
-import { DragonPorts } from '../../ports/dragon.ports';
 import { GenerateRandomDragonCommand } from './generate-random-dragon.command';
 
 @CommandHandler(GenerateRandomDragonCommand)
 export class GenerateRandomDragonCommandHandler
   implements ICommandHandler<GenerateRandomDragonCommand>
 {
-  constructor(private readonly dragonPorts: DragonPorts) {}
+  constructor(
+    @Inject(Dragon.name) private readonly dragonPorts: CreatePort<Dragon>,
+  ) {}
 
   private readonly logger = new Logger(GenerateRandomDragonCommandHandler.name);
 

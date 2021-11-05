@@ -1,7 +1,8 @@
-import { Logger } from '@nestjs/common';
+import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { GetAllPort } from '../../../../../common/core/ports/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
-import { DragonPorts } from '../../ports/dragon.ports';
+import { Dragon } from '../../../domain/dragon.entity';
 import {
   GetAllDragonsQuery,
   GetAllDragonsQueryResult,
@@ -11,7 +12,10 @@ import {
 export class GetAllDragonsQueryHandler
   implements IQueryHandler<GetAllDragonsQuery>
 {
-  constructor(private readonly dragonPorts: DragonPorts) {}
+  constructor(
+    @Inject(Dragon.name)
+    private readonly dragonPorts: GetAllPort<Dragon>,
+  ) {}
 
   private readonly logger = new Logger(GetAllDragonsQueryHandler.name);
 

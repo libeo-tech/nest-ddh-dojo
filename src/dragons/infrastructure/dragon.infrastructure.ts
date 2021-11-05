@@ -1,8 +1,8 @@
-import { DragonPorts } from '../core/application/ports/dragon.ports';
-import { Dragon } from './typeorm/dragon.orm-entity';
+import { Dragon as DragonOrmEntity } from './typeorm/dragon.orm-entity';
 import { DragonAdapter } from './typeorm/dragon.adapter';
+import { Dragon } from '../core/domain/dragon.entity';
 
 export const DragonInfrastructure = {
-  providers: [{ provide: DragonPorts, useClass: DragonAdapter }],
-  repositories: [Dragon],
+  providers: [{ provide: Dragon.name, useClass: DragonAdapter }],
+  repositories: [DragonOrmEntity],
 };

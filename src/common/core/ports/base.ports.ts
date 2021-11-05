@@ -1,27 +1,32 @@
 import { Base } from '../domain/base.entity';
 
-export interface GetById<T extends Base> {
+export interface GetByIdPort<T extends Base> {
   getById(id: T['id']): Promise<T | undefined>;
 }
 
-export interface GetAll<T extends Base> {
+export interface GetAllPort<T extends Base> {
   getAll(): Promise<T[]>;
 }
 
-export interface Update<T extends Base> {
+export interface UpdatePort<T extends Base> {
   update(entityId: T['id'], properties: Partial<T>): Promise<T | undefined>;
 }
 
-export interface Create<T extends Base> {
+export interface CreatePort<T extends Base> {
   create(properties: Partial<T>): Promise<T>;
 }
 
-export interface Delete<T extends Base> {
+export interface DeletePort<T extends Base> {
   delete(id: T['id']): Promise<void>;
 }
 
 export abstract class BasePorts<T extends Base>
-  implements GetById<T>, GetAll<T>, Create<T>, Update<T>, Delete<T>
+  implements
+    GetByIdPort<T>,
+    GetAllPort<T>,
+    CreatePort<T>,
+    UpdatePort<T>,
+    DeletePort<T>
 {
   abstract getById(id: T['id']): Promise<T | undefined>;
   abstract getAll(): Promise<T[]>;
