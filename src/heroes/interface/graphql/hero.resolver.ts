@@ -32,11 +32,12 @@ export class HeroResolver {
   @withSpan()
   public async getHero(@Args('id') heroId: Hero['id']): Promise<HeroSchema> {
     try {
-      const { hero } = await this.queryBus.execute<
-        GetHeroByIdQuery,
-        GetHeroByIdQueryResult
-      >(new GetHeroByIdQuery({ heroId }));
-      const inventory = await this.itemPresenter.getHeroInventory(heroId);
+      const [{ hero }, inventory] = await Promise.all([
+        this.queryBus.execute<GetHeroByIdQuery, GetHeroByIdQueryResult>(
+          new GetHeroByIdQuery({ heroId }),
+        ),
+        this.itemPresenter.getHeroInventory(heroId),
+      ]);
       return mapHeroEntityToHeroSchema(hero, inventory);
     } catch (error) {
       this.logger.error(error);
