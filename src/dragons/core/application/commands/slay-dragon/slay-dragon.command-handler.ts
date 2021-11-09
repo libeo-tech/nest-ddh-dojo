@@ -16,7 +16,7 @@ export class SlayDragonCommandHandler
   implements ICommandHandler<SlayDragonCommand>
 {
   constructor(
-    @Inject(Dragon.name)
+    @Inject(Dragon)
     private readonly dragonPorts: GetByIdPort<Dragon> & DeletePort<Dragon>,
     private readonly eventBus: EventBus,
   ) {}

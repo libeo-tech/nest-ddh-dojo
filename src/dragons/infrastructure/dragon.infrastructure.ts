@@ -3,6 +3,6 @@ import { DragonAdapter } from './typeorm/dragon.adapter';
 import { Dragon } from '../core/domain/dragon.entity';
 
 export const DragonInfrastructure = {
-  providers: [{ provide: Dragon.name, useClass: DragonAdapter }],
+  providers: [{ provide: Dragon, useClass: DragonAdapter }],
   repositories: [DragonOrmEntity],
 };

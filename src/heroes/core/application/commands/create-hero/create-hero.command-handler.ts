@@ -9,9 +9,7 @@ import { CreateHeroCommand } from './create-hero.command';
 export class CreateHeroCommandHandler
   implements ICommandHandler<CreateHeroCommand>
 {
-  constructor(
-    @Inject(Hero.name) private readonly heroPorts: CreatePort<Hero>,
-  ) {}
+  constructor(@Inject(Hero) private readonly heroPorts: CreatePort<Hero>) {}
 
   private readonly logger = new Logger(CreateHeroCommandHandler.name);
 

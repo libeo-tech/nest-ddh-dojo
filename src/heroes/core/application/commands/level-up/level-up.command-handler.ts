@@ -16,7 +16,7 @@ import { LevelUpCommand } from './level-up.command';
 @CommandHandler(LevelUpCommand)
 export class LevelUpCommandHandler implements ICommandHandler<LevelUpCommand> {
   constructor(
-    @Inject(Hero.name)
+    @Inject(Hero)
     private readonly heroPorts: GetByIdPort<Hero> & UpdatePort<Hero>,
   ) {}
 

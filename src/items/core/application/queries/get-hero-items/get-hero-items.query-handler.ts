@@ -13,7 +13,7 @@ export class GetHeroItemsQueryHandler
   implements IQueryHandler<GetHeroItemsQuery>
 {
   constructor(
-    @Inject(ItemWithOwner.name)
+    @Inject(ItemWithOwner)
     private readonly itemWithOwnerPorts: Pick<
       ItemWithOwnerPorts,
       'getItemsByOwnerId'

@@ -13,7 +13,7 @@ import { GainXpCommand } from './gain-xp.command';
 @CommandHandler(GainXpCommand)
 export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
   constructor(
-    @Inject(Hero.name)
+    @Inject(Hero)
     private readonly heroPorts: GetByIdPort<Hero> & UpdatePort<Hero>,
     private readonly eventBus: EventBus,
   ) {}

@@ -11,9 +11,7 @@ import { LevelUpCommand } from '../commands/level-up/level-up.command';
 
 @Injectable()
 export class HeroSagas {
-  constructor(
-    @Inject(Hero.name) private readonly heroPorts: GetByIdPort<Hero>,
-  ) {}
+  constructor(@Inject(Hero) private readonly heroPorts: GetByIdPort<Hero>) {}
 
   @Saga()
   dragonSlain = (events$: Observable<any>): Observable<ICommand> => {

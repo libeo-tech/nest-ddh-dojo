@@ -12,8 +12,8 @@ export class GenerateRandomItemCommandHandler
   implements ICommandHandler<GenerateRandomItemCommand>
 {
   constructor(
-    @Inject(Item.name) private readonly itemPorts: CreatePort<Item>,
-    @Inject(ItemWithOwner.name)
+    @Inject(Item) private readonly itemPorts: CreatePort<Item>,
+    @Inject(ItemWithOwner)
     private readonly itemWithOwnerPorts: Pick<
       ItemWithOwnerPorts,
       'attributeOwnerOfItem'

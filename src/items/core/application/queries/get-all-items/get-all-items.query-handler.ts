@@ -12,9 +12,7 @@ import {
 export class GetAllItemsQueryHandler
   implements IQueryHandler<GetAllItemsQuery>
 {
-  constructor(
-    @Inject(Item.name) private readonly itemPorts: GetAllPort<Item>,
-  ) {}
+  constructor(@Inject(Item) private readonly itemPorts: GetAllPort<Item>) {}
 
   private readonly logger = new Logger(GetAllItemsQueryHandler.name);
 

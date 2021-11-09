@@ -13,9 +13,7 @@ import {
 export class GetHeroByIdQueryHandler
   implements IQueryHandler<GetHeroByIdQuery>
 {
-  constructor(
-    @Inject(Hero.name) private readonly heroPorts: GetByIdPort<Hero>,
-  ) {}
+  constructor(@Inject(Hero) private readonly heroPorts: GetByIdPort<Hero>) {}
 
   private readonly logger = new Logger(GetHeroByIdQueryHandler.name);
 

@@ -13,7 +13,7 @@ export class GetAllDragonsQueryHandler
   implements IQueryHandler<GetAllDragonsQuery>
 {
   constructor(
-    @Inject(Dragon.name)
+    @Inject(Dragon)
     private readonly dragonPorts: GetAllPort<Dragon>,
   ) {}
 

@@ -11,7 +11,7 @@ export class GenerateRandomDragonCommandHandler
   implements ICommandHandler<GenerateRandomDragonCommand>
 {
   constructor(
-    @Inject(Dragon.name) private readonly dragonPorts: CreatePort<Dragon>,
+    @Inject(Dragon) private readonly dragonPorts: CreatePort<Dragon>,
   ) {}
 
   private readonly logger = new Logger(GenerateRandomDragonCommandHandler.name);
