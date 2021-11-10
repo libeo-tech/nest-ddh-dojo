@@ -8,6 +8,9 @@ export class Dragon extends BaseOrmEntity {
   id!: DragonEntity['id'];
 
   @Column({ type: 'bigint', default: 1 })
+  currentHp!: number;
+
+  @Column({ type: 'bigint', default: 1 })
   level!: number;
 
   @Column({

@@ -12,5 +12,6 @@ export enum DragonColor {
 export class Dragon extends Base {
   id: string & { __brand: 'dragonId' };
   level: number;
+  currentHp: number;
   color: DragonColor;
 }

@@ -6,6 +6,7 @@ export const mapDragonOrmEntityToDragonEntity = (
 ): DragonEntity => {
   return {
     id: dragonOrmEntity.id,
+    currentHp: +dragonOrmEntity.currentHp,
     level: +dragonOrmEntity.level,
     color: dragonOrmEntity.color,
   };
