@@ -24,7 +24,7 @@ export class HurtDragonCommandHandler
 
   public async execute({ payload }: HurtDragonCommand): Promise<void> {
     this.logger.log(`> HurtDragonCommand: ${JSON.stringify(payload)}`);
-    const { dragonId, damage } = payload;
+    const { heroId, dragonId, damage } = payload;
 
     const dragon = await this.dragonPorts.getById(dragonId);
     if (!dragon) {
@@ -34,6 +34,8 @@ export class HurtDragonCommandHandler
     await this.dragonPorts.update(dragonId, {
       currentHp: dragon.currentHp - damage,
     });
-    await this.eventBus.publish(new DragonGotHurtEvent({ dragonId, damage }));
+    await this.eventBus.publish(
+      new DragonGotHurtEvent({ heroId, dragonId, damage }),
+    );
   }
 }

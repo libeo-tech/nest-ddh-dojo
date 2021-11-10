@@ -5,8 +5,10 @@ import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-a
 import { HurtDragonCommand } from './hurt-dragon.command';
 import { HurtDragonCommandHandler } from './hurt-dragon.command-handler';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
+import { heroFixtureFactory } from '../../../../../heroes/core/domain/hero.fixture-factory';
 
 describe('hurt command', () => {
+  const { id: heroId } = heroFixtureFactory();
   const dragonMockAdapter = new DragonMockAdapter();
   const attackHandler = new HurtDragonCommandHandler(
     dragonMockAdapter,
@@ -18,7 +20,9 @@ describe('hurt command', () => {
     const { id: dragonId, currentHp: maxHp } = await dragonMockAdapter.create(
       {},
     );
-    await attackHandler.execute(new HurtDragonCommand({ dragonId, damage }));
+    await attackHandler.execute(
+      new HurtDragonCommand({ heroId, dragonId, damage }),
+    );
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toStrictEqual(maxHp - damage);
@@ -31,7 +35,7 @@ describe('hurt command', () => {
 
     await expect(
       attackHandler.execute(
-        new HurtDragonCommand({ dragonId: missingDragonId, damage }),
+        new HurtDragonCommand({ heroId, dragonId: missingDragonId, damage }),
       ),
     ).rejects.toThrow(new DragonNotFoundError(missingDragonId));
   });

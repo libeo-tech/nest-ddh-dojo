@@ -6,6 +6,7 @@ import { Reward } from './reward/reward';
 export class DragonGotHurtEvent implements IEvent {
   constructor(
     public readonly payload: {
+      heroId: Hero['id'];
       dragonId: Dragon['id'];
       damage: number;
     },

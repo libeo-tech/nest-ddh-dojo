@@ -1,4 +1,5 @@
 import { CommandHandlerType, QueryHandlerType } from '@nestjs/cqrs';
+import { AttackCommandHandler } from './commands/attack/attack.command-handler';
 import { CreateHeroCommandHandler } from './commands/create-hero/create-hero.command-handler';
 import { GainXpCommandHandler } from './commands/gain-xp/gain-xp.command-handler';
 import { LevelUpCommandHandler } from './commands/level-up/level-up.command-handler';
@@ -7,6 +8,7 @@ import { HeroSagas } from './sagas/hero.saga';
 
 const HeroQueryHandler: QueryHandlerType[] = [GetHeroByIdQueryHandler];
 const HeroCommandHandler: CommandHandlerType[] = [
+  AttackCommandHandler,
   CreateHeroCommandHandler,
   GainXpCommandHandler,
   LevelUpCommandHandler,
