@@ -44,25 +44,4 @@ export class DragonResolver {
     await this.commandBus.execute(new GenerateRandomDragonCommand());
     return true;
   }
-
-  @Mutation()
-  @withSpan()
-  public async slayDragon(
-    @Args('dragonId') dragonId: Dragon['id'],
-    @Args('heroId') heroId: Hero['id'],
-  ): Promise<boolean> {
-    try {
-      await this.commandBus.execute(
-        new SlayDragonCommand({ dragonId, heroId }),
-      );
-      return true;
-    } catch (error) {
-      console.error(error);
-      this.logger.error(error);
-      if (error instanceof DragonNotFoundError) {
-        throw new NotFoundException(error.message);
-      }
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
 }

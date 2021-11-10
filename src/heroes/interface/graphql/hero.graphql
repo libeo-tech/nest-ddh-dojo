@@ -8,6 +8,7 @@ type Hero {
 
 type Mutation {
   createHero(name: String!): Boolean!
+  attackDragon(heroId: ID!, dragonId: ID!): Boolean!
 }
 
 type Query {

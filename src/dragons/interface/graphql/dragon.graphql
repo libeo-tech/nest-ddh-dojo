@@ -15,7 +15,6 @@ type Dragon {
 
 type Mutation {
   generateRandomDragon: Boolean!
-  slayDragon(heroId: ID!, dragonId: ID!): Boolean!
 }
 
 type Query {

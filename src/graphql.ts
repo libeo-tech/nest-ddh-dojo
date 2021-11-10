@@ -24,8 +24,8 @@ export interface Dragon {
 
 export interface IMutation {
     generateRandomDragon(): boolean | Promise<boolean>;
-    slayDragon(heroId: string, dragonId: string): boolean | Promise<boolean>;
     createHero(name: string): boolean | Promise<boolean>;
+    attackDragon(heroId: string, dragonId: string): boolean | Promise<boolean>;
     generateRandomItem(): boolean | Promise<boolean>;
 }
 
