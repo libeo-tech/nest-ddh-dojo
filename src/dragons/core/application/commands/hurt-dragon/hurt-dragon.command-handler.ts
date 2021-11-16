@@ -1,6 +1,5 @@
 import { Inject, Logger } from '@nestjs/common';
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
-import { isNumberObject } from 'util/types';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   GetByIdPort,
   UpdatePort,
@@ -8,10 +7,6 @@ import {
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
-import {
-  DragonGotHurtEvent,
-  DragonSlainEvent,
-} from '../../../domain/dragon.events';
 import { HurtDragonCommand } from './hurt-dragon.command';
 
 @CommandHandler(HurtDragonCommand)
@@ -21,7 +16,6 @@ export class HurtDragonCommandHandler
   constructor(
     @Inject(Dragon)
     private readonly dragonPorts: GetByIdPort<Dragon> & UpdatePort<Dragon>,
-    private readonly eventBus: EventBus,
   ) {}
 
   private readonly logger = new Logger(HurtDragonCommandHandler.name);

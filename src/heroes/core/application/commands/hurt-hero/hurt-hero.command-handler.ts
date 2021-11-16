@@ -1,12 +1,11 @@
 import { Inject, Logger } from '@nestjs/common';
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/ports/base.ports';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
-import { HeroDiedEvent, HeroGotHurtEvent } from '../../../domain/hero.events';
 import { HurtHeroCommand } from './hurt-hero.command';
 
 @CommandHandler(HurtHeroCommand)
@@ -16,7 +15,6 @@ export class HurtHeroCommandHandler
   constructor(
     @Inject(Hero)
     private readonly heroPorts: GetByIdPort<Hero> & UpdatePort<Hero>,
-    private readonly eventBus: EventBus,
   ) {}
 
   private readonly logger = new Logger(HurtHeroCommandHandler.name);

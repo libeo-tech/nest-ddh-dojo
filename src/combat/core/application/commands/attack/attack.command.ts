@@ -16,6 +16,8 @@ export class AttackCommand<X extends Fighter, Y extends Fighter>
   public afterHook: () => void;
 
   public async end(): Promise<void> {
-    await this.afterHook();
+    if (this.afterHook) {
+      await this.afterHook();
+    }
   }
 }

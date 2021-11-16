@@ -6,18 +6,11 @@ import { HurtDragonCommand } from './hurt-dragon.command';
 import { HurtDragonCommandHandler } from './hurt-dragon.command-handler';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
 import { heroEntityFactory } from '../../../../../heroes/core/domain/hero.entity-factory';
-import {
-  DragonGotHurtEvent,
-  DragonSlainEvent,
-} from '../../../domain/dragon.events';
 
 describe('hurt dragon command', () => {
   const { id: heroId } = heroEntityFactory();
   const dragonMockAdapter = new DragonMockAdapter();
-  const attackHandler = new HurtDragonCommandHandler(
-    dragonMockAdapter,
-    eventBusMock,
-  );
+  const attackHandler = new HurtDragonCommandHandler(dragonMockAdapter);
 
   it('should lose hp when hurt', async () => {
     const damage = { value: generateRandomNumber(1, 10), source: heroId };
@@ -28,9 +21,6 @@ describe('hurt dragon command', () => {
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
-    expect(eventBusMock.publish).toHaveBeenCalledWith(
-      new DragonGotHurtEvent({ dragonId, damage }),
-    );
 
     dragonMockAdapter.delete(dragonId);
   });
@@ -44,9 +34,6 @@ describe('hurt dragon command', () => {
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
-    expect(eventBusMock.publish).toHaveBeenCalledWith(
-      new DragonSlainEvent({ dragonId, source: heroId }),
-    );
 
     dragonMockAdapter.delete(dragonId);
   });

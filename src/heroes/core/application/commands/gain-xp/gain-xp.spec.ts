@@ -10,13 +10,13 @@ describe('gain xp command', () => {
   const heroMockAdapter = new HeroMockAdapter();
   const gainXpHandler = new GainXpCommandHandler(heroMockAdapter, eventBusMock);
 
-  it('should increase the xp of a hero by xpDelta', async () => {
-    const xpDelta = generateRandomNumber(1, 100);
+  it('should increase the xp of a hero by xpGain', async () => {
+    const xpGain = generateRandomNumber(1, 100);
     const { id: heroId, xp } = await heroMockAdapter.create({});
-    await gainXpHandler.execute(new GainXpCommand({ heroId, xpDelta }));
+    await gainXpHandler.execute(new GainXpCommand({ heroId, xpGain }));
 
     const { xp: newXp } = await heroMockAdapter.getById(heroId);
-    expect(newXp).toEqual(xp + xpDelta);
+    expect(newXp).toEqual(xp + xpGain);
     await heroMockAdapter.delete(heroId);
   });
 
@@ -25,7 +25,7 @@ describe('gain xp command', () => {
 
     await expect(
       gainXpHandler.execute(
-        new GainXpCommand({ heroId: missingHeroId, xpDelta: 1 }),
+        new GainXpCommand({ heroId: missingHeroId, xpGain: 1 }),
       ),
     ).rejects.toThrow(new HeroNotFoundError(missingHeroId));
   });
