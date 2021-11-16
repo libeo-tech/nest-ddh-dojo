@@ -16,17 +16,16 @@ export enum ColorEnum {
     BLACK = "BLACK"
 }
 
+export interface IMutation {
+    attackDragon(heroId: string, dragonId: string): boolean | Promise<boolean>;
+    generateRandomDragon(): boolean | Promise<boolean>;
+    createHero(name: string): boolean | Promise<boolean>;
+}
+
 export interface Dragon {
     id: string;
     level: number;
     color?: Nullable<ColorEnum>;
-}
-
-export interface IMutation {
-    generateRandomDragon(): boolean | Promise<boolean>;
-    createHero(name: string): boolean | Promise<boolean>;
-    attackDragon(heroId: string, dragonId: string): boolean | Promise<boolean>;
-    generateRandomItem(): boolean | Promise<boolean>;
 }
 
 export interface IQuery {

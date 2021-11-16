@@ -1,19 +1,23 @@
 import { CommandHandlerType, QueryHandlerType } from '@nestjs/cqrs';
 import { GenerateRandomDragonCommandHandler } from './commands/generate-random-dragon/generate-random-dragon.command-handler';
 import { HurtDragonCommandHandler } from './commands/hurt-dragon/hurt-dragon.command-handler';
-import { SlayDragonCommandHandler } from './commands/slay-dragon/slay-dragon.command-handler';
 import { GetAllDragonsQueryHandler } from './queries/get-all-dragons/get-all-dragons.query-handler';
-import { DragonSagas } from './sagas/dragon.saga';
+import { GetDragonAttackQueryHandler } from './queries/get-dragon-attack/get-dragon-attack.query-handler';
+import { GetDragonByIdQueryHandler } from './queries/get-dragon-by-id/get-dragon-by-id.query-handler';
+import { IsDragonDeadQueryHandler } from './queries/is-dragon-dead/is-dragon-dead.query-handler';
 
-const DragonQueryHandler: QueryHandlerType[] = [GetAllDragonsQueryHandler];
+const DragonQueryHandler: QueryHandlerType[] = [
+  GetAllDragonsQueryHandler,
+  GetDragonByIdQueryHandler,
+  GetDragonAttackQueryHandler,
+  IsDragonDeadQueryHandler,
+];
 const DragonCommandHandler: CommandHandlerType[] = [
   GenerateRandomDragonCommandHandler,
   HurtDragonCommandHandler,
-  SlayDragonCommandHandler,
 ];
 
 export const DragonApplications = [
   ...DragonQueryHandler,
   ...DragonCommandHandler,
-  DragonSagas,
 ];

@@ -8,7 +8,7 @@ export const dragonEntityFactory = (
   const level = generateRandomNumber(1, 10);
   const dragon: Dragon = Object.assign(new Dragon(), {
     level,
-    currentHp: level * 10,
+    currentHp: level * 5,
     color: getRandomEnumValue(DragonColor),
     ...dragonProperties,
   });

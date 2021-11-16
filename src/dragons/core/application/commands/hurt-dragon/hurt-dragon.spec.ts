@@ -5,10 +5,14 @@ import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-a
 import { HurtDragonCommand } from './hurt-dragon.command';
 import { HurtDragonCommandHandler } from './hurt-dragon.command-handler';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
-import { heroFixtureFactory } from '../../../../../heroes/core/domain/hero.fixture-factory';
+import { heroEntityFactory } from '../../../../../heroes/core/domain/hero.entity-factory';
+import {
+  DragonGotHurtEvent,
+  DragonSlainEvent,
+} from '../../../domain/dragon.events';
 
-describe('hurt command', () => {
-  const { id: heroId } = heroFixtureFactory();
+describe('hurt dragon command', () => {
+  const { id: heroId } = heroEntityFactory();
   const dragonMockAdapter = new DragonMockAdapter();
   const attackHandler = new HurtDragonCommandHandler(
     dragonMockAdapter,
@@ -16,26 +20,44 @@ describe('hurt command', () => {
   );
 
   it('should lose hp when hurt', async () => {
-    const damage = generateRandomNumber(1, 10);
+    const damage = { value: generateRandomNumber(1, 10), source: heroId };
     const { id: dragonId, currentHp: maxHp } = await dragonMockAdapter.create(
       {},
     );
-    await attackHandler.execute(
-      new HurtDragonCommand({ heroId, dragonId, damage }),
-    );
+    await attackHandler.execute(new HurtDragonCommand({ dragonId, damage }));
 
     const dragon = await dragonMockAdapter.getById(dragonId);
-    expect(dragon.currentHp).toStrictEqual(maxHp - damage);
-    expect(eventBusMock.publish).toHaveBeenCalled();
+    expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
+    expect(eventBusMock.publish).toHaveBeenCalledWith(
+      new DragonGotHurtEvent({ dragonId, damage }),
+    );
+
+    dragonMockAdapter.delete(dragonId);
+  });
+
+  it('should die when losing too much hp', async () => {
+    const { id: dragonId, currentHp: maxHp } = await dragonMockAdapter.create(
+      {},
+    );
+    const damage = { value: maxHp + 1, source: heroId };
+    await attackHandler.execute(new HurtDragonCommand({ dragonId, damage }));
+
+    const dragon = await dragonMockAdapter.getById(dragonId);
+    expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
+    expect(eventBusMock.publish).toHaveBeenCalledWith(
+      new DragonSlainEvent({ dragonId, source: heroId }),
+    );
+
+    dragonMockAdapter.delete(dragonId);
   });
 
   it('should throw if the dragon does not exist', async () => {
-    const damage = generateRandomNumber(1, 10);
+    const damage = { value: generateRandomNumber(1, 10), source: heroId };
     const missingDragonId = 'dragon-id-not-existing' as Dragon['id'];
 
     await expect(
       attackHandler.execute(
-        new HurtDragonCommand({ heroId, dragonId: missingDragonId, damage }),
+        new HurtDragonCommand({ dragonId: missingDragonId, damage }),
       ),
     ).rejects.toThrow(new DragonNotFoundError(missingDragonId));
   });

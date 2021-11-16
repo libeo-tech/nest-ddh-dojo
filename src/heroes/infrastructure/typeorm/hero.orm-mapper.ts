@@ -6,8 +6,9 @@ export const mapHeroOrmEntityToHeroEntity = (
 ): HeroEntity => {
   return {
     id: heroOrmEntity.id,
+    name: heroOrmEntity.name,
     xp: +heroOrmEntity.xp,
     level: +heroOrmEntity.level,
-    name: heroOrmEntity.name,
+    currentHp: +heroOrmEntity.currentHp,
   };
 };

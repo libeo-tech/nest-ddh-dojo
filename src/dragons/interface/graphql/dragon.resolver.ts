@@ -1,22 +1,13 @@
-import {
-  HttpException,
-  HttpStatus,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Mutation, Query, Resolver } from '@nestjs/graphql';
 import { withSpan } from '../../../common/utils/trace/honeycomb';
 import { Dragon as DragonSchema } from '../../../graphql';
-import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { GenerateRandomDragonCommand } from '../../core/application/commands/generate-random-dragon/generate-random-dragon.command';
-import { SlayDragonCommand } from '../../core/application/commands/slay-dragon/slay-dragon.command';
 import {
   GetAllDragonsQuery,
   GetAllDragonsQueryResult,
 } from '../../core/application/queries/get-all-dragons/get-all-dragons.query';
-import { DragonNotFoundError } from '../../core/domain/dragon.error';
-import { Dragon } from '../../infrastructure/typeorm/dragon.orm-entity';
 import { mapDragonEntityToDragonSchema } from './dragon.gql-mapper';
 
 @Resolver('dragon')

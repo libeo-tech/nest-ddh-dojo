@@ -16,6 +16,9 @@ export class Hero extends BaseOrmEntity {
   @Column({ type: 'bigint', default: 1 })
   level!: number;
 
+  @Column({ type: 'bigint', default: 1 })
+  currentHp!: number;
+
   @OneToMany(() => Item, (item: Item) => item.owner)
   items!: Item[] | null;
 }

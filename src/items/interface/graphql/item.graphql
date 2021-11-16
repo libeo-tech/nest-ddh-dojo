@@ -3,10 +3,6 @@ type Item {
   name: String!
 }
 
-type Mutation {
-  generateRandomItem: Boolean!
-}
-
 type Query {
   getAllItems: [Item!]!
 }

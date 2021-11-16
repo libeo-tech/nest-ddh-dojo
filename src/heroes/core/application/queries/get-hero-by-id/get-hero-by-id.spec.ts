@@ -4,7 +4,7 @@ import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapt
 import { GetHeroByIdQuery } from './get-hero-by-id.query';
 import { GetHeroByIdQueryHandler } from './get-hero-by-id.query-handler';
 
-describe('get all hero query', () => {
+describe('get hero by id query', () => {
   const heroMockAdapter = new HeroMockAdapter();
   const getHeroByIdQueryHandler = new GetHeroByIdQueryHandler(heroMockAdapter);
 

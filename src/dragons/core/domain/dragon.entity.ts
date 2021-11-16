@@ -15,3 +15,5 @@ export class Dragon extends Base {
   currentHp: number;
   color: DragonColor;
 }
+
+export type UpdatableDragonFields = Omit<Dragon, 'id' | 'color'>;

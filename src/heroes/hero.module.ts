@@ -16,8 +16,9 @@ import { HeroInterface } from './interface/hero.interface';
     ...HeroInterface.resolvers,
     ...HeroInfrastructure.providers,
     ...HeroApplications,
+    ...HeroInterface.presenters,
   ],
   controllers: [...HeroInterface.controllers],
-  exports: [],
+  exports: [...HeroInterface.presenters],
 })
 export class HeroModule {}

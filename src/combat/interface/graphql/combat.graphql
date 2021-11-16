@@ -1,0 +1,3 @@
+type Mutation {
+  attackDragon(heroId: ID!, dragonId: ID!): Boolean!
+}

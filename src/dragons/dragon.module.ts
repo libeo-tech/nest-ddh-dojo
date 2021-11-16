@@ -14,8 +14,9 @@ import { DragonInterface } from './interface/dragon.interface';
     ...DragonInterface.resolvers,
     ...DragonInfrastructure.providers,
     ...DragonApplications,
+    ...DragonInterface.presenters,
   ],
   controllers: [...DragonInterface.controllers],
-  exports: [],
+  exports: [...DragonInterface.presenters],
 })
 export class DragonModule {}

@@ -1,14 +1,13 @@
 import { IEvent } from '@nestjs/cqrs';
-import { Hero } from '../../../heroes/core/domain/hero.entity';
+import { Damage } from '../../../combat/core/domain/attack/damage.object-value';
+import { HeroFighter } from '../../../combat/core/domain/fight/fighter.entity';
 import { Dragon } from './dragon.entity';
-import { Reward } from './reward/reward';
 
 export class DragonGotHurtEvent implements IEvent {
   constructor(
     public readonly payload: {
-      heroId: Hero['id'];
       dragonId: Dragon['id'];
-      damage: number;
+      damage: Damage<HeroFighter>;
     },
   ) {}
 }
@@ -16,9 +15,8 @@ export class DragonGotHurtEvent implements IEvent {
 export class DragonSlainEvent implements IEvent {
   constructor(
     public readonly payload: {
-      heroId: Hero['id'];
       dragonId: Dragon['id'];
-      reward: Reward;
+      source: Damage<HeroFighter>['source'];
     },
   ) {}
 }

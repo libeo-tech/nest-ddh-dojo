@@ -1,4 +1,4 @@
-import { heroFixtureFactory } from '../../../../../heroes/core/domain/hero.fixture-factory';
+import { heroEntityFactory } from '../../../../../heroes/core/domain/hero.entity-factory';
 import { ItemMockAdapter } from '../../../../infrastructure/mock/item.mock-adapter';
 import { GenerateRandomItemCommand } from './generate-random-item.command';
 import { GenerateRandomItemCommandHandler } from './generate-random-item.command-handler';
@@ -11,7 +11,7 @@ describe('generate random item command', () => {
   );
 
   it('should give a new random item to a hero', async () => {
-    const hero = heroFixtureFactory();
+    const hero = heroEntityFactory();
     const generateRandomItemCommand = new GenerateRandomItemCommand({
       ownerId: hero.id,
     });

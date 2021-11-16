@@ -5,7 +5,7 @@ export class GainXpCommand implements ICommand {
   constructor(
     public readonly payload: {
       heroId: Hero['id'];
-      xpDelta: Hero['xp'];
+      xpGain: Hero['xp'];
     },
   ) {}
 }

@@ -23,13 +23,13 @@ export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
   @withSpan()
   public async execute({ payload }: GainXpCommand): Promise<void> {
     this.logger.log(`> GainXpCommand: ${JSON.stringify(payload)}`);
-    const { heroId, xpDelta } = payload;
+    const { heroId, xpGain } = payload;
 
     const hero = await this.heroPorts.getById(heroId);
     if (!hero) {
       throw new HeroNotFoundError(heroId);
     }
-    await this.heroPorts.update(heroId, { xp: hero.xp + xpDelta });
+    await this.heroPorts.update(heroId, { xp: hero.xp + xpGain });
     await this.eventBus.publish(new HeroGainedXpEvent({ heroId }));
   }
 }

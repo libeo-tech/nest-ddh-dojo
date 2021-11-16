@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { QueryBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { withSpans } from '../../../common/utils/trace/honeycomb';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
+import { GenerateRandomItemCommand } from '../../core/application/commands/generate-random-item/generate-random-item.command';
 import {
   GetHeroItemsQuery,
   GetHeroItemsQueryResult,
@@ -13,7 +14,10 @@ import { Item } from '../../core/domain/item.entity';
 export class ItemPresenter {
   private readonly logger = new Logger(ItemPresenter.name);
 
-  constructor(private readonly queryBus: QueryBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   public async getHeroInventory(heroId: Hero['id']): Promise<Item[]> {
     const { items } = await this.queryBus.execute<
@@ -21,5 +25,11 @@ export class ItemPresenter {
       GetHeroItemsQueryResult
     >(new GetHeroItemsQuery({ ownerId: heroId }));
     return items;
+  }
+
+  public async giveNewRandomItemToHero(heroId: Hero['id']): Promise<void> {
+    await this.commandBus.execute<GenerateRandomItemCommand>(
+      new GenerateRandomItemCommand({ ownerId: heroId }),
+    );
   }
 }
