@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EventBus, ICommand, ofType, Saga } from '@nestjs/cqrs';
 import { filter, map, Observable, tap } from 'rxjs';
+import { afterCommand } from '../../../../common/utils/rxjs/after-command';
 import { Outcome } from '../../domain/combat-log/combat-log.entity';
 import { Fight } from '../../domain/fight/fight.type';
 import { Fighter } from '../../domain/fight/fighter.entity';
@@ -50,9 +51,7 @@ export class CombatSagas {
         this.combatLogIPA.getPorts(payload.fight).logRound(payload.logId),
       ),
       map(({ payload }) => new AttackCommand(payload)),
-      tap(async (attackCommand) => {
-        await attackCommand.await();
-        const { payload } = attackCommand;
+      afterCommand(async ({ payload }) => {
         const { fight } = payload;
 
         const isDead = await this.isDefenderDead(fight);
@@ -79,9 +78,7 @@ export class CombatSagas {
     return events$.pipe(
       ofType(FighterRetaliationEvent),
       map(({ payload }) => new AttackCommand(payload)),
-      tap(async (attackCommand) => {
-        await attackCommand.await();
-        const { payload } = attackCommand;
+      afterCommand(async ({ payload }) => {
         const { fight } = payload;
 
         const isDead = await this.isDefenderDead(fight);
