@@ -36,7 +36,7 @@ export class PveLogAdapter
   async logRound(logId: PveLog['id']): Promise<void> {
     const log = await this.combatLogsRepository.findOneOrFail(logId);
     await this.combatLogsRepository.update(logId, {
-      numberOfRounds: log.numberOfRounds + 1,
+      numberOfRounds: +log.numberOfRounds + 1,
     });
   }
   async logOutcome(logId: PveLog['id'], outcome: Outcome): Promise<void> {

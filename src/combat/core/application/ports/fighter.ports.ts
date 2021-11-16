@@ -8,6 +8,6 @@ export abstract class FightIPA<X extends Fighter, Y extends Fighter> {
 
 export abstract class FighterPorts<X extends Fighter, Y extends Fighter> {
   abstract getAttackStrength(id: X['id']): Promise<number>;
-  abstract inflictDamage(id: Y['id'], damage: Damage<X>): Promise<void>;
+  abstract receiveDamage(id: Y['id'], damage: Damage<X>): Promise<void>;
   abstract isDead(id: Y['id']): Promise<boolean>;
 }

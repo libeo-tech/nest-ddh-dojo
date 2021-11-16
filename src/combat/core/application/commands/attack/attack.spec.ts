@@ -10,7 +10,7 @@ describe('attack command', () => {
   const attackValue = 10;
   const fightAdapter = {
     getAttackStrength: jest.fn().mockResolvedValue(attackValue),
-    inflictDamage: jest.fn(),
+    receiveDamage: jest.fn(),
     isDead: jest.fn(),
   };
   const fightIPAdapter = {
@@ -34,7 +34,7 @@ describe('attack command', () => {
     await attackHandler.execute(attackCommand);
 
     expect(fightAdapter.getAttackStrength).toHaveBeenCalledWith(attacker.id);
-    expect(fightAdapter.inflictDamage).toHaveBeenCalledWith(defender.id, {
+    expect(fightAdapter.receiveDamage).toHaveBeenCalledWith(defender.id, {
       source: 'attackerId',
       value: attackValue,
     });

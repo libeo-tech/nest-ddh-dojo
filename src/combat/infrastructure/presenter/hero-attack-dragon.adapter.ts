@@ -23,11 +23,11 @@ export class HeroAttackDragonAdapter
     const attackValue = await this.heroFighterPresenter.getAttackStrength(id);
     return attackValue;
   }
-  public async inflictDamage(
+  public async receiveDamage(
     id: Dragon['id'],
     damage: Damage<HeroFighter>,
   ): Promise<void> {
-    await this.dragonFighterPresenter.inflictDamage(id, damage);
+    await this.dragonFighterPresenter.receiveDamage(id, damage);
   }
   public async isDead(id: Dragon['id']): Promise<boolean> {
     const isDead = await this.dragonFighterPresenter.isDead(id);

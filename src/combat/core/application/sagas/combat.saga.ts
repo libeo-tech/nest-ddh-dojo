@@ -40,15 +40,6 @@ export class CombatSagas {
     };
   }
 
-  private async awaitAttack(
-    attackCommand: AttackCommand<Fighter, Fighter>,
-  ): Promise<AttackCommand<Fighter, Fighter>['payload']> {
-    await new Promise(
-      (resolve) => (attackCommand.afterHook = () => resolve(null)),
-    );
-    return attackCommand.payload;
-  }
-
   @Saga()
   newRoundHasBegun = (
     events$: Observable<any>,
@@ -60,7 +51,8 @@ export class CombatSagas {
       ),
       map(({ payload }) => new AttackCommand(payload)),
       tap(async (attackCommand) => {
-        const payload = await this.awaitAttack(attackCommand);
+        await attackCommand.await();
+        const { payload } = attackCommand;
         const { fight } = payload;
 
         const isDead = await this.isDefenderDead(fight);
@@ -88,7 +80,8 @@ export class CombatSagas {
       ofType(FighterRetaliationEvent),
       map(({ payload }) => new AttackCommand(payload)),
       tap(async (attackCommand) => {
-        const payload = await this.awaitAttack(attackCommand);
+        await attackCommand.await();
+        const { payload } = attackCommand;
         const { fight } = payload;
 
         const isDead = await this.isDefenderDead(fight);

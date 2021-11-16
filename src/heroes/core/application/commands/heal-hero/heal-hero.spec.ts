@@ -1,6 +1,6 @@
-import { Hero } from '../../../domain/Hero.entity';
-import { HeroNotFoundError } from '../../../domain/Hero.error';
-import { HeroMockAdapter } from '../../../../infrastructure/mock/Hero.mock-adapter';
+import { Hero } from '../../../domain/hero.entity';
+import { HeroNotFoundError } from '../../../domain/hero.error';
+import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapter';
 import { HealHeroCommand } from './heal-hero.command';
 import { HealHeroCommandHandler } from './heal-hero.command-handler';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';

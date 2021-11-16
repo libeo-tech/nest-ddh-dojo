@@ -17,7 +17,7 @@ describe('get dragon attack query', () => {
       new GetDragonAttackQuery({ dragonId: dragon.id }),
     );
     expect(attackValue).toBeDefined();
-    expect(attackValue).toBeGreaterThan(0);
+    expect(attackValue).toBeGreaterThanOrEqual(0);
     dragonMockAdapter.delete(dragon.id);
   });
 

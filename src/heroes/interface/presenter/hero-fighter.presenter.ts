@@ -38,7 +38,7 @@ export class HeroFighterPresenter
     return attackValue;
   }
 
-  public async inflictDamage(
+  public async receiveDamage(
     heroId: Hero['id'],
     damage: Damage<Fighter>,
   ): Promise<void> {

@@ -21,7 +21,7 @@ export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
     const { attacker, defender } = fight;
 
     const attackValue = await fighterPorts.getAttackStrength(attacker.id);
-    await fighterPorts.inflictDamage(defender.id, {
+    await fighterPorts.receiveDamage(defender.id, {
       value: attackValue,
       source: attacker.id,
     });

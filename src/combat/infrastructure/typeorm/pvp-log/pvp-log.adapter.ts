@@ -40,7 +40,7 @@ export class PvpLogAdapter implements CombatLogPorts<HeroFighter, HeroFighter> {
   async logRound(logId: PvpLog['id']): Promise<void> {
     const log = await this.combatLogsRepository.findOneOrFail(logId);
     await this.combatLogsRepository.update(logId, {
-      numberOfRounds: log.numberOfRounds + 1,
+      numberOfRounds: +log.numberOfRounds + 1,
     });
   }
   async logOutcome(logId: PvpLog['id'], outcome: Outcome): Promise<void> {
