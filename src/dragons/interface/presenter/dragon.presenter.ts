@@ -1,9 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Damage } from '../../../combat/core/domain/attack/damage.object-value';
-import { HeroFighter } from '../../../combat/core/domain/fight/fighter.entity';
+import { QueryBus } from '@nestjs/cqrs';
 import { withSpans } from '../../../common/utils/trace/honeycomb';
-import { HurtDragonCommand } from '../../core/application/commands/hurt-dragon/hurt-dragon.command';
 import {
   GetDragonByIdQuery,
   GetDragonByIdQueryResult,
