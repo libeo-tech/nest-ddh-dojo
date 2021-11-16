@@ -1,4 +1,3 @@
-import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
 import { Dragon } from '../../../../../dragons/core/domain/dragon.entity';
 import { dragonEntityFactory } from '../../../../../dragons/core/domain/dragon.entity-factory';
 import { Hero } from '../../../../../heroes/core/domain/hero.entity';

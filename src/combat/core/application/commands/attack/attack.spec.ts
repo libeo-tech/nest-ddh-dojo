@@ -1,7 +1,6 @@
-import { Dragon } from '../../../../../dragons/core/domain/dragon.entity';
-import { Hero } from '../../../../../heroes/core/domain/hero.entity';
 import { CombatLog } from '../../../domain/combat-log/combat-log.entity';
-import { Fighter, FighterType } from '../../../domain/fight/fighter.entity';
+import { mockFight } from '../../../domain/fight/fight.mock';
+import { Fighter } from '../../../domain/fight/fighter.entity';
 import { AttackCommand } from './attack.command';
 import { AttackCommandHandler } from './attack.command-handler';
 
@@ -19,20 +18,13 @@ describe('attack command', () => {
   const attackHandler = new AttackCommandHandler(fightIPAdapter);
 
   it('should generate an attack based for hero', async () => {
-    const attacker: Fighter = {
-      id: 'attackerId' as Hero['id'],
-      type: FighterType.HERO,
-    };
-    const defender: Fighter = {
-      id: 'defenderId' as Dragon['id'],
-      type: FighterType.DRAGON,
-    };
     const attackCommand = new AttackCommand({
-      fight: { attacker, defender },
+      fight: mockFight,
       logId,
     });
     await attackHandler.execute(attackCommand);
 
+    const { attacker, defender } = mockFight;
     expect(fightAdapter.getAttackStrength).toHaveBeenCalledWith(attacker.id);
     expect(fightAdapter.receiveDamage).toHaveBeenCalledWith(defender.id, {
       source: 'attackerId',

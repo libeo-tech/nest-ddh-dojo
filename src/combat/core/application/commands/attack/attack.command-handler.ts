@@ -2,14 +2,14 @@ import { Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { AttackCommand } from './attack.command';
-import { FightIPA } from '../../ports/fighter.ports';
+import { FighterIPA } from '../../ports/fighter.ports';
 import { Fighter } from '../../../domain/fight/fighter.entity';
 
 @CommandHandler(AttackCommand)
 export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
   implements ICommandHandler<AttackCommand<X, Y>>
 {
-  constructor(private readonly fighterIPA: FightIPA<X, Y>) {}
+  constructor(private readonly fighterIPA: FighterIPA<X, Y>) {}
 
   private readonly logger = new Logger(AttackCommandHandler.name);
 
@@ -26,6 +26,6 @@ export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
       source: attacker.id,
     });
 
-    await command.end();
+    command.end();
   }
 }

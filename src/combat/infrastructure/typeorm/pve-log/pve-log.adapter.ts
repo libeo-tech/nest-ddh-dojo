@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
-import { BaseOrmAdapter } from '../../../../common/infrastructure/base.orm-adapter';
+import { Repository } from 'typeorm';
 import { withSpans } from '../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../../dragons/core/domain/dragon.entity';
 import { Hero } from '../../../../heroes/core/domain/hero.entity';

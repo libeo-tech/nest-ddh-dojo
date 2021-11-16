@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { DragonFighterPresenter } from '../../../dragons/interface/presenter/dragon-fighter.presenter';
-import { HeroFighterPresenter } from '../../../heroes/interface/presenter/hero-fighter.presenter';
 import {
   FighterPorts,
-  FightIPA,
+  FighterIPA,
 } from '../../core/application/ports/fighter.ports';
 import { Fight } from '../../core/domain/fight/fight.type';
 import {
@@ -16,7 +14,7 @@ import { HeroAttackDragonAdapter } from '../presenter/hero-attack-dragon.adapter
 import { HeroAttackHeroAdapter } from '../presenter/hero-attack-hero.adapter';
 
 @Injectable()
-export class FightIPAdapter implements FightIPA<Fighter, Fighter> {
+export class FightIPAdapter implements FighterIPA<Fighter, Fighter> {
   constructor(
     private readonly heroAttackDragonAdapter: HeroAttackDragonAdapter,
     private readonly dragonAttackHeroAdapter: DragonAttackHeroAdapter,

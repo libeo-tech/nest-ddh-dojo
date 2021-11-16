@@ -6,9 +6,9 @@ export class AwaitedCommand implements ICommand {
   }
   public afterHook: () => void;
 
-  public async end(): Promise<void> {
+  public end(): void {
     if (this.afterHook) {
-      await this.afterHook();
+      this.afterHook();
     }
   }
 }

@@ -26,3 +26,13 @@ export const isPvPFight = (
   const { attacker, defender } = fight;
   return isFighterAHero(attacker) && isFighterAHero(defender);
 };
+
+export const reverseFight = <X extends Fighter, Y extends Fighter>(
+  fight: Fight<X, Y>,
+): Fight<Y, X> => {
+  const { attacker, defender } = fight;
+  return {
+    attacker: defender,
+    defender: attacker,
+  };
+};
