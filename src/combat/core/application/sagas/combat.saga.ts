@@ -40,6 +40,15 @@ export class CombatSagas {
     };
   }
 
+  private async awaitAttack(
+    attackCommand: AttackCommand<Fighter, Fighter>,
+  ): Promise<AttackCommand<Fighter, Fighter>['payload']> {
+    await new Promise(
+      (resolve) => (attackCommand.afterHook = () => resolve(null)),
+    );
+    return attackCommand.payload;
+  }
+
   @Saga()
   newRoundHasBegun = (
     events$: Observable<any>,
@@ -50,16 +59,21 @@ export class CombatSagas {
         this.combatLogIPA.getPorts(payload.fight).logRound(payload.logId),
       ),
       map(({ payload }) => new AttackCommand(payload)),
-      tap(async ({ payload }) => {
-        const reverseFight = this.reverseFight(payload.fight);
-        const isDead = await this.isDefenderDead(reverseFight);
+      tap(async (attackCommand) => {
+        const payload = await this.awaitAttack(attackCommand);
+        const { fight } = payload;
+
+        const isDead = await this.isDefenderDead(fight);
         if (isDead) {
           this.eventBus.publish(
             new CombatEndedEvent({ ...payload, outcome: Outcome.WIN }),
           );
         } else {
           this.eventBus.publish(
-            new FighterRetaliationEvent({ ...payload, fight: reverseFight }),
+            new FighterRetaliationEvent({
+              ...payload,
+              fight: this.reverseFight(fight),
+            }),
           );
         }
       }),
@@ -73,12 +87,14 @@ export class CombatSagas {
     return events$.pipe(
       ofType(FighterRetaliationEvent),
       map(({ payload }) => new AttackCommand(payload)),
-      tap(async ({ payload }) => {
-        const reverseFight = this.reverseFight(payload.fight);
-        const isDead = await this.isDefenderDead(reverseFight);
+      tap(async (attackCommand) => {
+        const payload = await this.awaitAttack(attackCommand);
+        const { fight } = payload;
+
+        const isDead = await this.isDefenderDead(fight);
         const nextPayload = {
           ...payload,
-          fight: reverseFight,
+          fight: this.reverseFight(fight),
         };
         if (isDead) {
           this.eventBus.publish(

@@ -12,4 +12,10 @@ export class AttackCommand<X extends Fighter, Y extends Fighter>
       logId: CombatLog<X, Y>['id'];
     },
   ) {}
+
+  public afterHook: () => void;
+
+  public async end(): Promise<void> {
+    await this.afterHook();
+  }
 }

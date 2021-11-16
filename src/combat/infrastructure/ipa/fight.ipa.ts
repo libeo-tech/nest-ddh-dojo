@@ -11,21 +11,28 @@ import {
   isFighterADragon,
   isFighterAHero,
 } from '../../core/domain/fight/fighter.entity';
+import { DragonAttackHeroAdapter } from '../presenter/dragon-attack-hero.adapter';
+import { HeroAttackDragonAdapter } from '../presenter/hero-attack-dragon.adapter';
+import { HeroAttackHeroAdapter } from '../presenter/hero-attack-hero.adapter';
 
 @Injectable()
 export class FightIPAdapter implements FightIPA<Fighter, Fighter> {
   constructor(
-    private readonly heroFighterPresenter: HeroFighterPresenter,
-    private readonly dragonFighterPresenter: DragonFighterPresenter,
+    private readonly heroAttackDragonAdapter: HeroAttackDragonAdapter,
+    private readonly dragonAttackHeroAdapter: DragonAttackHeroAdapter,
+    private readonly heroAttackHeroAdapter: HeroAttackHeroAdapter,
   ) {}
 
   getPorts(fight: Fight<Fighter, Fighter>): FighterPorts<Fighter, Fighter> {
-    const { attacker } = fight;
-    if (isFighterAHero(attacker)) {
-      return this.heroFighterPresenter;
+    const { attacker, defender } = fight;
+    if (isFighterAHero(attacker) && isFighterADragon(defender)) {
+      return this.heroAttackDragonAdapter;
     }
-    if (isFighterADragon(attacker)) {
-      return this.dragonFighterPresenter;
+    if (isFighterADragon(attacker) && isFighterAHero(defender)) {
+      return this.dragonAttackHeroAdapter;
+    }
+    if (isFighterAHero(attacker) && isFighterAHero(defender)) {
+      return this.heroAttackHeroAdapter;
     }
     throw new Error(`IPA not implemented for fight ${JSON.stringify(fight)}`);
   }

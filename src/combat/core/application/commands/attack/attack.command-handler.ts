@@ -14,9 +14,9 @@ export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
   private readonly logger = new Logger(AttackCommandHandler.name);
 
   @withSpan()
-  public async execute({ payload }: AttackCommand<X, Y>): Promise<void> {
-    this.logger.log(`> AttackCommand: ${JSON.stringify(payload)}`);
-    const { fight } = payload;
+  public async execute(command: AttackCommand<X, Y>): Promise<void> {
+    this.logger.log(`> AttackCommand: ${JSON.stringify(command.payload)}`);
+    const { fight } = command.payload;
     const fighterPorts = this.fighterIPA.getPorts(fight);
     const { attacker, defender } = fight;
 
@@ -25,5 +25,7 @@ export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
       value: attackValue,
       source: attacker.id,
     });
+
+    await command.end();
   }
 }
