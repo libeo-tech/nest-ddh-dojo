@@ -13,7 +13,7 @@ import { CombatModule } from './combat/combat.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       entities: [__dirname + '/../**/*.orm-entity.{js,ts}'],
-      database: process.env.NODE_ENV === 'test' ? 'dojo-test' : 'dojo',
+      database: 'dojo',
     }),
     CombatModule,
   ],
