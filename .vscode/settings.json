@@ -1,3 +1,7 @@
 {
-  "cSpell.words": ["typeorm"]
+  "cSpell.words": [
+    "cqrs",
+    "nestjs",
+    "typeorm"
+  ]
 }
