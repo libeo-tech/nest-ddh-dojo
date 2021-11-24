@@ -10,6 +10,7 @@ import { first } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { Outcome } from '../core/domain/combat-log/combat-log.entity';
 import { createTestModule } from '../../common/utils/test/testing-module';
+import { Item } from '../../items/infrastructure/typeorm/item.orm-entity';
 
 describe('Combat module (e2e)', () => {
   let app: INestApplication;
@@ -23,13 +24,15 @@ describe('Combat module (e2e)', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
     connection = await moduleFixture.get(Connection);
-    await connection.synchronize(true);
 
     eventBus = moduleFixture.get(EventBus);
   });
 
-  afterAll(async () => {
+  beforeEach(async () => {
     await connection.synchronize(true);
+  });
+
+  afterAll(async () => {
     await app.close();
   });
 
@@ -66,6 +69,12 @@ describe('Combat module (e2e)', () => {
     });
     expect(+winningHero.currentHp).toBeGreaterThan(0);
     expect(+winningHero.xp).toBeGreaterThan(0);
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    const loot = await connection.manager.findOne(Item, {
+      ownerId: hero.id,
+    });
+    expect(loot).toBeDefined();
   });
 
   it('should have a lvl 1 hero lose against a level 9 dragon', async () => {
