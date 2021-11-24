@@ -3,6 +3,7 @@ type Hero {
   name: String!
   xp: Int!
   level: Int!
+  currentHp: Int!
   inventory: [Item]
 }
 

@@ -11,6 +11,7 @@ type Dragon {
   id: ID!
   level: Int!
   color: ColorEnum
+  currentHp: Int!
 }
 
 type Mutation {

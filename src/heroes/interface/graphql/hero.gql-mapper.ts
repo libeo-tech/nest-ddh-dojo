@@ -11,6 +11,7 @@ export const mapHeroEntityToHeroSchema = (
     name: heroEntity.name,
     xp: heroEntity.xp,
     level: heroEntity.level,
+    currentHp: heroEntity.currentHp,
     inventory,
   };
 };

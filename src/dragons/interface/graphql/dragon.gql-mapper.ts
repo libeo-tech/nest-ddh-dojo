@@ -7,6 +7,7 @@ export const mapDragonEntityToDragonSchema = (
   return {
     id: dragonEntity.id,
     level: dragonEntity.level,
+    currentHp: dragonEntity.currentHp,
     color: ColorEnum[dragonEntity.color.toUpperCase()],
   };
 };
