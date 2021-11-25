@@ -12,9 +12,9 @@ export const createTestModule = (modules: any[]) => {
       TypeOrmModule.forRoot({
         type: 'postgres',
         entities: [__dirname + '/../../../**/*.orm-entity.{js,ts}'],
-        database: 'dojo-test',
-        username: 'postgres',
-        password: 'postgres',
+        database: `${process.env.POSTGRES_DB}-test`,
+        username: process.env.POSTGRES_USER,
+        password: process.env.POSTGRES_PASSWORD,
       }),
     ],
   });
