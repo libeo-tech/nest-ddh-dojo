@@ -19,9 +19,9 @@ import { doesHeroLevelUp } from '../../domain/xp/xp.service';
 import { HealHeroCommand } from '../commands/heal-hero/heal-hero.command';
 import { LevelUpCommand } from '../commands/level-up/level-up.command';
 
-const isHeroAlive = (hero: Hero): boolean => !!hero.id;
+const isHeroAlive = (hero: Hero): boolean => hero.currentHp > 0;
 const doesHeroNeedHealing = (hero: Hero): boolean =>
-  hero.currentHp < getHeroMaxHp(hero.level);
+  isHeroAlive(hero) && hero.currentHp < getHeroMaxHp(hero.level);
 
 @Injectable()
 export class HeroSagas {
@@ -30,15 +30,14 @@ export class HeroSagas {
     private readonly heroPorts: GetByIdPort<Hero> & GetAllPort<Hero>,
   ) {}
 
-  private everyMinuteForHeroesAliveTimer = interval(1000 * 60).pipe(
+  private everyMinuteForHeroesTimer = interval(1000 * 60).pipe(
     mergeMap(() => from(this.heroPorts.getAll()).pipe(mergeAll())),
-    filter(isHeroAlive),
-    filter(doesHeroNeedHealing),
   );
 
   @Saga()
   healHero = (): Observable<ICommand> => {
-    return this.everyMinuteForHeroesAliveTimer.pipe(
+    return this.everyMinuteForHeroesTimer.pipe(
+      filter(doesHeroNeedHealing),
       map(
         ({ id: heroId }) =>
           new HealHeroCommand({
