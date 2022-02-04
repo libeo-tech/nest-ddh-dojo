@@ -10,6 +10,10 @@ describe('get dragon attack query', () => {
     dragonMockAdapter,
   );
 
+  beforeEach(() => {
+    dragonMockAdapter.reset();
+  });
+
   it('should get a dragon attack value by Id', async () => {
     const dragon = await dragonMockAdapter.create({});
 
@@ -18,7 +22,6 @@ describe('get dragon attack query', () => {
     );
     expect(attackValue).toBeDefined();
     expect(attackValue).toBeGreaterThanOrEqual(0);
-    dragonMockAdapter.delete(dragon.id);
   });
 
   it('should throw if the dragon does not exist', async () => {

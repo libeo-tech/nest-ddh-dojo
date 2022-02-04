@@ -6,6 +6,9 @@ export abstract class MockAdapter<T extends Base> implements BasePorts<T> {
   abstract entityFactory(properties: Partial<T>): T;
   currentId = 0;
   entities: Record<T['id'], T> = {} as Record<T['id'], T>;
+  reset(): void {
+    this.entities = {} as Record<T['id'], T>;
+  }
   getAll(): Promise<T[]> {
     return Promise.resolve(Object.values(this.entities));
   }

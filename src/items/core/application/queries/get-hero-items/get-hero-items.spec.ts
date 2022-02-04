@@ -9,6 +9,10 @@ describe('get all hero items query', () => {
     itemMockAdapter,
   );
 
+  beforeEach(() => {
+    itemMockAdapter.reset();
+  });
+
   it('should get all items belonging to a hero', async () => {
     const batman = heroEntityFactory({ name: 'Batman' });
     const [item1, item2] = await Promise.all([
@@ -25,7 +29,5 @@ describe('get all hero items query', () => {
     expect(items).toHaveLength(2);
     expect(items[0]).toMatchObject(item1);
     expect(items[1]).toMatchObject(item2);
-    itemMockAdapter.delete(item1.id);
-    itemMockAdapter.delete(item2.id);
   });
 });

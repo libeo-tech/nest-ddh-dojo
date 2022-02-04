@@ -5,6 +5,10 @@ describe('get all items query', () => {
   const itemMockAdapter = new ItemMockAdapter();
   const getAllItemsQueryHandler = new GetAllItemsQueryHandler(itemMockAdapter);
 
+  beforeEach(() => {
+    itemMockAdapter.reset();
+  });
+
   it('should return all items', async () => {
     const [item1, item2] = await Promise.all([
       itemMockAdapter.create({}),

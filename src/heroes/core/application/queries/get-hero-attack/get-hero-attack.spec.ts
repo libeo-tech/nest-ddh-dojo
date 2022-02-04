@@ -10,6 +10,10 @@ describe('get hero attack query', () => {
     heroMockAdapter,
   );
 
+  beforeEach(() => {
+    heroMockAdapter.reset();
+  });
+
   it('should get a hero attack value by Id', async () => {
     const batman = await heroMockAdapter.create({});
 
@@ -18,7 +22,6 @@ describe('get hero attack query', () => {
     );
     expect(attackValue).toBeDefined();
     expect(attackValue).toBeGreaterThan(0);
-    heroMockAdapter.delete(batman.id);
   });
 
   it('should throw if the hero does not exist', async () => {

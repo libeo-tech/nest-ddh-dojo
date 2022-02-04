@@ -10,6 +10,10 @@ describe('gain xp command', () => {
   const heroMockAdapter = new HeroMockAdapter();
   const gainXpHandler = new GainXpCommandHandler(heroMockAdapter, eventBusMock);
 
+  beforeEach(() => {
+    heroMockAdapter.reset();
+  });
+
   it('should increase the xp of a hero by xpGain', async () => {
     const xpGain = generateRandomNumber(1, 100);
     const { id: heroId, xp } = await heroMockAdapter.create({});
@@ -17,7 +21,6 @@ describe('gain xp command', () => {
 
     const { xp: newXp } = await heroMockAdapter.getById(heroId);
     expect(newXp).toEqual(xp + xpGain);
-    await heroMockAdapter.delete(heroId);
   });
 
   it('should throw if the hero does not exist', async () => {

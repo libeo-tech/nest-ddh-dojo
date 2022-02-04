@@ -13,6 +13,10 @@ describe('hero saga', () => {
   const heroMockAdapter = new HeroMockAdapter();
   const saga = new HeroSagas(heroMockAdapter);
 
+  beforeEach(() => {
+    heroMockAdapter.reset();
+  });
+
   it('should trigger a level-up if hero has gained enough xp', async () => {
     heroMockAdapter.create(hero);
     const xpDelta = getXpNeededForNextLevel(hero.level) - hero.xp;
@@ -23,8 +27,6 @@ describe('hero saga', () => {
     );
     const result = await lastValueFrom(observable);
     expect(result).toEqual(new LevelUpCommand({ heroId: hero.id }));
-
-    heroMockAdapter.delete(hero.id);
   });
 
   it('should not trigger a level-up if hero does not have enough xp', async () => {
@@ -35,7 +37,5 @@ describe('hero saga', () => {
       of(new HeroGainedXpEvent({ heroId: hero.id })),
     );
     await expect(lastValueFrom(observable)).rejects.toThrow();
-
-    heroMockAdapter.delete(hero.id);
   });
 });

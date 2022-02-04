@@ -12,6 +12,10 @@ describe('hurt dragon command', () => {
   const dragonMockAdapter = new DragonMockAdapter();
   const attackHandler = new HurtDragonCommandHandler(dragonMockAdapter);
 
+  beforeEach(() => {
+    dragonMockAdapter.reset();
+  });
+
   it('should lose hp when hurt', async () => {
     const damage = { value: generateRandomNumber(1, 10), source: heroId };
     const { id: dragonId, currentHp: maxHp } = await dragonMockAdapter.create(
@@ -21,8 +25,6 @@ describe('hurt dragon command', () => {
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
-
-    dragonMockAdapter.delete(dragonId);
   });
 
   it('should die when losing too much hp', async () => {
@@ -34,8 +36,6 @@ describe('hurt dragon command', () => {
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
-
-    dragonMockAdapter.delete(dragonId);
   });
 
   it('should throw if the dragon does not exist', async () => {

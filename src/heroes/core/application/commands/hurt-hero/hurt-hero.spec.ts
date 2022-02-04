@@ -11,6 +11,10 @@ describe('hurt hero command', () => {
   const heroMockAdapter = new HeroMockAdapter();
   const hurtHeroHandler = new HurtHeroCommandHandler(heroMockAdapter);
 
+  beforeEach(() => {
+    heroMockAdapter.reset();
+  });
+
   it('should lose hp when hurt', async () => {
     const { id: heroId, currentHp: maxHp } = await heroMockAdapter.create({});
     const damage = {
@@ -21,8 +25,6 @@ describe('hurt hero command', () => {
 
     const hero = await heroMockAdapter.getById(heroId);
     expect(hero.currentHp).toStrictEqual(maxHp - damage.value);
-
-    heroMockAdapter.delete(heroId);
   });
 
   it('should die when losing too much hp', async () => {
@@ -32,8 +34,6 @@ describe('hurt hero command', () => {
 
     const hero = await heroMockAdapter.getById(heroId);
     expect(hero.currentHp).toStrictEqual(maxHp - damage.value);
-
-    heroMockAdapter.delete(heroId);
   });
 
   it('should throw if the Hero does not exist', async () => {

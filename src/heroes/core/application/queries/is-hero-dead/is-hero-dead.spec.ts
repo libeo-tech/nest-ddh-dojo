@@ -8,6 +8,10 @@ describe('is hero dead query', () => {
   const heroMockAdapter = new HeroMockAdapter();
   const isHeroDeadQueryHandler = new IsHeroDeadQueryHandler(heroMockAdapter);
 
+  beforeEach(() => {
+    heroMockAdapter.reset();
+  });
+
   it('should return false for a hero with more than 0 hp', async () => {
     const batman = await heroMockAdapter.create({});
 
@@ -15,7 +19,6 @@ describe('is hero dead query', () => {
       new IsHeroDeadQuery({ heroId: batman.id }),
     );
     expect(isDead).toStrictEqual(false);
-    heroMockAdapter.delete(batman.id);
   });
 
   it('should return true for a hero with less than 0 hp', async () => {
@@ -25,7 +28,6 @@ describe('is hero dead query', () => {
       new IsHeroDeadQuery({ heroId: batman.id }),
     );
     expect(isDead).toStrictEqual(true);
-    heroMockAdapter.delete(batman.id);
   });
 
   it('should throw if the hero does not exist', async () => {

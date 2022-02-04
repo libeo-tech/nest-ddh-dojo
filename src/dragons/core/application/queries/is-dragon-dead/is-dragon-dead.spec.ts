@@ -10,6 +10,10 @@ describe('is dragon dead query', () => {
     dragonMockAdapter,
   );
 
+  beforeEach(() => {
+    dragonMockAdapter.reset();
+  });
+
   it('should return false for a dragon with more than 0 hp', async () => {
     const dragon = await dragonMockAdapter.create({});
 
@@ -17,7 +21,6 @@ describe('is dragon dead query', () => {
       new IsDragonDeadQuery({ dragonId: dragon.id }),
     );
     expect(isDead).toStrictEqual(false);
-    dragonMockAdapter.delete(dragon.id);
   });
 
   it('should return true for a dragon with less than 0 hp', async () => {
@@ -27,7 +30,6 @@ describe('is dragon dead query', () => {
       new IsDragonDeadQuery({ dragonId: dragon.id }),
     );
     expect(isDead).toStrictEqual(true);
-    dragonMockAdapter.delete(dragon.id);
   });
 
   it('should throw if the dragon does not exist', async () => {
