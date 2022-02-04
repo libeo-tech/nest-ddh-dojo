@@ -8,6 +8,10 @@ describe('create hero command', () => {
     heroMockAdapter,
   );
 
+  beforeEach(() => {
+    heroMockAdapter.reset();
+  });
+
   it('should create a level 1 hero', async () => {
     const command = new CreateHeroCommand({
       name: 'Batman',
@@ -17,6 +21,5 @@ describe('create hero command', () => {
     const heroes = await heroMockAdapter.getAll();
     expect(heroes).toHaveLength(1);
     expect(heroes[0].name).toBe('Batman');
-    heroMockAdapter.delete(heroes[0].id);
   });
 });

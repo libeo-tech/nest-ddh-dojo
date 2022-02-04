@@ -6,6 +6,10 @@ describe('generate random dragon command', () => {
   const generateRandomDragonCommandHandler =
     new GenerateRandomDragonCommandHandler(dragonMockAdapter);
 
+  beforeEach(() => {
+    dragonMockAdapter.reset();
+  });
+
   it('should create a random dragon', async () => {
     await generateRandomDragonCommandHandler.execute();
 
@@ -13,6 +17,5 @@ describe('generate random dragon command', () => {
     expect(dragons).toHaveLength(1);
     expect(dragons[0]).toHaveProperty('level');
     expect(dragons[0]).toHaveProperty('color');
-    dragonMockAdapter.delete(dragons[0].id);
   });
 });

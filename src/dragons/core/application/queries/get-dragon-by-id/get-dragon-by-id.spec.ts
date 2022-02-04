@@ -10,14 +10,18 @@ describe('get dragon by id query', () => {
     dragonMockAdapter,
   );
 
+  beforeEach(() => {
+    dragonMockAdapter.reset();
+  });
+
   it('should get a dragon by Id', async () => {
-    const batman = await dragonMockAdapter.create({});
+    const smaug = await dragonMockAdapter.create({});
 
     const { dragon } = await getDragonByIdQueryHandler.execute(
-      new GetDragonByIdQuery({ dragonId: batman.id }),
+      new GetDragonByIdQuery({ dragonId: smaug.id }),
     );
-    expect(dragon).toMatchObject(batman);
-    dragonMockAdapter.delete(batman.id);
+    expect(dragon).toMatchObject(smaug);
+    dragonMockAdapter.delete(smaug.id);
   });
 
   it('should throw if the dragon does not exist', async () => {

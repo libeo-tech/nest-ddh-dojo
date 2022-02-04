@@ -8,6 +8,10 @@ describe('get hero by id query', () => {
   const heroMockAdapter = new HeroMockAdapter();
   const getHeroByIdQueryHandler = new GetHeroByIdQueryHandler(heroMockAdapter);
 
+  beforeEach(() => {
+    heroMockAdapter.reset();
+  });
+
   it('should get a hero by Id', async () => {
     const batman = await heroMockAdapter.create({});
 
@@ -15,7 +19,6 @@ describe('get hero by id query', () => {
       new GetHeroByIdQuery({ heroId: batman.id }),
     );
     expect(hero).toMatchObject(batman);
-    heroMockAdapter.delete(batman.id);
   });
 
   it('should throw if the hero does not exist', async () => {

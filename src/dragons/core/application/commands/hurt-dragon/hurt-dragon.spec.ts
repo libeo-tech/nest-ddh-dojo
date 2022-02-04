@@ -6,23 +6,31 @@ import { HurtDragonCommand } from './hurt-dragon.command';
 import { HurtDragonCommandHandler } from './hurt-dragon.command-handler';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
 import { heroEntityFactory } from '../../../../../heroes/core/domain/hero.entity-factory';
+import { DragonSlainEvent } from '../../../domain/dragon.events';
 
 describe('hurt dragon command', () => {
   const { id: heroId } = heroEntityFactory();
   const dragonMockAdapter = new DragonMockAdapter();
-  const attackHandler = new HurtDragonCommandHandler(dragonMockAdapter);
+  const hurtDragonHandler = new HurtDragonCommandHandler(
+    dragonMockAdapter,
+    eventBusMock,
+  );
+
+  beforeEach(() => {
+    dragonMockAdapter.reset();
+  });
 
   it('should lose hp when hurt', async () => {
     const damage = { value: generateRandomNumber(1, 10), source: heroId };
     const { id: dragonId, currentHp: maxHp } = await dragonMockAdapter.create(
       {},
     );
-    await attackHandler.execute(new HurtDragonCommand({ dragonId, damage }));
+    await hurtDragonHandler.execute(
+      new HurtDragonCommand({ dragonId, damage }),
+    );
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
-
-    dragonMockAdapter.delete(dragonId);
   });
 
   it('should die when losing too much hp', async () => {
@@ -30,12 +38,16 @@ describe('hurt dragon command', () => {
       {},
     );
     const damage = { value: maxHp + 1, source: heroId };
-    await attackHandler.execute(new HurtDragonCommand({ dragonId, damage }));
+    await hurtDragonHandler.execute(
+      new HurtDragonCommand({ dragonId, damage }),
+    );
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
 
-    dragonMockAdapter.delete(dragonId);
+    expect(eventBusMock.publish).toHaveBeenCalledWith(
+      new DragonSlainEvent({ dragonId }),
+    );
   });
 
   it('should throw if the dragon does not exist', async () => {
@@ -43,7 +55,7 @@ describe('hurt dragon command', () => {
     const missingDragonId = 'dragon-id-not-existing' as Dragon['id'];
 
     await expect(
-      attackHandler.execute(
+      hurtDragonHandler.execute(
         new HurtDragonCommand({ dragonId: missingDragonId, damage }),
       ),
     ).rejects.toThrow(new DragonNotFoundError(missingDragonId));

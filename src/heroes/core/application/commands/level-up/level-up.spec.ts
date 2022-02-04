@@ -12,6 +12,10 @@ describe('level up command', () => {
   const heroMockAdapter = new HeroMockAdapter();
   const levelUpHandler = new LevelUpCommandHandler(heroMockAdapter);
 
+  beforeEach(() => {
+    heroMockAdapter.reset();
+  });
+
   it('should increase the level of a hero by 1 for a hero with enough xp', async () => {
     const { id: heroId, level } = await heroMockAdapter.create({});
     const xpNeeded = getXpNeededForNextLevel(level);
@@ -23,7 +27,6 @@ describe('level up command', () => {
 
     const { level: newLevel } = await heroMockAdapter.getById(heroId);
     expect(newLevel).toEqual(level + 1);
-    await heroMockAdapter.delete(heroId);
   });
 
   it('should throw if the hero does not have enough xp', async () => {
@@ -35,7 +38,6 @@ describe('level up command', () => {
     await expect(
       levelUpHandler.execute(new LevelUpCommand({ heroId })),
     ).rejects.toThrow(new HeroDoesNotHaveEnoughXp(heroId));
-    await heroMockAdapter.delete(heroId);
   });
 
   it('should throw if the hero does not exist', async () => {

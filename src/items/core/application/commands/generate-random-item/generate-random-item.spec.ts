@@ -10,6 +10,10 @@ describe('generate random item command', () => {
     itemMockAdapter,
   );
 
+  beforeEach(() => {
+    itemMockAdapter.reset();
+  });
+
   it('should give a new random item to a hero', async () => {
     const hero = heroEntityFactory();
     const generateRandomItemCommand = new GenerateRandomItemCommand({
@@ -19,6 +23,5 @@ describe('generate random item command', () => {
 
     const items = await itemMockAdapter.getItemsByOwnerId(hero.id);
     expect(items).toHaveLength(1);
-    itemMockAdapter.delete(items[0].id);
   });
 });

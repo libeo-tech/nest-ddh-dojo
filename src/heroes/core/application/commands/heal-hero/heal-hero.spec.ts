@@ -9,6 +9,10 @@ describe('heal hero command', () => {
   const heroMockAdapter = new HeroMockAdapter();
   const healHeroCommandHandler = new HealHeroCommandHandler(heroMockAdapter);
 
+  beforeEach(() => {
+    heroMockAdapter.reset();
+  });
+
   it('should gain hp when heal for an injured hero', async () => {
     const { id: heroId, currentHp } = await heroMockAdapter.create({
       currentHp: 1,
@@ -18,8 +22,6 @@ describe('heal hero command', () => {
 
     const hero = await heroMockAdapter.getById(heroId);
     expect(hero.currentHp).toStrictEqual(currentHp + heal);
-
-    heroMockAdapter.delete(heroId);
   });
 
   it('should not heal an uninjured hero', async () => {
@@ -29,8 +31,6 @@ describe('heal hero command', () => {
 
     const hero = await heroMockAdapter.getById(heroId);
     expect(hero.currentHp).toStrictEqual(maxHp);
-
-    heroMockAdapter.delete(heroId);
   });
 
   it('should throw if the Hero does not exist', async () => {

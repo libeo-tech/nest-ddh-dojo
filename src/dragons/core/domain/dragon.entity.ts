@@ -17,3 +17,7 @@ export class Dragon extends Base {
 }
 
 export type UpdatableDragonFields = Omit<Dragon, 'id' | 'color'>;
+
+export const getDragonMaxHp = (level: number): number => {
+  return level * 5;
+};
