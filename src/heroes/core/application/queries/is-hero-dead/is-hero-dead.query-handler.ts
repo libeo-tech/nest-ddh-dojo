@@ -2,7 +2,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { IsHeroDeadQuery, IsHeroDeadQueryResult } from './is-hero-dead.query';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Inject, Logger } from '@nestjs/common';
-import { GetByIdPort } from '../../../../../common/core/ports/base.ports';
+import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
 

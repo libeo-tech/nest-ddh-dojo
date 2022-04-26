@@ -1,6 +1,6 @@
 import { DeepPartial, Repository } from 'typeorm';
 import { Base } from '../core/domain/base.entity';
-import { BasePorts } from '../core/ports/base.ports';
+import { BasePorts } from '../core/domain/base.ports';
 import { BaseOrmEntity } from './base.orm-entity';
 
 export abstract class BaseOrmAdapter<U extends Base, V extends BaseOrmEntity>

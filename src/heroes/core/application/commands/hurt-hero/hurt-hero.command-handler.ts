@@ -3,7 +3,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   GetByIdPort,
   UpdatePort,
-} from '../../../../../common/core/ports/base.ports';
+} from '../../../../../common/core/domain/base.ports';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HurtHeroCommand } from './hurt-hero.command';

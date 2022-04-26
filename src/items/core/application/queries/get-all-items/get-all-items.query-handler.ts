@@ -1,6 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { GetAllPort } from '../../../../../common/core/ports/base.ports';
+import { GetAllPort } from '../../../../../common/core/domain/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Item } from '../../../domain/item.entity';
 import {

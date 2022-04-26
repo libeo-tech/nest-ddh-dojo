@@ -1,4 +1,4 @@
-import { Base } from '../domain/base.entity';
+import { Base } from './base.entity';
 
 export interface GetByIdPort<T extends Base> {
   getById(id: T['id']): Promise<T | undefined>;

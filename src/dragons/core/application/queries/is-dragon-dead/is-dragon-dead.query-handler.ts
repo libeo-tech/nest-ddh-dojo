@@ -5,7 +5,7 @@ import {
 } from './is-dragon-dead.query';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Inject, Logger } from '@nestjs/common';
-import { GetByIdPort } from '../../../../../common/core/ports/base.ports';
+import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 

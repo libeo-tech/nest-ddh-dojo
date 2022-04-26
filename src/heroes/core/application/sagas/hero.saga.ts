@@ -12,7 +12,7 @@ import {
 import {
   GetAllPort,
   GetByIdPort,
-} from '../../../../common/core/ports/base.ports';
+} from '../../../../common/core/domain/base.ports';
 import { getHeroMaxHp, Hero } from '../../domain/hero.entity';
 import { HeroGainedXpEvent } from '../../domain/hero.events';
 import { doesHeroLevelUp } from '../../domain/xp/xp.service';

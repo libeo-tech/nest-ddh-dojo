@@ -3,7 +3,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import {
   GetByIdPort,
   UpdatePort,
-} from '../../../../../common/core/ports/base.ports';
+} from '../../../../../common/core/domain/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Hero } from '../../../domain/hero.entity';
 import {

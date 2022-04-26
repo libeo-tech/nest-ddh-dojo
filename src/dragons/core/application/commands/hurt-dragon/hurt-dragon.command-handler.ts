@@ -3,7 +3,7 @@ import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import {
   GetByIdPort,
   UpdatePort,
-} from '../../../../../common/core/ports/base.ports';
+} from '../../../../../common/core/domain/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';

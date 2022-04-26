@@ -1,6 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreatePort } from '../../../../../common/core/ports/base.ports';
+import { CreatePort } from '../../../../../common/core/domain/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../domain/dragon.entity';
 import { dragonEntityFactory } from '../../../domain/dragon.entity-factory';
