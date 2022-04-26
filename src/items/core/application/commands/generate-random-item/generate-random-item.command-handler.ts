@@ -4,7 +4,7 @@ import { CreatePort } from '../../../../../common/core/domain/base.ports';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Item, ItemWithOwner } from '../../../domain/item.entity';
 import { itemEntityFactory } from '../../../domain/item.entity-factory';
-import { ItemWithOwnerPorts } from '../../ports/item-with-owner.ports';
+import { ItemWithOwnerPorts } from '../../../domain/item-with-owner.ports';
 import { GenerateRandomItemCommand } from './generate-random-item.command';
 
 @CommandHandler(GenerateRandomItemCommand)

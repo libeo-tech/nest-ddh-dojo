@@ -2,7 +2,7 @@ import { MockAdapter } from '../../../common/infrastructure/base.mock-adapter';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { Item, ItemWithOwner } from '../../core/domain/item.entity';
 import { itemEntityFactory } from '../../core/domain/item.entity-factory';
-import { ItemWithOwnerPorts } from '../../core/application/ports/item-with-owner.ports';
+import { ItemWithOwnerPorts } from '../../core/domain/item-with-owner.ports';
 
 const isItemWithOwner = (item: Item | ItemWithOwner): item is ItemWithOwner => {
   return item instanceof ItemWithOwner && !!item.owner;

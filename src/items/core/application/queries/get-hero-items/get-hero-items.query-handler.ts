@@ -2,7 +2,7 @@ import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { ItemWithOwner } from '../../../domain/item.entity';
-import { ItemWithOwnerPorts } from '../../ports/item-with-owner.ports';
+import { ItemWithOwnerPorts } from '../../../domain/item-with-owner.ports';
 import {
   GetHeroItemsQuery,
   GetHeroItemsQueryResult,
