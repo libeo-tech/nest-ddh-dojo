@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   FighterPorts,
   FighterIPA,
-} from '../../core/application/ports/fighter.ports';
+} from '../../core/domain/fight/fighter.ports';
 import { Fight } from '../../core/domain/fight/fight.type';
 import {
   Fighter,

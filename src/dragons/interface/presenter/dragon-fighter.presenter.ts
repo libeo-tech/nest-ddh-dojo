@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { FighterPorts } from '../../../combat/core/application/ports/fighter.ports';
+import { FighterPorts } from '../../../combat/core/domain/fight/fighter.ports';
 import { Damage } from '../../../combat/core/domain/attack/damage.object-value';
 import {
   Fighter,

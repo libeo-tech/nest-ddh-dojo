@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { HeroFighterPresenter } from '../../../heroes/interface/presenter/hero-fighter.presenter';
-import { FighterPorts } from '../../core/application/ports/fighter.ports';
+import { FighterPorts } from '../../core/domain/fight/fighter.ports';
 import { Damage } from '../../core/domain/attack/damage.object-value';
 import { HeroFighter } from '../../core/domain/fight/fighter.entity';
 

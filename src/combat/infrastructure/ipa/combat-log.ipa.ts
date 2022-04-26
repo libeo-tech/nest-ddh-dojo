@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   CombatLogIPA,
   CombatLogPorts,
-} from '../../core/application/ports/combat-log.ports';
+} from '../../core/domain/combat-log/combat-log.ports';
 import {
   Fight,
   isPvEFight,

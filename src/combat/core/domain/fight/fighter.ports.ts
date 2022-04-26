@@ -1,6 +1,6 @@
-import { Damage } from '../../domain/attack/damage.object-value';
-import { Fight } from '../../domain/fight/fight.type';
-import { Fighter } from '../../domain/fight/fighter.entity';
+import { Damage } from '../attack/damage.object-value';
+import { Fight } from './fight.type';
+import { Fighter } from './fighter.entity';
 
 export abstract class FighterIPA<X extends Fighter, Y extends Fighter> {
   abstract getPorts(fight: Fight<X, Y>): FighterPorts<X, Y>;

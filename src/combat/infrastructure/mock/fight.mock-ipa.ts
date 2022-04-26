@@ -1,4 +1,4 @@
-import { FighterIPA } from '../../core/application/ports/fighter.ports';
+import { FighterIPA } from '../../core/domain/fight/fighter.ports';
 import { Fighter } from '../../core/domain/fight/fighter.entity';
 import { fightMockAdapter } from './fight.mock-adapter';
 

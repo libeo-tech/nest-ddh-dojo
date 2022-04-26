@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { withSpans } from '../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../../dragons/core/domain/dragon.entity';
 import { Hero } from '../../../../heroes/core/domain/hero.entity';
-import { CombatLogPorts } from '../../../core/application/ports/combat-log.ports';
+import { CombatLogPorts } from '../../../core/domain/combat-log/combat-log.ports';
 import {
   CombatLog,
   Outcome,

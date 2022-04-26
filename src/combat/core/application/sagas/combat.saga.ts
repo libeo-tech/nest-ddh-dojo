@@ -7,8 +7,8 @@ import { Fight, reverseFight } from '../../domain/fight/fight.type';
 import { Fighter } from '../../domain/fight/fighter.entity';
 import { AttackCommand } from '../commands/attack/attack.command';
 import { RewardHeroCommand } from '../commands/reward-hero/reward-hero.command';
-import { CombatLogIPA } from '../ports/combat-log.ports';
-import { FighterIPA } from '../ports/fighter.ports';
+import { CombatLogIPA } from '../../domain/combat-log/combat-log.ports';
+import { FighterIPA } from '../../domain/fight/fighter.ports';
 import {
   CombatEndedEvent,
   FighterRetaliationEvent,

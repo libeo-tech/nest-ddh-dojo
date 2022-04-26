@@ -2,7 +2,7 @@ import { Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { AttackCommand } from './attack.command';
-import { FighterIPA } from '../../ports/fighter.ports';
+import { FighterIPA } from '../../../domain/fight/fighter.ports';
 import { Fighter } from '../../../domain/fight/fighter.entity';
 
 @CommandHandler(AttackCommand)

@@ -1,6 +1,6 @@
-import { CombatLog, Outcome } from '../../domain/combat-log/combat-log.entity';
-import { Fight } from '../../domain/fight/fight.type';
-import { Fighter } from '../../domain/fight/fighter.entity';
+import { CombatLog, Outcome } from './combat-log.entity';
+import { Fight } from '../fight/fight.type';
+import { Fighter } from '../fight/fighter.entity';
 
 export abstract class CombatLogIPA<X extends Fighter, Y extends Fighter> {
   abstract getPorts(fight: Fight<X, Y>): CombatLogPorts<X, Y>;
