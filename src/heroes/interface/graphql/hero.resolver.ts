@@ -17,6 +17,10 @@ import { ItemPresenter } from '../../../items/interface/presenter/item.presenter
 import { withSpan } from '../../../common/utils/trace/honeycomb';
 import { HeroNotFoundError } from '../../core/domain/hero.error';
 import { Hero } from '../../core/domain/hero.entity';
+import {
+  GetAllHeroesQuery,
+  GetAllHeroesQueryResult,
+} from '../../core/application/queries/get-all-heores/get-all-heroes.query';
 
 @Resolver('hero')
 export class HeroResolver {
@@ -46,6 +50,16 @@ export class HeroResolver {
       }
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  @Query()
+  @withSpan()
+  public async getAllHeroes(): Promise<HeroSchema[]> {
+    const { heroes } = await this.queryBus.execute<
+      GetAllHeroesQuery,
+      GetAllHeroesQueryResult
+    >(new GetAllHeroesQuery());
+    return heroes.map((hero) => mapHeroEntityToHeroSchema(hero));
   }
 
   @Mutation()

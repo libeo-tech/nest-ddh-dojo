@@ -4,7 +4,7 @@ type Hero {
   xp: Int!
   level: Int!
   currentHp: Int!
-  inventory: [Item]
+  inventory: [Item!]
 }
 
 type Mutation {
@@ -13,4 +13,5 @@ type Mutation {
 
 type Query {
   getHero(id: ID!): Hero!
+  getAllHeroes: [Hero!]!
 }
