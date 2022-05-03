@@ -1,6 +1,5 @@
 import { Logger } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
-import { withSpan } from '../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../dragons/core/domain/dragon.entity';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { CombatSagas } from '../../core/application/sagas/combat.saga';
@@ -13,7 +12,6 @@ export class CombatResolver {
   constructor(private readonly combatSagas: CombatSagas) {}
 
   @Mutation()
-  @withSpan()
   public async attackDragon(
     @Args('heroId') heroId: Hero['id'],
     @Args('dragonId') dragonId: Dragon['id'],

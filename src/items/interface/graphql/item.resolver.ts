@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { Query, Resolver } from '@nestjs/graphql';
-import { withSpan } from '../../../common/utils/trace/honeycomb';
 import { Item as ItemSchema } from '../../../graphql';
 import {
   GetAllItemsQuery,
@@ -16,7 +15,6 @@ export class ItemResolver {
   constructor(private readonly queryBus: QueryBus) {}
 
   @Query()
-  @withSpan()
   public async getAllItems(): Promise<ItemSchema[]> {
     const { items } = await this.queryBus.execute<
       GetAllItemsQuery,

@@ -4,7 +4,6 @@ import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/domain/base.ports';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroGainedXpEvent } from '../../../domain/hero.events';
@@ -20,7 +19,6 @@ export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
 
   private readonly logger = new Logger(GainXpCommandHandler.name);
 
-  @withSpan()
   public async execute({ payload }: GainXpCommand): Promise<void> {
     this.logger.log(`> GainXpCommand: ${JSON.stringify(payload)}`);
     const { heroId, xpGain } = payload;

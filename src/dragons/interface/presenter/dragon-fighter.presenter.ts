@@ -6,7 +6,6 @@ import {
   Fighter,
   DragonFighter,
 } from '../../../combat/core/domain/fight/fighter.entity';
-import { withSpans } from '../../../common/utils/trace/honeycomb';
 import { HurtDragonCommand } from '../../core/application/commands/hurt-dragon/hurt-dragon.command';
 import {
   GetDragonAttackQuery,
@@ -19,7 +18,6 @@ import {
 import { Dragon } from '../../core/domain/dragon.entity';
 
 @Injectable()
-@withSpans()
 export class DragonFighterPresenter
   implements FighterPorts<DragonFighter, Fighter>
 {

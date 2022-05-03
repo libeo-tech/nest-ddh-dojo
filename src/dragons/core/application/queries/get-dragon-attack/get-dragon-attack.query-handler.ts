@@ -2,7 +2,6 @@ import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import {
@@ -20,7 +19,6 @@ export class GetDragonAttackQueryHandler
 
   private readonly logger = new Logger(GetDragonAttackQueryHandler.name);
 
-  @withSpan()
   public async execute({
     payload,
   }: GetDragonAttackQuery): Promise<GetDragonAttackQueryResult> {

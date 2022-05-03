@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { BaseOrmAdapter } from '../../../common/infrastructure/base.orm-adapter';
-import { withSpans } from '../../../common/utils/trace/honeycomb';
 import { Hero } from '../../core/domain/hero.entity';
 import { Hero as HeroOrmEntity } from './hero.orm-entity';
 import { mapHeroOrmEntityToHeroEntity } from './hero.orm-mapper';
 
 @Injectable()
-@withSpans()
 export class HeroAdapter extends BaseOrmAdapter<Hero, HeroOrmEntity> {
   mapOrmEntityToEntity = mapHeroOrmEntityToHeroEntity;
   mapEntityPropertiesToOrmEntityProperties = (

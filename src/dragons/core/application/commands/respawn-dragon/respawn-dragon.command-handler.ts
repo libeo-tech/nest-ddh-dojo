@@ -4,7 +4,6 @@ import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/domain/base.ports';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Dragon, getDragonMaxHp } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { RespawnDragonCommand } from './respawn-dragon.command';
@@ -20,7 +19,6 @@ export class RespawnDragonCommandHandler
 
   private readonly logger = new Logger(RespawnDragonCommandHandler.name);
 
-  @withSpan()
   public async execute({ payload }: RespawnDragonCommand): Promise<void> {
     this.logger.log(`> RespawnDragonCommand: ${JSON.stringify(payload)}`);
     const { dragonId } = payload;

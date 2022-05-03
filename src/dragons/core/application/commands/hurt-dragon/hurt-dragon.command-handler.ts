@@ -4,7 +4,6 @@ import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/domain/base.ports';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonSlainEvent } from '../../../domain/dragon.events';
@@ -22,7 +21,6 @@ export class HurtDragonCommandHandler
 
   private readonly logger = new Logger(HurtDragonCommandHandler.name);
 
-  @withSpan()
   public async execute({ payload }: HurtDragonCommand): Promise<void> {
     this.logger.log(`> HurtDragonCommand: ${JSON.stringify(payload)}`);
     const { dragonId, damage } = payload;

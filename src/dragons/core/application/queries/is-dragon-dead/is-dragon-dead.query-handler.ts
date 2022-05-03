@@ -3,7 +3,6 @@ import {
   IsDragonDeadQuery,
   IsDragonDeadQueryResult,
 } from './is-dragon-dead.query';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Inject, Logger } from '@nestjs/common';
 import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { Dragon } from '../../../domain/dragon.entity';
@@ -19,7 +18,6 @@ export class IsDragonDeadQueryHandler
 
   private readonly logger = new Logger(IsDragonDeadQueryHandler.name);
 
-  @withSpan()
   public async execute({
     payload,
   }: IsDragonDeadQuery): Promise<IsDragonDeadQueryResult> {

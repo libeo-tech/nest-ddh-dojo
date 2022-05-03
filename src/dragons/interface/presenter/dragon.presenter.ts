@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { withSpans } from '../../../common/utils/trace/honeycomb';
 import {
   GetDragonByIdQuery,
   GetDragonByIdQueryResult,
@@ -8,7 +7,6 @@ import {
 import { Dragon } from '../../core/domain/dragon.entity';
 
 @Injectable()
-@withSpans()
 export class DragonPresenter {
   private readonly logger = new Logger(DragonPresenter.name);
 

@@ -1,7 +1,6 @@
 import { Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { withSpan } from '../../../common/utils/trace/honeycomb';
 import { Dragon as DragonSchema } from '../../../graphql';
 import { GenerateNewDragonCommand } from '../../core/application/commands/generate-new-dragon/generate-new-dragon.command';
 import {
@@ -21,7 +20,6 @@ export class DragonResolver {
   ) {}
 
   @Query()
-  @withSpan()
   public async getAllDragons(): Promise<DragonSchema[]> {
     const { dragons } = await this.queryBus.execute<
       GetAllDragonsQuery,
@@ -31,7 +29,6 @@ export class DragonResolver {
   }
 
   @Mutation()
-  @withSpan()
   public async generateNewDragon(
     @Args('input') dragonProperties: Pick<Dragon, 'level' | 'color'>,
   ): Promise<boolean> {

@@ -1,7 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import {
@@ -19,7 +18,6 @@ export class GetDragonByIdQueryHandler
 
   private readonly logger = new Logger(GetDragonByIdQueryHandler.name);
 
-  @withSpan()
   public async execute({
     payload,
   }: GetDragonByIdQuery): Promise<GetDragonByIdQueryResult> {

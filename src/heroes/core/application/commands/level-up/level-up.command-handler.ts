@@ -4,7 +4,6 @@ import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/domain/base.ports';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Hero } from '../../../domain/hero.entity';
 import {
   HeroDoesNotHaveEnoughXp,
@@ -22,7 +21,6 @@ export class LevelUpCommandHandler implements ICommandHandler<LevelUpCommand> {
 
   private readonly logger = new Logger(LevelUpCommandHandler.name);
 
-  @withSpan()
   public async execute({ payload }: LevelUpCommand): Promise<void> {
     this.logger.log(`> LevelUpCommand: ${JSON.stringify(payload)}`);
     const { heroId } = payload;

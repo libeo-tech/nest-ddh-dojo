@@ -1,6 +1,5 @@
 import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../../../dragons/core/domain/dragon.entity';
 import { DragonPresenter } from '../../../../../dragons/interface/presenter/dragon.presenter';
 import { Hero } from '../../../../../heroes/core/domain/hero.entity';
@@ -27,7 +26,6 @@ export class RewardHeroCommandHandler
 
   private readonly logger = new Logger(RewardHeroCommandHandler.name);
 
-  @withSpan()
   public async execute({ payload }: RewardHeroCommand): Promise<void> {
     this.logger.log(`> RewardHeroCommand: ${JSON.stringify(payload)}`);
     const { heroId, dragonId } = payload;

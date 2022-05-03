@@ -1,6 +1,5 @@
 import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { ItemWithOwner } from '../../../domain/item.entity';
 import { ItemWithOwnerPorts } from '../../../domain/item-with-owner.ports';
 import {
@@ -22,7 +21,6 @@ export class GetHeroItemsQueryHandler
 
   private readonly logger = new Logger(GetHeroItemsQueryHandler.name);
 
-  @withSpan()
   public async execute({
     payload,
   }: GetHeroItemsQuery): Promise<GetHeroItemsQueryResult> {

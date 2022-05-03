@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { withSpans } from '../../../../common/utils/trace/honeycomb';
 import { Dragon } from '../../../../dragons/core/domain/dragon.entity';
 import { Hero } from '../../../../heroes/core/domain/hero.entity';
 import { CombatLogPorts } from '../../../core/domain/combat-log/combat-log.ports';
@@ -19,7 +18,6 @@ import { mapPveLogToCombatLogEntity } from './pve-log.orm-mapper';
 type PveLog = CombatLog<HeroFighter, DragonFighter>;
 
 @Injectable()
-@withSpans()
 export class PveLogAdapter
   implements CombatLogPorts<HeroFighter, DragonFighter>
 {

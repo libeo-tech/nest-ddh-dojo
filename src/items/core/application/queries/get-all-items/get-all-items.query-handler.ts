@@ -1,7 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetAllPort } from '../../../../../common/core/domain/base.ports';
-import { withSpan } from '../../../../../common/utils/trace/honeycomb';
 import { Item } from '../../../domain/item.entity';
 import {
   GetAllItemsQuery,
@@ -16,7 +15,6 @@ export class GetAllItemsQueryHandler
 
   private readonly logger = new Logger(GetAllItemsQueryHandler.name);
 
-  @withSpan()
   public async execute(): Promise<GetAllItemsQueryResult> {
     this.logger.log(`> GetAllItemsQuery`);
 

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { BaseOrmAdapter } from '../../../common/infrastructure/base.orm-adapter';
-import { withSpans } from '../../../common/utils/trace/honeycomb';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { ItemWithOwnerPorts } from '../../core/domain/item-with-owner.ports';
 import { Item } from '../../core/domain/item.entity';
@@ -10,7 +9,6 @@ import { Item as ItemOrmEntity } from './item.orm-entity';
 import { mapItemOrmEntityToItemEntity } from './item.orm-mapper';
 
 @Injectable()
-@withSpans()
 export class ItemAdapter
   extends BaseOrmAdapter<Item, ItemOrmEntity>
   implements ItemWithOwnerPorts

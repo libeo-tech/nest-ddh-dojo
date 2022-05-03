@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { withSpans } from '../../../common/utils/trace/honeycomb';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { GenerateRandomItemCommand } from '../../core/application/commands/generate-random-item/generate-random-item.command';
 import {
@@ -10,7 +9,6 @@ import {
 import { Item } from '../../core/domain/item.entity';
 
 @Injectable()
-@withSpans()
 export class ItemPresenter {
   private readonly logger = new Logger(ItemPresenter.name);
 

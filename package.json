@@ -31,7 +31,6 @@
     "apollo-server-core": "^3.4.0",
     "apollo-server-express": "^3.4.0",
     "graphql": "^15.6.1",
-    "honeycomb-beeline": "^3.0.0",
     "pg": "^8.7.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",

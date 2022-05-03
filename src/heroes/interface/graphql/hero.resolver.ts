@@ -14,7 +14,6 @@ import {
 } from '../../core/application/queries/get-hero-by-id/get-hero-by-id.query';
 import { CreateHeroCommand } from '../../core/application/commands/create-hero/create-hero.command';
 import { ItemPresenter } from '../../../items/interface/presenter/item.presenter';
-import { withSpan } from '../../../common/utils/trace/honeycomb';
 import { HeroNotFoundError } from '../../core/domain/hero.error';
 import { Hero } from '../../core/domain/hero.entity';
 import {
@@ -33,7 +32,6 @@ export class HeroResolver {
   ) {}
 
   @Query()
-  @withSpan()
   public async getHero(@Args('id') heroId: Hero['id']): Promise<HeroSchema> {
     try {
       const [{ hero }, inventory] = await Promise.all([
@@ -53,7 +51,6 @@ export class HeroResolver {
   }
 
   @Query()
-  @withSpan()
   public async getAllHeroes(): Promise<HeroSchema[]> {
     const { heroes } = await this.queryBus.execute<
       GetAllHeroesQuery,
@@ -63,7 +60,6 @@ export class HeroResolver {
   }
 
   @Mutation()
-  @withSpan()
   public async createHero(@Args('name') name: Hero['name']): Promise<boolean> {
     await this.commandBus.execute(new CreateHeroCommand({ name }));
     return true;
