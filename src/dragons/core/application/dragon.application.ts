@@ -1,5 +1,5 @@
 import { CommandHandlerType, QueryHandlerType } from '@nestjs/cqrs';
-import { GenerateRandomDragonCommandHandler } from './commands/generate-random-dragon/generate-random-dragon.command-handler';
+import { GenerateNewDragonCommandHandler } from './commands/generate-new-dragon/generate-new-dragon.command-handler';
 import { HurtDragonCommandHandler } from './commands/hurt-dragon/hurt-dragon.command-handler';
 import { RespawnDragonCommandHandler } from './commands/respawn-dragon/respawn-dragon.command-handler';
 import { GetAllDragonsQueryHandler } from './queries/get-all-dragons/get-all-dragons.query-handler';
@@ -15,7 +15,7 @@ const DragonQueryHandler: QueryHandlerType[] = [
   IsDragonDeadQueryHandler,
 ];
 const DragonCommandHandler: CommandHandlerType[] = [
-  GenerateRandomDragonCommandHandler,
+  GenerateNewDragonCommandHandler,
   HurtDragonCommandHandler,
   RespawnDragonCommandHandler,
 ];

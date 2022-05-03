@@ -5,7 +5,7 @@ import { Dragon, DragonColor, getDragonMaxHp } from './dragon.entity';
 export const dragonEntityFactory = (
   dragonProperties: Partial<Dragon> = {},
 ): Dragon => {
-  const level = generateRandomNumber(1, 10);
+  const level = dragonProperties.level || generateRandomNumber(1, 10);
   const dragon: Dragon = Object.assign(new Dragon(), {
     level,
     currentHp: getDragonMaxHp(level),

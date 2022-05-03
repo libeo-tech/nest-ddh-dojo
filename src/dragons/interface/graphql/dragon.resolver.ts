@@ -1,13 +1,14 @@
 import { Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { withSpan } from '../../../common/utils/trace/honeycomb';
 import { Dragon as DragonSchema } from '../../../graphql';
-import { GenerateRandomDragonCommand } from '../../core/application/commands/generate-random-dragon/generate-random-dragon.command';
+import { GenerateNewDragonCommand } from '../../core/application/commands/generate-new-dragon/generate-new-dragon.command';
 import {
   GetAllDragonsQuery,
   GetAllDragonsQueryResult,
 } from '../../core/application/queries/get-all-dragons/get-all-dragons.query';
+import { Dragon } from '../../core/domain/dragon.entity';
 import { mapDragonEntityToDragonSchema } from './dragon.gql-mapper';
 
 @Resolver('dragon')
@@ -31,8 +32,12 @@ export class DragonResolver {
 
   @Mutation()
   @withSpan()
-  public async generateRandomDragon(): Promise<boolean> {
-    await this.commandBus.execute(new GenerateRandomDragonCommand());
+  public async generateNewDragon(
+    @Args('input') dragonProperties: Pick<Dragon, 'level' | 'color'>,
+  ): Promise<boolean> {
+    await this.commandBus.execute(
+      new GenerateNewDragonCommand(dragonProperties),
+    );
     return true;
   }
 }

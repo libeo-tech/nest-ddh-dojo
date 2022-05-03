@@ -14,8 +14,13 @@ type Dragon {
   currentHp: Int!
 }
 
+input DragonCreationInput {
+  level: Int
+  color: ColorEnum
+}
+
 type Mutation {
-  generateRandomDragon: Boolean!
+  generateNewDragon(input: DragonCreationInput): Boolean!
 }
 
 type Query {

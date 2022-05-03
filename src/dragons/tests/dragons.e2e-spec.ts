@@ -25,17 +25,17 @@ describe('Dragons module (e2e)', () => {
     await app.close();
   });
 
-  it('should generate a random dragon', async () => {
+  it('should generate a new dragon', async () => {
     const { body } = await request(app.getHttpServer())
       .post('/graphql')
       .send({
         query: `mutation {
-          generateRandomDragon
+          generateNewDragon
         }`,
       })
       .expect(200);
 
-    expect(body.data.generateRandomDragon).toBeTruthy();
+    expect(body.data.generateNewDragon).toBeTruthy();
 
     const allDragons = await connection.manager.find(Dragon);
     expect(allDragons).toHaveLength(1);
