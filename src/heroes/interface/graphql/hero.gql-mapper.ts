@@ -8,5 +8,6 @@ export const mapHeroEntityToHeroSchema = (hero: HeroEntity): HeroSchema => {
     xp: hero.xp,
     level: hero.level,
     currentHp: hero.currentHp,
+    equippedItem: hero.equippedItem,
   };
 };
