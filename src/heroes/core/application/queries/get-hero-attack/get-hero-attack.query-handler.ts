@@ -2,7 +2,7 @@ import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
-import { Hero } from '../../../domain/hero.entity';
+import { getHeroAttackValue, Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
 import {
   GetHeroAttackQuery,
@@ -27,7 +27,7 @@ export class GetHeroAttackQueryHandler
     if (!hero) {
       throw new HeroNotFoundError(heroId);
     }
-    const attackValue = generateRandomNumber(hero.level, hero.level * 2);
+    const attackValue = getHeroAttackValue(hero);
     return new GetHeroAttackQueryResult(attackValue);
   }
 }
