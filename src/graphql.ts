@@ -49,6 +49,7 @@ export interface Hero {
     level: number;
     currentHp: number;
     inventory?: Nullable<Item[]>;
+    equippedItem?: Nullable<string>;
 }
 
 export interface Item {

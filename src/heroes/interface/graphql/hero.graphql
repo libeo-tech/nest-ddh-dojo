@@ -5,6 +5,7 @@ type Hero {
   level: Int!
   currentHp: Int!
   inventory: [Item!]
+  equippedItem: ID
 }
 
 type Mutation {
