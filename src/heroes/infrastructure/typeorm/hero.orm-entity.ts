@@ -21,4 +21,7 @@ export class Hero extends BaseOrmEntity {
 
   @OneToMany(() => Item, (item: Item) => item.owner)
   items!: Item[] | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  equippedItem?: Item['id'] | undefined;
 }
