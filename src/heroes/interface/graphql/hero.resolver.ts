@@ -19,6 +19,8 @@ import {
   GetAllHeroesQuery,
   GetAllHeroesQueryResult,
 } from '../../core/application/queries/get-all-heroes/get-all-heroes.query';
+import { EquipItemCommand } from '../../core/application/commands/equip-item/equip-item.command';
+import { Item } from '../../../items/core/domain/item.entity';
 
 @Resolver('Hero')
 export class HeroResolver {
@@ -63,5 +65,14 @@ export class HeroResolver {
       throw new InternalServerErrorException();
     }
     return result.isOk();
+  }
+
+  @Mutation()
+  public async equipItem(
+    @Args('heroId') heroId: Hero['id'],
+    @Args('itemId') itemId: Item['id'],
+  ): Promise<boolean> {
+    await this.commandBus.execute(new EquipItemCommand({ heroId, itemId }));
+    return true;
   }
 }

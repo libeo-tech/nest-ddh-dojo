@@ -25,6 +25,7 @@ export interface IMutation {
     attackDragon(heroId: string, dragonId: string): boolean | Promise<boolean>;
     generateNewDragon(input?: Nullable<DragonCreationInput>): boolean | Promise<boolean>;
     createHero(name: string): boolean | Promise<boolean>;
+    equipItem(heroId: string, itemId: string): boolean | Promise<boolean>;
 }
 
 export interface Dragon {
