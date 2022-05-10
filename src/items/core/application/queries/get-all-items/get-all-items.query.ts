@@ -1,8 +1,7 @@
-import { IQuery, IQueryResult } from '@nestjs/cqrs';
+import { IQuery } from '@nestjs/cqrs';
+import { Result } from 'neverthrow';
 import { Item } from '../../../domain/item.entity';
 
 export class GetAllItemsQuery implements IQuery {}
 
-export class GetAllItemsQueryResult implements IQueryResult {
-  constructor(public readonly items: Item[]) {}
-}
+export type GetAllItemsQueryResult = Result<{ items: Item[] }, never>;

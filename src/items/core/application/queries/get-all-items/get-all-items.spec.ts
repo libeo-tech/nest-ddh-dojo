@@ -15,7 +15,10 @@ describe('get all items query', () => {
       itemMockAdapter.create({}),
     ]);
 
-    const { items } = await getAllItemsQueryHandler.execute();
+    const result = await getAllItemsQueryHandler.execute();
+    expect(result.isOk()).toBeTruthy();
+
+    const { items } = result._unsafeUnwrap();
     expect(items.length).toBe(2);
     expect(items[0]).toMatchObject(item1);
     expect(items[1]).toMatchObject(item2);

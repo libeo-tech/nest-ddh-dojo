@@ -6,6 +6,7 @@ import {
   GetHeroItemsQuery,
   GetHeroItemsQueryResult,
 } from './get-hero-items.query';
+import { ok } from 'neverthrow';
 
 @QueryHandler(GetHeroItemsQuery)
 export class GetHeroItemsQueryHandler
@@ -28,6 +29,6 @@ export class GetHeroItemsQueryHandler
     const { ownerId } = payload;
 
     const items = await this.itemWithOwnerPorts.getItemsByOwnerId(ownerId);
-    return new GetHeroItemsQueryResult(items);
+    return ok({ items });
   }
 }

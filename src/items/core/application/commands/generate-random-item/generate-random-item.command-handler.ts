@@ -4,7 +4,11 @@ import { CreatePort } from '../../../../../common/core/domain/base.ports';
 import { Item, ItemWithOwner } from '../../../domain/item.entity';
 import { itemEntityFactory } from '../../../domain/item.entity-factory';
 import { ItemWithOwnerPorts } from '../../../domain/item-with-owner.ports';
-import { GenerateRandomItemCommand } from './generate-random-item.command';
+import {
+  GenerateRandomItemCommand,
+  GenerateRandomItemCommandResult,
+} from './generate-random-item.command';
+import { ok } from 'neverthrow';
 
 @CommandHandler(GenerateRandomItemCommand)
 export class GenerateRandomItemCommandHandler
@@ -21,12 +25,15 @@ export class GenerateRandomItemCommandHandler
 
   private readonly logger = new Logger(GenerateRandomItemCommandHandler.name);
 
-  public async execute({ payload }: GenerateRandomItemCommand): Promise<void> {
+  public async execute({
+    payload,
+  }: GenerateRandomItemCommand): Promise<GenerateRandomItemCommandResult> {
     this.logger.log(`> GenerateRandomItemCommand`);
     const { ownerId } = payload;
 
     const randomItem = itemEntityFactory();
     const item = await this.itemPorts.create(randomItem);
     await this.itemWithOwnerPorts.attributeOwnerOfItem(item.id, ownerId);
+    return ok({ item });
   }
 }

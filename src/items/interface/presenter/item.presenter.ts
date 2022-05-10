@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
-import { GenerateRandomItemCommand } from '../../core/application/commands/generate-random-item/generate-random-item.command';
+import {
+  GenerateRandomItemCommand,
+  GenerateRandomItemCommandResult,
+} from '../../core/application/commands/generate-random-item/generate-random-item.command';
 import {
   GetHeroItemsQuery,
   GetHeroItemsQueryResult,
@@ -17,17 +20,23 @@ export class ItemPresenter {
     private readonly queryBus: QueryBus,
   ) {}
 
-  public async getHeroInventory(heroId: Hero['id']): Promise<Item[]> {
-    const { items } = await this.queryBus.execute<
+  public async getHeroInventory(
+    heroId: Hero['id'],
+  ): Promise<GetHeroItemsQueryResult> {
+    const result = await this.queryBus.execute<
       GetHeroItemsQuery,
       GetHeroItemsQueryResult
     >(new GetHeroItemsQuery({ ownerId: heroId }));
-    return items;
+    return result;
   }
 
-  public async giveNewRandomItemToHero(heroId: Hero['id']): Promise<void> {
-    await this.commandBus.execute<GenerateRandomItemCommand>(
-      new GenerateRandomItemCommand({ ownerId: heroId }),
-    );
+  public async giveNewRandomItemToHero(
+    heroId: Hero['id'],
+  ): Promise<GenerateRandomItemCommandResult> {
+    const result = await this.commandBus.execute<
+      GenerateRandomItemCommand,
+      GenerateRandomItemCommandResult
+    >(new GenerateRandomItemCommand({ ownerId: heroId }));
+    return result;
   }
 }

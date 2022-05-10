@@ -25,7 +25,10 @@ describe('get all hero items query', () => {
     ]);
     const query = new GetHeroItemsQuery({ ownerId: batman.id });
 
-    const { items } = await getHeroItemsQueryHandler.execute(query);
+    const result = await getHeroItemsQueryHandler.execute(query);
+    expect(result.isOk()).toBeTruthy();
+
+    const { items } = result._unsafeUnwrap();
     expect(items).toHaveLength(2);
     expect(items[0]).toMatchObject(item1);
     expect(items[1]).toMatchObject(item2);

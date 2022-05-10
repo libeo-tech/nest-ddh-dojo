@@ -19,9 +19,15 @@ describe('generate random item command', () => {
     const generateRandomItemCommand = new GenerateRandomItemCommand({
       ownerId: hero.id,
     });
-    await generateRandomItemCommandHandler.execute(generateRandomItemCommand);
+    const result = await generateRandomItemCommandHandler.execute(
+      generateRandomItemCommand,
+    );
+    expect(result.isOk()).toBeTruthy();
 
     const items = await itemMockAdapter.getItemsByOwnerId(hero.id);
     expect(items).toHaveLength(1);
+
+    const { item } = result._unsafeUnwrap();
+    expect(item).toMatchObject(items[0]);
   });
 });

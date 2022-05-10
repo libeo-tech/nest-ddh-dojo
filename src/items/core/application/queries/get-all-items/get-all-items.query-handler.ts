@@ -1,5 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { ok } from 'neverthrow';
 import { GetAllPort } from '../../../../../common/core/domain/base.ports';
 import { Item } from '../../../domain/item.entity';
 import {
@@ -19,6 +20,6 @@ export class GetAllItemsQueryHandler
     this.logger.log(`> GetAllItemsQuery`);
 
     const items = await this.itemPorts.getAll();
-    return new GetAllItemsQueryResult(items);
+    return ok({ items });
   }
 }
