@@ -1,5 +1,7 @@
-import { IQuery, IQueryResult } from '@nestjs/cqrs';
+import { IQuery } from '@nestjs/cqrs';
+import { Result } from 'neverthrow';
 import { Dragon } from '../../../domain/dragon.entity';
+import { DragonNotFoundError } from '../../../domain/dragon.error';
 
 export class GetDragonAttackQuery implements IQuery {
   constructor(
@@ -9,6 +11,7 @@ export class GetDragonAttackQuery implements IQuery {
   ) {}
 }
 
-export class GetDragonAttackQueryResult implements IQueryResult {
-  constructor(public readonly attackValue: number) {}
-}
+export type GetDragonAttackQueryResult = Result<
+  { attackValue: number },
+  DragonNotFoundError
+>;

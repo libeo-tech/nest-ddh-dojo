@@ -1,9 +1,13 @@
 import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { ok } from 'neverthrow';
 import { CreatePort } from '../../../../../common/core/domain/base.ports';
 import { Dragon } from '../../../domain/dragon.entity';
 import { dragonEntityFactory } from '../../../domain/dragon.entity-factory';
-import { GenerateNewDragonCommand } from './generate-new-dragon.command';
+import {
+  GenerateNewDragonCommand,
+  GenerateNewDragonCommandResult,
+} from './generate-new-dragon.command';
 
 @CommandHandler(GenerateNewDragonCommand)
 export class GenerateNewDragonCommandHandler
@@ -15,10 +19,13 @@ export class GenerateNewDragonCommandHandler
 
   private readonly logger = new Logger(GenerateNewDragonCommandHandler.name);
 
-  public async execute({ payload }: GenerateNewDragonCommand): Promise<void> {
+  public async execute({
+    payload,
+  }: GenerateNewDragonCommand): Promise<GenerateNewDragonCommandResult> {
     this.logger.log(`> GenerateNewDragonCommand`);
 
     const newDragon = dragonEntityFactory(payload);
-    await this.dragonPorts.create(newDragon);
+    const dragon = await this.dragonPorts.create(newDragon);
+    return ok(dragon);
   }
 }

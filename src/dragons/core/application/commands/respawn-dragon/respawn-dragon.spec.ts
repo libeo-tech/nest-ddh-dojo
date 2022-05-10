@@ -17,9 +17,10 @@ describe('generate random dragon command', () => {
   it('should respawn a given dragon if exists', async () => {
     const { id: dragonId } = await dragonMockAdapter.create({ currentHp: 0 });
 
-    await respawnDragonCommandHandler.execute(
+    const result = await respawnDragonCommandHandler.execute(
       new RespawnDragonCommand({ dragonId }),
     );
+    expect(result.isOk()).toBeTruthy();
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toBeGreaterThan(0);
@@ -31,8 +32,10 @@ describe('generate random dragon command', () => {
       dragonId: missingDragonId,
     });
 
-    await expect(
-      respawnDragonCommandHandler.execute(respawnCommand),
-    ).rejects.toThrow(new DragonNotFoundError(missingDragonId));
+    const result = await respawnDragonCommandHandler.execute(respawnCommand);
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new DragonNotFoundError(missingDragonId),
+    );
   });
 });

@@ -17,28 +17,36 @@ describe('is dragon dead query', () => {
   it('should return false for a dragon with more than 0 hp', async () => {
     const dragon = await dragonMockAdapter.create({});
 
-    const { isDead } = await isDragonDeadQueryHandler.execute(
+    const result = await isDragonDeadQueryHandler.execute(
       new IsDragonDeadQuery({ dragonId: dragon.id }),
     );
+    expect(result.isOk()).toBeTruthy();
+
+    const { isDead } = result._unsafeUnwrap();
     expect(isDead).toStrictEqual(false);
   });
 
   it('should return true for a dragon with less than 0 hp', async () => {
     const dragon = await dragonMockAdapter.create({ currentHp: -1 });
 
-    const { isDead } = await isDragonDeadQueryHandler.execute(
+    const result = await isDragonDeadQueryHandler.execute(
       new IsDragonDeadQuery({ dragonId: dragon.id }),
     );
+    expect(result.isOk()).toBeTruthy();
+
+    const { isDead } = result._unsafeUnwrap();
     expect(isDead).toStrictEqual(true);
   });
 
   it('should throw if the dragon does not exist', async () => {
     const missingDragonId = 'dragon-id-not-existing' as Dragon['id'];
 
-    await expect(
-      isDragonDeadQueryHandler.execute(
-        new IsDragonDeadQuery({ dragonId: missingDragonId }),
-      ),
-    ).rejects.toThrow(new DragonNotFoundError(missingDragonId));
+    const result = await isDragonDeadQueryHandler.execute(
+      new IsDragonDeadQuery({ dragonId: missingDragonId }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new DragonNotFoundError(missingDragonId),
+    );
   });
 });

@@ -1,5 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import {
   GetByIdPort,
   UpdatePort,
@@ -7,7 +8,10 @@ import {
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonSlainEvent } from '../../../domain/dragon.events';
-import { HurtDragonCommand } from './hurt-dragon.command';
+import {
+  HurtDragonCommand,
+  HurtDragonCommandResult,
+} from './hurt-dragon.command';
 
 @CommandHandler(HurtDragonCommand)
 export class HurtDragonCommandHandler
@@ -21,13 +25,15 @@ export class HurtDragonCommandHandler
 
   private readonly logger = new Logger(HurtDragonCommandHandler.name);
 
-  public async execute({ payload }: HurtDragonCommand): Promise<void> {
+  public async execute({
+    payload,
+  }: HurtDragonCommand): Promise<HurtDragonCommandResult> {
     this.logger.log(`> HurtDragonCommand: ${JSON.stringify(payload)}`);
     const { dragonId, damage } = payload;
 
     const dragon = await this.dragonPorts.getById(dragonId);
     if (!dragon) {
-      throw new DragonNotFoundError(dragonId);
+      return err(new DragonNotFoundError(dragonId));
     }
 
     const newHp = dragon.currentHp - damage.value;
@@ -38,5 +44,7 @@ export class HurtDragonCommandHandler
     if (newHp <= 0 && damage.source) {
       await this.eventBus.publish(new DragonSlainEvent({ dragonId }));
     }
+
+    return ok(void 0);
   }
 }

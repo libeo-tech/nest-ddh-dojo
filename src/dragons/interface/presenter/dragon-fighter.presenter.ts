@@ -6,7 +6,10 @@ import {
   Fighter,
   DragonFighter,
 } from '../../../combat/core/domain/fight/fighter.entity';
-import { HurtDragonCommand } from '../../core/application/commands/hurt-dragon/hurt-dragon.command';
+import {
+  HurtDragonCommand,
+  HurtDragonCommandResult,
+} from '../../core/application/commands/hurt-dragon/hurt-dragon.command';
 import {
   GetDragonAttackQuery,
   GetDragonAttackQueryResult,
@@ -28,28 +31,34 @@ export class DragonFighterPresenter
     private readonly queryBus: QueryBus,
   ) {}
 
-  public async getAttackStrength(dragonId: Dragon['id']): Promise<number> {
-    const { attackValue } = await this.queryBus.execute<
+  public async getAttackStrength(
+    dragonId: Dragon['id'],
+  ): Promise<GetDragonAttackQueryResult> {
+    const result = await this.queryBus.execute<
       GetDragonAttackQuery,
       GetDragonAttackQueryResult
     >(new GetDragonAttackQuery({ dragonId }));
-    return attackValue;
+    return result;
   }
 
   public async receiveDamage(
     dragonId: Dragon['id'],
     damage: Damage<Fighter>,
-  ): Promise<void> {
-    await this.commandBus.execute<HurtDragonCommand>(
-      new HurtDragonCommand({ dragonId, damage }),
-    );
+  ): Promise<HurtDragonCommandResult> {
+    const result = await this.commandBus.execute<
+      HurtDragonCommand,
+      HurtDragonCommandResult
+    >(new HurtDragonCommand({ dragonId, damage }));
+    return result;
   }
 
-  public async isDead(dragonId: Dragon['id']): Promise<boolean> {
-    const { isDead } = await this.queryBus.execute<
+  public async isDead(
+    dragonId: Dragon['id'],
+  ): Promise<IsDragonDeadQueryResult> {
+    const result = await this.queryBus.execute<
       IsDragonDeadQuery,
       IsDragonDeadQueryResult
     >(new IsDragonDeadQuery({ dragonId }));
-    return isDead;
+    return result;
   }
 }

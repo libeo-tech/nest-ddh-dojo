@@ -1,5 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
 import { Dragon } from '../../../domain/dragon.entity';
@@ -27,12 +28,12 @@ export class GetDragonAttackQueryHandler
 
     const dragon = await this.dragonPorts.getById(dragonId);
     if (!dragon) {
-      throw new DragonNotFoundError(dragonId);
+      return err(new DragonNotFoundError(dragonId));
     }
     const attackValue = generateRandomNumber(
       dragon.level - 1,
       dragon.level + 1,
     );
-    return new GetDragonAttackQueryResult(attackValue);
+    return ok({ attackValue });
   }
 }

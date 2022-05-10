@@ -17,9 +17,12 @@ describe('get dragon by id query', () => {
   it('should get a dragon by Id', async () => {
     const smaug = await dragonMockAdapter.create({});
 
-    const { dragon } = await getDragonByIdQueryHandler.execute(
+    const result = await getDragonByIdQueryHandler.execute(
       new GetDragonByIdQuery({ dragonId: smaug.id }),
     );
+    expect(result.isOk()).toBeTruthy();
+
+    const { dragon } = result._unsafeUnwrap();
     expect(dragon).toMatchObject(smaug);
     dragonMockAdapter.delete(smaug.id);
   });
@@ -27,10 +30,12 @@ describe('get dragon by id query', () => {
   it('should throw if the dragon does not exist', async () => {
     const missingDragonId = 'dragon-id-not-existing' as Dragon['id'];
 
-    await expect(
-      getDragonByIdQueryHandler.execute(
-        new GetDragonByIdQuery({ dragonId: missingDragonId }),
-      ),
-    ).rejects.toThrow(new DragonNotFoundError(missingDragonId));
+    const result = await getDragonByIdQueryHandler.execute(
+      new GetDragonByIdQuery({ dragonId: missingDragonId }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new DragonNotFoundError(missingDragonId),
+    );
   });
 });

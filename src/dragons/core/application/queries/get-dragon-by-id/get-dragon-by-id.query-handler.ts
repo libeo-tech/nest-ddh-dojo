@@ -1,5 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
@@ -26,8 +27,8 @@ export class GetDragonByIdQueryHandler
 
     const dragon = await this.dragonPorts.getById(dragonId);
     if (!dragon) {
-      throw new DragonNotFoundError(dragonId);
+      return err(new DragonNotFoundError(dragonId));
     }
-    return new GetDragonByIdQueryResult(dragon);
+    return ok({ dragon });
   }
 }

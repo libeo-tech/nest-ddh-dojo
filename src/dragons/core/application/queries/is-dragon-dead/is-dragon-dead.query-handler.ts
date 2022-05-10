@@ -7,6 +7,7 @@ import { Inject, Logger } from '@nestjs/common';
 import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
+import { err, ok } from 'neverthrow';
 
 @QueryHandler(IsDragonDeadQuery)
 export class IsDragonDeadQueryHandler
@@ -26,9 +27,9 @@ export class IsDragonDeadQueryHandler
 
     const dragon = await this.dragonPorts.getById(dragonId);
     if (!dragon) {
-      throw new DragonNotFoundError(dragonId);
+      return err(new DragonNotFoundError(dragonId));
     }
     const isDead = dragon.currentHp <= 0;
-    return new IsDragonDeadQueryResult(isDead);
+    return ok({ isDead });
   }
 }
