@@ -4,26 +4,33 @@ import { dragonEntityFactory } from '../../../../../dragons/core/domain/dragon.e
 import { Hero } from '../../../../../heroes/core/domain/hero.entity';
 import { heroEntityFactory } from '../../../../../heroes/core/domain/hero.entity-factory';
 import { Item } from '../../../../../items/core/domain/item.entity';
+import { itemEntityFactory } from '../../../../../items/core/domain/item.entity-factory';
 import { getRewardFromDragon } from '../../../domain/reward/reward.service';
 import { RewardHeroCommand } from './reward-hero.command';
 import { RewardHeroCommandHandler } from './reward-hero.command-handler';
 
 describe('reward hero command', () => {
+  const dragon = dragonEntityFactory();
   const dragonPresenter = {
-    getById: jest.fn<
-      Promise<Result<{ dragon: Dragon }, never>>,
-      [Dragon['id']]
-    >(),
+    getById: jest
+      .fn<Promise<Result<{ dragon: Dragon }, never>>, [Dragon['id']]>()
+      .mockResolvedValue(ok({ dragon })),
   };
+
+  const { id: heroId } = heroEntityFactory({});
   const heroPresenter = {
-    gainXp: jest.fn<Promise<Result<void, never>>, [Hero['id'], number]>(),
+    gainXp: jest
+      .fn<Promise<Result<void, never>>, [Hero['id'], number]>()
+      .mockResolvedValue(ok(void 0)),
   };
+
+  const item = itemEntityFactory();
   const itemPresenter = {
-    giveNewRandomItemToHero: jest.fn<
-      Promise<Result<{ item: Item }, never>>,
-      [Hero['id']]
-    >(),
+    giveNewRandomItemToHero: jest
+      .fn<Promise<Result<{ item: Item }, never>>, [Hero['id']]>()
+      .mockResolvedValue(ok({ item })),
   };
+
   const rewardHeroHandler = new RewardHeroCommandHandler(
     dragonPresenter,
     heroPresenter,
@@ -31,10 +38,6 @@ describe('reward hero command', () => {
   );
 
   it('should reward hero based on level of dragon killed', async () => {
-    const { id: heroId } = heroEntityFactory({});
-    const dragon = dragonEntityFactory();
-    dragonPresenter.getById.mockResolvedValueOnce(ok({ dragon }));
-    heroPresenter.gainXp.mockResolvedValueOnce(ok(void 0));
     const result = await rewardHeroHandler.execute(
       new RewardHeroCommand({ heroId, dragonId: dragon.id }),
     );

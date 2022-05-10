@@ -3,6 +3,7 @@
     "cqrs",
     "nestjs",
     "neverthrow",
+    "Respawn",
     "typeorm"
   ]
 }

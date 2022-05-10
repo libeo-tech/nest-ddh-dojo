@@ -1,6 +1,8 @@
 import { Result } from 'neverthrow';
 import { AwaitedCommand } from '../../../../../common/core/commands/awaited-command';
+import { UnknownApplicationError } from '../../../../../common/core/domain/base.error';
 import { CombatLog } from '../../../domain/combat-log/combat-log.entity';
+import { FighterNotFoundError } from '../../../domain/fight/fight.error';
 import { Fight } from '../../../domain/fight/fight.type';
 import { Fighter } from '../../../domain/fight/fighter.entity';
 
@@ -18,4 +20,7 @@ export class AttackCommand<
   }
 }
 
-export type AttackCommandResult = Result<void, Error>;
+export type AttackCommandResult = Result<
+  void,
+  FighterNotFoundError | UnknownApplicationError
+>;

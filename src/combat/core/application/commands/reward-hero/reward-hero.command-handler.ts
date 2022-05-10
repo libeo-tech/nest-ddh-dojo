@@ -1,6 +1,8 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { err, ok } from 'neverthrow';
+import { combine, err, ok } from 'neverthrow';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { Dragon } from '../../../../../dragons/core/domain/dragon.entity';
 import { DragonPresenter } from '../../../../../dragons/interface/presenter/dragon.presenter';
 import { Hero } from '../../../../../heroes/core/domain/hero.entity';
@@ -28,12 +30,11 @@ export class RewardHeroCommandHandler
     >,
   ) {}
 
-  private readonly logger = new Logger(RewardHeroCommandHandler.name);
-
+  @WrapInTryCatchWithUnknownApplicationError('CombatModule')
+  @LogPayloadAndResult('CombatModule')
   public async execute({
     payload,
   }: RewardHeroCommand): Promise<RewardHeroCommandResult> {
-    this.logger.log(`> RewardHeroCommand: ${JSON.stringify(payload)}`);
     const { heroId, dragonId } = payload;
 
     const dragonResult = await this.dragonPresenter.getById(dragonId);
@@ -43,12 +44,13 @@ export class RewardHeroCommandHandler
     const { dragon } = dragonResult.value;
 
     const reward = getRewardFromDragon(dragon.level);
-    const gainXpResult = await this.heroPresenter.gainXp(heroId, reward.xpGain);
-    if (gainXpResult.isErr()) {
-      return err(gainXpResult.error);
+    const results = combine([
+      await this.heroPresenter.gainXp(heroId, reward.xpGain),
+      await this.itemPresenter.giveNewRandomItemToHero(heroId),
+    ]);
+    if (results.isErr()) {
+      return err(results.error);
     }
-
-    await this.itemPresenter.giveNewRandomItemToHero(heroId);
     return ok(void 0);
   }
 }

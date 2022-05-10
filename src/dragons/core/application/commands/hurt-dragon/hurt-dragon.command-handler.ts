@@ -1,10 +1,12 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { err, ok } from 'neverthrow';
 import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/domain/base.ports';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonSlainEvent } from '../../../domain/dragon.events';
@@ -23,12 +25,11 @@ export class HurtDragonCommandHandler
     private eventBus: EventBus,
   ) {}
 
-  private readonly logger = new Logger(HurtDragonCommandHandler.name);
-
+  @WrapInTryCatchWithUnknownApplicationError('DragonModule')
+  @LogPayloadAndResult('DragonModule')
   public async execute({
     payload,
   }: HurtDragonCommand): Promise<HurtDragonCommandResult> {
-    this.logger.log(`> HurtDragonCommand: ${JSON.stringify(payload)}`);
     const { dragonId, damage } = payload;
 
     const dragon = await this.dragonPorts.getById(dragonId);

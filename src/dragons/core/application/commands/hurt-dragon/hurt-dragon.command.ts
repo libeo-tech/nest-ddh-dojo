@@ -2,6 +2,7 @@ import { ICommand } from '@nestjs/cqrs';
 import { Result } from 'neverthrow';
 import { Damage } from '../../../../../combat/core/domain/attack/damage.object-value';
 import { Fighter } from '../../../../../combat/core/domain/fight/fighter.entity';
+import { UnknownApplicationError } from '../../../../../common/core/domain/base.error';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 
@@ -14,4 +15,7 @@ export class HurtDragonCommand implements ICommand {
   ) {}
 }
 
-export type HurtDragonCommandResult = Result<void, DragonNotFoundError>;
+export type HurtDragonCommandResult = Result<
+  void,
+  DragonNotFoundError | UnknownApplicationError
+>;

@@ -1,4 +1,4 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { ItemWithOwner } from '../../../domain/item.entity';
 import { ItemWithOwnerPorts } from '../../../domain/item-with-owner.ports';
@@ -7,6 +7,8 @@ import {
   GetHeroItemsQueryResult,
 } from './get-hero-items.query';
 import { ok } from 'neverthrow';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 
 @QueryHandler(GetHeroItemsQuery)
 export class GetHeroItemsQueryHandler
@@ -20,12 +22,11 @@ export class GetHeroItemsQueryHandler
     >,
   ) {}
 
-  private readonly logger = new Logger(GetHeroItemsQueryHandler.name);
-
+  @WrapInTryCatchWithUnknownApplicationError('ItemModule')
+  @LogPayloadAndResult('ItemModule')
   public async execute({
     payload,
   }: GetHeroItemsQuery): Promise<GetHeroItemsQueryResult> {
-    this.logger.log(`> GetHeroItemsQuery: ${JSON.stringify(payload)}`);
     const { ownerId } = payload;
 
     const items = await this.itemWithOwnerPorts.getItemsByOwnerId(ownerId);

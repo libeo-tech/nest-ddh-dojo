@@ -1,4 +1,8 @@
-import { HttpException, Logger } from '@nestjs/common';
+import {
+  HttpException,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Dragon as DragonSchema } from '../../../graphql';
@@ -30,12 +34,7 @@ export class DragonResolver {
     >(new GetAllDragonsQuery());
 
     if (result.isErr()) {
-      throw new HttpException(
-        {
-          message: 'UnknownError occurred on getAllDragons Query',
-        },
-        500,
-      );
+      throw new InternalServerErrorException();
     }
 
     const { dragons } = result.value;
@@ -52,13 +51,7 @@ export class DragonResolver {
     >(new GenerateNewDragonCommand(dragonProperties));
 
     if (result.isErr()) {
-      throw new HttpException(
-        {
-          message: 'UnknownError occurred on generateNewDragon Mutation',
-          payload: dragonProperties,
-        },
-        500,
-      );
+      throw new InternalServerErrorException();
     }
     return true;
   }
