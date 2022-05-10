@@ -1,3 +1,4 @@
+import { ok } from 'neverthrow';
 import { CombatLog } from '../../../domain/combat-log/combat-log.entity';
 import { mockFight } from '../../../domain/fight/fight.mock';
 import { Fighter } from '../../../domain/fight/fighter.entity';
@@ -8,7 +9,7 @@ describe('attack command', () => {
   const logId = 'logId' as CombatLog<Fighter, Fighter>['id'];
   const attackValue = 10;
   const fightAdapter = {
-    getAttackStrength: jest.fn().mockResolvedValue(attackValue),
+    getAttackStrength: jest.fn().mockResolvedValue(ok({ attackValue })),
     receiveDamage: jest.fn(),
     isDead: jest.fn(),
   };
@@ -22,7 +23,8 @@ describe('attack command', () => {
       fight: mockFight,
       logId,
     });
-    await attackHandler.execute(attackCommand);
+    const result = await attackHandler.execute(attackCommand);
+    expect(result.isOk()).toBeTruthy();
 
     const { attacker, defender } = mockFight;
     expect(fightAdapter.getAttackStrength).toHaveBeenCalledWith(attacker.id);

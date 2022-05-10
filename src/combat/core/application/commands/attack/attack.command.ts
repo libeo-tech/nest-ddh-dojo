@@ -1,3 +1,4 @@
+import { Result } from 'neverthrow';
 import { AwaitedCommand } from '../../../../../common/core/commands/awaited-command';
 import { CombatLog } from '../../../domain/combat-log/combat-log.entity';
 import { Fight } from '../../../domain/fight/fight.type';
@@ -16,3 +17,5 @@ export class AttackCommand<
     super();
   }
 }
+
+export type AttackCommandResult = Result<void, Error>;

@@ -15,6 +15,7 @@ import {
   isPvECombatEvent,
   NewCombatRoundEvent,
 } from './combat.event';
+import { Result } from 'neverthrow';
 
 @Injectable()
 export class CombatSagas {
@@ -26,7 +27,7 @@ export class CombatSagas {
 
   private async isDefenderDead(
     fight: Fight<Fighter, Fighter>,
-  ): Promise<boolean> {
+  ): Promise<Result<{ isDead: boolean }, Error>> {
     const { defender } = fight;
     return this.fighterIPA.getPorts(fight).isDead(defender.id);
   }
@@ -55,14 +56,22 @@ export class CombatSagas {
       afterCommand(this.eventBus, async ({ payload }) => {
         const { fight } = payload;
 
-        const isDead = await this.isDefenderDead(fight);
-        if (isDead) {
-          return new CombatEndedEvent({ ...payload, outcome: Outcome.WIN });
-        } else {
-          return new FighterRetaliationEvent({
-            ...payload,
-            fight: reverseFight(fight),
-          });
+        const isDeadResult = await this.isDefenderDead(fight);
+        if (isDeadResult.isErr()) {
+          this.combatLogIPA
+            .getPorts(payload.fight)
+            .logOutcome(payload.logId, Outcome.ERROR);
+        }
+        if (isDeadResult.isOk()) {
+          const { isDead } = isDeadResult.value;
+          if (isDead) {
+            return new CombatEndedEvent({ ...payload, outcome: Outcome.WIN });
+          } else {
+            return new FighterRetaliationEvent({
+              ...payload,
+              fight: reverseFight(fight),
+            });
+          }
         }
       }),
     );
@@ -78,18 +87,26 @@ export class CombatSagas {
       afterCommand(this.eventBus, async ({ payload }) => {
         const { fight } = payload;
 
-        const isDead = await this.isDefenderDead(fight);
-        const nextPayload = {
-          ...payload,
-          fight: reverseFight(fight),
-        };
-        if (isDead) {
-          return new CombatEndedEvent({
-            ...nextPayload,
-            outcome: Outcome.LOSS,
-          });
-        } else {
-          return new NewCombatRoundEvent(nextPayload);
+        const isDeadResult = await this.isDefenderDead(fight);
+        if (isDeadResult.isErr()) {
+          this.combatLogIPA
+            .getPorts(payload.fight)
+            .logOutcome(payload.logId, Outcome.ERROR);
+        }
+        if (isDeadResult.isOk()) {
+          const { isDead } = isDeadResult.value;
+          const nextPayload = {
+            ...payload,
+            fight: reverseFight(fight),
+          };
+          if (isDead) {
+            return new CombatEndedEvent({
+              ...nextPayload,
+              outcome: Outcome.LOSS,
+            });
+          } else {
+            return new NewCombatRoundEvent(nextPayload);
+          }
         }
       }),
     );
