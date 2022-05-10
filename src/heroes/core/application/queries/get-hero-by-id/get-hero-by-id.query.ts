@@ -1,5 +1,6 @@
 import { IQuery } from '@nestjs/cqrs';
 import { Result } from 'neverthrow';
+import { UnknownApplicationError } from '../../../../../common/core/domain/base.error';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
 
@@ -11,4 +12,7 @@ export class GetHeroByIdQuery implements IQuery {
   ) {}
 }
 
-export type GetHeroByIdQueryResult = Result<{ hero: Hero }, HeroNotFoundError>;
+export type GetHeroByIdQueryResult = Result<
+  { hero: Hero },
+  HeroNotFoundError | UnknownApplicationError
+>;

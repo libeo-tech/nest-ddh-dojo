@@ -10,7 +10,7 @@ describe('attack command', () => {
   const attackValue = 10;
   const fightAdapter = {
     getAttackStrength: jest.fn().mockResolvedValue(ok({ attackValue })),
-    receiveDamage: jest.fn(),
+    receiveDamage: jest.fn().mockResolvedValue(ok(void 0)),
     isDead: jest.fn(),
   };
   const fightIPAdapter = {

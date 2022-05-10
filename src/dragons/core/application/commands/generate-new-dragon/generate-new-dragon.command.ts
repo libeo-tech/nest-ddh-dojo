@@ -1,5 +1,6 @@
 import { ICommand } from '@nestjs/cqrs';
 import { Result } from 'neverthrow';
+import { UnknownApplicationError } from '../../../../../common/core/domain/base.error';
 import { Dragon } from '../../../domain/dragon.entity';
 
 export class GenerateNewDragonCommand implements ICommand {
@@ -11,4 +12,7 @@ export class GenerateNewDragonCommand implements ICommand {
   ) {}
 }
 
-export type GenerateNewDragonCommandResult = Result<Dragon, never>;
+export type GenerateNewDragonCommandResult = Result<
+  Dragon,
+  UnknownApplicationError
+>;

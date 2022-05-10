@@ -72,6 +72,9 @@ export class HeroResolver {
       CreateHeroCommand,
       CreateHeroCommandResult
     >(new CreateHeroCommand({ name }));
+    if (result.isErr()) {
+      throw new InternalServerErrorException();
+    }
     return result.isOk();
   }
 }

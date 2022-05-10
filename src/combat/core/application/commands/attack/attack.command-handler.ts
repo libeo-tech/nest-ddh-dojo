@@ -1,10 +1,10 @@
-import { Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AttackCommand, AttackCommandResult } from './attack.command';
 import { FighterIPA } from '../../../domain/fight/fighter.ports';
 import { Fighter } from '../../../domain/fight/fighter.entity';
 import { err, ok } from 'neverthrow';
-import { UnknownError } from '../../../../../common/core/domain/base.error';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
 
 @CommandHandler(AttackCommand)
 export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
@@ -12,13 +12,11 @@ export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
 {
   constructor(private readonly fighterIPA: FighterIPA<X, Y>) {}
 
-  private readonly logger = new Logger(AttackCommandHandler.name);
-
+  @WrapInTryCatchWithUnknownApplicationError('CombatModule')
+  @LogPayloadAndResult('CombatModule')
   public async execute(
     command: AttackCommand<X, Y>,
   ): Promise<AttackCommandResult> {
-    this.logger.log(`> AttackCommand: ${JSON.stringify(command.payload)}`);
-
     const { fight } = command.payload;
     const fighterPorts = this.fighterIPA.getPorts(fight);
     const { attacker, defender } = fight;
