@@ -16,7 +16,8 @@ describe('create hero command', () => {
     const command = new CreateHeroCommand({
       name: 'Batman',
     });
-    await createHeroCommandHandler.execute(command);
+    const result = await createHeroCommandHandler.execute(command);
+    expect(result.isOk()).toBeTruthy();
 
     const heroes = await heroMockAdapter.getAll();
     expect(heroes).toHaveLength(1);

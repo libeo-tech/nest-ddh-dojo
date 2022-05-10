@@ -17,7 +17,10 @@ describe('gain xp command', () => {
   it('should increase the xp of a hero by xpGain', async () => {
     const xpGain = generateRandomNumber(1, 100);
     const { id: heroId, xp } = await heroMockAdapter.create({});
-    await gainXpHandler.execute(new GainXpCommand({ heroId, xpGain }));
+    const result = await gainXpHandler.execute(
+      new GainXpCommand({ heroId, xpGain }),
+    );
+    expect(result.isOk()).toBeTruthy();
 
     const { xp: newXp } = await heroMockAdapter.getById(heroId);
     expect(newXp).toEqual(xp + xpGain);
@@ -26,10 +29,12 @@ describe('gain xp command', () => {
   it('should throw if the hero does not exist', async () => {
     const missingHeroId = 'hero-id-not-existing' as Hero['id'];
 
-    await expect(
-      gainXpHandler.execute(
-        new GainXpCommand({ heroId: missingHeroId, xpGain: 1 }),
-      ),
-    ).rejects.toThrow(new HeroNotFoundError(missingHeroId));
+    const result = await gainXpHandler.execute(
+      new GainXpCommand({ heroId: missingHeroId, xpGain: 1 }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new HeroNotFoundError(missingHeroId),
+    );
   });
 });

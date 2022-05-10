@@ -4,6 +4,7 @@ import { Inject, Logger } from '@nestjs/common';
 import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
+import { err, ok } from 'neverthrow';
 
 @QueryHandler(IsHeroDeadQuery)
 export class IsHeroDeadQueryHandler implements IQueryHandler<IsHeroDeadQuery> {
@@ -19,9 +20,9 @@ export class IsHeroDeadQueryHandler implements IQueryHandler<IsHeroDeadQuery> {
 
     const hero = await this.heroPorts.getById(heroId);
     if (!hero) {
-      throw new HeroNotFoundError(heroId);
+      return err(new HeroNotFoundError(heroId));
     }
     const isDead = hero.currentHp <= 0;
-    return new IsHeroDeadQueryResult(isDead);
+    return ok({ isDead });
   }
 }

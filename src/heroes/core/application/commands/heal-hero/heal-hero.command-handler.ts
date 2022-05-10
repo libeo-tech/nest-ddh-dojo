@@ -1,12 +1,13 @@
 import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/domain/base.ports';
 import { getHeroMaxHp, Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
-import { HealHeroCommand } from './heal-hero.command';
+import { HealHeroCommand, HealHeroCommandResult } from './heal-hero.command';
 
 @CommandHandler(HealHeroCommand)
 export class HealHeroCommandHandler
@@ -19,13 +20,15 @@ export class HealHeroCommandHandler
 
   private readonly logger = new Logger(HealHeroCommandHandler.name);
 
-  public async execute({ payload }: HealHeroCommand): Promise<void> {
+  public async execute({
+    payload,
+  }: HealHeroCommand): Promise<HealHeroCommandResult> {
     this.logger.log(`> HealHeroCommand: ${JSON.stringify(payload)}`);
     const { heroId, heal } = payload;
 
     const hero = await this.heroPorts.getById(heroId);
     if (!hero) {
-      throw new HeroNotFoundError(heroId);
+      return err(new HeroNotFoundError(heroId));
     }
 
     const maxHp = getHeroMaxHp(hero.level);
@@ -33,5 +36,6 @@ export class HealHeroCommandHandler
     await this.heroPorts.update(heroId, {
       currentHp: newHp,
     });
+    return ok(void 0);
   }
 }

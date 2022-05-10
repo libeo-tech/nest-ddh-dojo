@@ -1,5 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import { GetByIdPort } from '../../../../../common/core/domain/base.ports';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
 import { getHeroAttackValue, Hero } from '../../../domain/hero.entity';
@@ -25,9 +26,9 @@ export class GetHeroAttackQueryHandler
 
     const hero = await this.heroPorts.getById(heroId);
     if (!hero) {
-      throw new HeroNotFoundError(heroId);
+      return err(new HeroNotFoundError(heroId));
     }
     const attackValue = getHeroAttackValue(hero);
-    return new GetHeroAttackQueryResult(attackValue);
+    return ok({ attackValue });
   }
 }

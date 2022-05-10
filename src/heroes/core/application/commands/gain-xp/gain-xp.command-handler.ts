@@ -1,5 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import {
   GetByIdPort,
   UpdatePort,
@@ -7,7 +8,7 @@ import {
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroGainedXpEvent } from '../../../domain/hero.events';
-import { GainXpCommand } from './gain-xp.command';
+import { GainXpCommand, GainXpCommandResult } from './gain-xp.command';
 
 @CommandHandler(GainXpCommand)
 export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
@@ -19,15 +20,18 @@ export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
 
   private readonly logger = new Logger(GainXpCommandHandler.name);
 
-  public async execute({ payload }: GainXpCommand): Promise<void> {
+  public async execute({
+    payload,
+  }: GainXpCommand): Promise<GainXpCommandResult> {
     this.logger.log(`> GainXpCommand: ${JSON.stringify(payload)}`);
     const { heroId, xpGain } = payload;
 
     const hero = await this.heroPorts.getById(heroId);
     if (!hero) {
-      throw new HeroNotFoundError(heroId);
+      return err(new HeroNotFoundError(heroId));
     }
     await this.heroPorts.update(heroId, { xp: hero.xp + xpGain });
     await this.eventBus.publish(new HeroGainedXpEvent({ heroId }));
+    return ok(void 0);
   }
 }

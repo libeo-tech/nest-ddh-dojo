@@ -17,9 +17,12 @@ describe('get hero attack query', () => {
   it('should get a hero attack value by Id', async () => {
     const batman = await heroMockAdapter.create({});
 
-    const { attackValue } = await getHeroAttackQueryHandler.execute(
+    const result = await getHeroAttackQueryHandler.execute(
       new GetHeroAttackQuery({ heroId: batman.id }),
     );
+    expect(result.isOk()).toBeTruthy();
+
+    const { attackValue } = result._unsafeUnwrap();
     expect(attackValue).toBeDefined();
     expect(attackValue).toBeGreaterThan(0);
   });
@@ -27,10 +30,12 @@ describe('get hero attack query', () => {
   it('should throw if the hero does not exist', async () => {
     const missingHeroId = 'hero-id-not-existing' as Hero['id'];
 
-    await expect(
-      getHeroAttackQueryHandler.execute(
-        new GetHeroAttackQuery({ heroId: missingHeroId }),
-      ),
-    ).rejects.toThrow(new HeroNotFoundError(missingHeroId));
+    const result = await getHeroAttackQueryHandler.execute(
+      new GetHeroAttackQuery({ heroId: missingHeroId }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new HeroNotFoundError(missingHeroId),
+    );
   });
 });

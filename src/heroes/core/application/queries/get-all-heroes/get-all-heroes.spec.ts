@@ -13,7 +13,10 @@ describe('get all heroes query', () => {
       heroMockAdapter.create({}),
     ]);
 
-    const { heroes } = await getAllHeroesQueryHandler.execute();
+    const result = await getAllHeroesQueryHandler.execute();
+    expect(result.isOk()).toBeTruthy();
+
+    const { heroes } = result._unsafeUnwrap();
     expect(heroes.length).toBe(2);
     expect(heroes[0]).toMatchObject(hero1);
     expect(heroes[1]).toMatchObject(hero2);
