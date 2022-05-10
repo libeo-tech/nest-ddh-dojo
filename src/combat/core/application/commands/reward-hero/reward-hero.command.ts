@@ -1,6 +1,9 @@
 import { ICommand } from '@nestjs/cqrs';
+import { Result } from 'neverthrow';
 import { Dragon } from '../../../../../dragons/core/domain/dragon.entity';
+import { DragonNotFoundError } from '../../../../../dragons/core/domain/dragon.error';
 import { Hero } from '../../../../../heroes/core/domain/hero.entity';
+import { HeroNotFoundError } from '../../../../../heroes/core/domain/hero.error';
 
 export class RewardHeroCommand implements ICommand {
   constructor(
@@ -10,3 +13,8 @@ export class RewardHeroCommand implements ICommand {
     },
   ) {}
 }
+
+export type RewardHeroCommandResult = Result<
+  void,
+  DragonNotFoundError | HeroNotFoundError
+>;

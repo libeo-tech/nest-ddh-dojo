@@ -1,5 +1,6 @@
 import { Inject, Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import { Dragon } from '../../../../../dragons/core/domain/dragon.entity';
 import { DragonPresenter } from '../../../../../dragons/interface/presenter/dragon.presenter';
 import { Hero } from '../../../../../heroes/core/domain/hero.entity';
@@ -7,7 +8,10 @@ import { HeroPresenter } from '../../../../../heroes/interface/presenter/hero.pr
 import { Item } from '../../../../../items/core/domain/item.entity';
 import { ItemPresenter } from '../../../../../items/interface/presenter/item.presenter';
 import { getRewardFromDragon } from '../../../domain/reward/reward.service';
-import { RewardHeroCommand } from './reward-hero.command';
+import {
+  RewardHeroCommand,
+  RewardHeroCommandResult,
+} from './reward-hero.command';
 
 @CommandHandler(RewardHeroCommand)
 export class RewardHeroCommandHandler
@@ -26,15 +30,25 @@ export class RewardHeroCommandHandler
 
   private readonly logger = new Logger(RewardHeroCommandHandler.name);
 
-  public async execute({ payload }: RewardHeroCommand): Promise<void> {
+  public async execute({
+    payload,
+  }: RewardHeroCommand): Promise<RewardHeroCommandResult> {
     this.logger.log(`> RewardHeroCommand: ${JSON.stringify(payload)}`);
     const { heroId, dragonId } = payload;
 
-    const dragon = await this.dragonPresenter.getById(dragonId);
+    const dragonResult = await this.dragonPresenter.getById(dragonId);
+    if (dragonResult.isErr()) {
+      return err(dragonResult.error);
+    }
+    const { dragon } = dragonResult.value;
+
     const reward = getRewardFromDragon(dragon.level);
-    await Promise.all([
-      this.heroPresenter.gainXp(heroId, reward.xpGain),
-      this.itemPresenter.giveNewRandomItemToHero(heroId),
-    ]);
+    const gainXpResult = await this.heroPresenter.gainXp(heroId, reward.xpGain);
+    if (gainXpResult.isErr()) {
+      return err(gainXpResult.error);
+    }
+
+    await this.itemPresenter.giveNewRandomItemToHero(heroId);
+    return ok(void 0);
   }
 }
