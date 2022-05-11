@@ -1,6 +1,9 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { ok } from 'neverthrow';
 import { GetAllPort } from '../../../../../common/core/domain/base.ports';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { Dragon } from '../../../domain/dragon.entity';
 import {
   GetAllDragonsQuery,
@@ -16,12 +19,10 @@ export class GetAllDragonsQueryHandler
     private readonly dragonPorts: GetAllPort<Dragon>,
   ) {}
 
-  private readonly logger = new Logger(GetAllDragonsQueryHandler.name);
-
+  @WrapInTryCatchWithUnknownApplicationError('DragonModule')
+  @LogPayloadAndResult('DragonModule')
   public async execute(): Promise<GetAllDragonsQueryResult> {
-    this.logger.log(`> GetAllDragonsQuery`);
-
     const dragons = await this.dragonPorts.getAll();
-    return new GetAllDragonsQueryResult(dragons);
+    return ok({ dragons });
   }
 }

@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { HttpException, Logger } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { Query, Resolver } from '@nestjs/graphql';
 import { Item as ItemSchema } from '../../../graphql';
@@ -16,10 +16,21 @@ export class ItemResolver {
 
   @Query()
   public async getAllItems(): Promise<ItemSchema[]> {
-    const { items } = await this.queryBus.execute<
+    const result = await this.queryBus.execute<
       GetAllItemsQuery,
       GetAllItemsQueryResult
     >(new GetAllItemsQuery());
+
+    if (result.isErr()) {
+      throw new HttpException(
+        {
+          message: 'UnknownError occurred on getAllItems Query',
+        },
+        500,
+      );
+    }
+
+    const { items } = result.value;
     return items.map((item) => mapItemEntityToItemSchema(item));
   }
 }

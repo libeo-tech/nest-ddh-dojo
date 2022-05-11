@@ -1,5 +1,8 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { combine, err, ok } from 'neverthrow';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { Dragon } from '../../../../../dragons/core/domain/dragon.entity';
 import { DragonPresenter } from '../../../../../dragons/interface/presenter/dragon.presenter';
 import { Hero } from '../../../../../heroes/core/domain/hero.entity';
@@ -7,7 +10,10 @@ import { HeroPresenter } from '../../../../../heroes/interface/presenter/hero.pr
 import { Item } from '../../../../../items/core/domain/item.entity';
 import { ItemPresenter } from '../../../../../items/interface/presenter/item.presenter';
 import { getRewardFromDragon } from '../../../domain/reward/reward.service';
-import { RewardHeroCommand } from './reward-hero.command';
+import {
+  RewardHeroCommand,
+  RewardHeroCommandResult,
+} from './reward-hero.command';
 
 @CommandHandler(RewardHeroCommand)
 export class RewardHeroCommandHandler
@@ -24,17 +30,27 @@ export class RewardHeroCommandHandler
     >,
   ) {}
 
-  private readonly logger = new Logger(RewardHeroCommandHandler.name);
-
-  public async execute({ payload }: RewardHeroCommand): Promise<void> {
-    this.logger.log(`> RewardHeroCommand: ${JSON.stringify(payload)}`);
+  @WrapInTryCatchWithUnknownApplicationError('CombatModule')
+  @LogPayloadAndResult('CombatModule')
+  public async execute({
+    payload,
+  }: RewardHeroCommand): Promise<RewardHeroCommandResult> {
     const { heroId, dragonId } = payload;
 
-    const dragon = await this.dragonPresenter.getById(dragonId);
+    const dragonResult = await this.dragonPresenter.getById(dragonId);
+    if (dragonResult.isErr()) {
+      return err(dragonResult.error);
+    }
+    const { dragon } = dragonResult.value;
+
     const reward = getRewardFromDragon(dragon.level);
-    await Promise.all([
-      this.heroPresenter.gainXp(heroId, reward.xpGain),
-      this.itemPresenter.giveNewRandomItemToHero(heroId),
+    const results = combine([
+      await this.heroPresenter.gainXp(heroId, reward.xpGain),
+      await this.itemPresenter.giveNewRandomItemToHero(heroId),
     ]);
+    if (results.isErr()) {
+      return err(results.error);
+    }
+    return ok(void 0);
   }
 }

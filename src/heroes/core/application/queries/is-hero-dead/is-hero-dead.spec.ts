@@ -15,28 +15,36 @@ describe('is hero dead query', () => {
   it('should return false for a hero with more than 0 hp', async () => {
     const batman = await heroMockAdapter.create({});
 
-    const { isDead } = await isHeroDeadQueryHandler.execute(
+    const result = await isHeroDeadQueryHandler.execute(
       new IsHeroDeadQuery({ heroId: batman.id }),
     );
+    expect(result.isOk()).toBeTruthy();
+
+    const { isDead } = result._unsafeUnwrap();
     expect(isDead).toStrictEqual(false);
   });
 
   it('should return true for a hero with less than 0 hp', async () => {
     const batman = await heroMockAdapter.create({ currentHp: -1 });
 
-    const { isDead } = await isHeroDeadQueryHandler.execute(
+    const result = await isHeroDeadQueryHandler.execute(
       new IsHeroDeadQuery({ heroId: batman.id }),
     );
+    expect(result.isOk()).toBeTruthy();
+
+    const { isDead } = result._unsafeUnwrap();
     expect(isDead).toStrictEqual(true);
   });
 
   it('should throw if the hero does not exist', async () => {
     const missingHeroId = 'hero-id-not-existing' as Hero['id'];
 
-    await expect(
-      isHeroDeadQueryHandler.execute(
-        new IsHeroDeadQuery({ heroId: missingHeroId }),
-      ),
-    ).rejects.toThrow(new HeroNotFoundError(missingHeroId));
+    const result = await isHeroDeadQueryHandler.execute(
+      new IsHeroDeadQuery({ heroId: missingHeroId }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new HeroNotFoundError(missingHeroId),
+    );
   });
 });

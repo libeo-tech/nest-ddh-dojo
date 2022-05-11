@@ -1,8 +1,10 @@
-import { Logger } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { AttackCommand } from './attack.command';
+import { AttackCommand, AttackCommandResult } from './attack.command';
 import { FighterIPA } from '../../../domain/fight/fighter.ports';
 import { Fighter } from '../../../domain/fight/fighter.entity';
+import { err, ok } from 'neverthrow';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
 
 @CommandHandler(AttackCommand)
 export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
@@ -10,20 +12,30 @@ export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
 {
   constructor(private readonly fighterIPA: FighterIPA<X, Y>) {}
 
-  private readonly logger = new Logger(AttackCommandHandler.name);
-
-  public async execute(command: AttackCommand<X, Y>): Promise<void> {
-    this.logger.log(`> AttackCommand: ${JSON.stringify(command.payload)}`);
+  @WrapInTryCatchWithUnknownApplicationError('CombatModule')
+  @LogPayloadAndResult('CombatModule')
+  public async execute(
+    command: AttackCommand<X, Y>,
+  ): Promise<AttackCommandResult> {
     const { fight } = command.payload;
     const fighterPorts = this.fighterIPA.getPorts(fight);
     const { attacker, defender } = fight;
 
-    const attackValue = await fighterPorts.getAttackStrength(attacker.id);
-    await fighterPorts.receiveDamage(defender.id, {
+    const attackValueResult = await fighterPorts.getAttackStrength(attacker.id);
+    if (attackValueResult.isErr()) {
+      return err(attackValueResult.error);
+    }
+    const { attackValue } = attackValueResult.value;
+
+    const receiveDamageResult = await fighterPorts.receiveDamage(defender.id, {
       value: attackValue,
       source: attacker.id,
     });
+    if (receiveDamageResult.isErr()) {
+      return err(receiveDamageResult.error);
+    }
 
     command.end();
+    return ok(void 0);
   }
 }

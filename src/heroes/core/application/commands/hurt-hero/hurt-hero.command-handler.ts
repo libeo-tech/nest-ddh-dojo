@@ -1,12 +1,15 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/domain/base.ports';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
-import { HurtHeroCommand } from './hurt-hero.command';
+import { HurtHeroCommand, HurtHeroCommandResult } from './hurt-hero.command';
 
 @CommandHandler(HurtHeroCommand)
 export class HurtHeroCommandHandler
@@ -17,20 +20,22 @@ export class HurtHeroCommandHandler
     private readonly heroPorts: GetByIdPort<Hero> & UpdatePort<Hero>,
   ) {}
 
-  private readonly logger = new Logger(HurtHeroCommandHandler.name);
-
-  public async execute({ payload }: HurtHeroCommand): Promise<void> {
-    this.logger.log(`> HurtHeroCommand: ${JSON.stringify(payload)}`);
+  @WrapInTryCatchWithUnknownApplicationError('HeroModule')
+  @LogPayloadAndResult('HeroModule')
+  public async execute({
+    payload,
+  }: HurtHeroCommand): Promise<HurtHeroCommandResult> {
     const { heroId, damage } = payload;
 
     const hero = await this.heroPorts.getById(heroId);
     if (!hero) {
-      throw new HeroNotFoundError(heroId);
+      return err(new HeroNotFoundError(heroId));
     }
 
     const newHp = hero.currentHp - damage.value;
     await this.heroPorts.update(heroId, {
       currentHp: newHp,
     });
+    return ok(void 0);
   }
 }

@@ -4,6 +4,7 @@ import { HeroFighterPresenter } from '../../../heroes/interface/presenter/hero-f
 import { FighterPorts } from '../../core/domain/fight/fighter.ports';
 import { Damage } from '../../core/domain/attack/damage.object-value';
 import { HeroFighter } from '../../core/domain/fight/fighter.entity';
+import { Result } from 'neverthrow';
 
 @Injectable()
 export class HeroAttackHeroAdapter
@@ -11,17 +12,21 @@ export class HeroAttackHeroAdapter
 {
   constructor(private readonly heroFighterPresenter: HeroFighterPresenter) {}
 
-  public async getAttackStrength(id: Hero['id']): Promise<number> {
-    const attackValue = await this.heroFighterPresenter.getAttackStrength(id);
-    return attackValue;
+  public async getAttackStrength(
+    id: Hero['id'],
+  ): Promise<Result<{ attackValue: number }, Error>> {
+    const result = await this.heroFighterPresenter.getAttackStrength(id);
+    return result;
   }
   public async receiveDamage(
     id: Hero['id'],
     damage: Damage<HeroFighter>,
-  ): Promise<void> {
-    await this.heroFighterPresenter.receiveDamage(id, damage);
+  ): Promise<Result<void, Error>> {
+    return this.heroFighterPresenter.receiveDamage(id, damage);
   }
-  public async isDead(id: Hero['id']): Promise<boolean> {
+  public async isDead(
+    id: Hero['id'],
+  ): Promise<Result<{ isDead: boolean }, Error>> {
     const isDead = await this.heroFighterPresenter.isDead(id);
     return isDead;
   }

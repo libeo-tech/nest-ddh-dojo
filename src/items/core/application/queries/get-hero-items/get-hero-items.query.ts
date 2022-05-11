@@ -1,6 +1,8 @@
 import { Hero } from '../../../../../heroes/core/domain/hero.entity';
-import { IQuery, IQueryResult } from '@nestjs/cqrs';
+import { IQuery } from '@nestjs/cqrs';
 import { Item } from '../../../domain/item.entity';
+import { Result } from 'neverthrow';
+import { UnknownApplicationError } from '../../../../../common/core/domain/base.error';
 
 export class GetHeroItemsQuery implements IQuery {
   constructor(
@@ -10,6 +12,7 @@ export class GetHeroItemsQuery implements IQuery {
   ) {}
 }
 
-export class GetHeroItemsQueryResult implements IQueryResult {
-  constructor(public readonly items: Item[]) {}
-}
+export type GetHeroItemsQueryResult = Result<
+  { items: Item[] },
+  UnknownApplicationError
+>;

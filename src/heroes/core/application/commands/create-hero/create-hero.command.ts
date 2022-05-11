@@ -1,5 +1,7 @@
 import { ICommand } from '@nestjs/cqrs';
-import { Hero } from '../../../../infrastructure/typeorm/hero.orm-entity';
+import { Result } from 'neverthrow';
+import { UnknownApplicationError } from '../../../../../common/core/domain/base.error';
+import { Hero } from '../../../domain/hero.entity';
 
 export class CreateHeroCommand implements ICommand {
   constructor(
@@ -8,3 +10,5 @@ export class CreateHeroCommand implements ICommand {
     },
   ) {}
 }
+
+export type CreateHeroCommandResult = Result<Hero, UnknownApplicationError>;

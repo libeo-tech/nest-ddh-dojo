@@ -25,9 +25,10 @@ describe('hurt dragon command', () => {
     const { id: dragonId, currentHp: maxHp } = await dragonMockAdapter.create(
       {},
     );
-    await hurtDragonHandler.execute(
+    const result = await hurtDragonHandler.execute(
       new HurtDragonCommand({ dragonId, damage }),
     );
+    expect(result.isOk()).toBeTruthy();
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
@@ -38,9 +39,10 @@ describe('hurt dragon command', () => {
       {},
     );
     const damage = { value: maxHp + 1, source: heroId };
-    await hurtDragonHandler.execute(
+    const result = await hurtDragonHandler.execute(
       new HurtDragonCommand({ dragonId, damage }),
     );
+    expect(result.isOk()).toBeTruthy();
 
     const dragon = await dragonMockAdapter.getById(dragonId);
     expect(dragon.currentHp).toStrictEqual(maxHp - damage.value);
@@ -54,10 +56,12 @@ describe('hurt dragon command', () => {
     const damage = { value: generateRandomNumber(1, 10), source: heroId };
     const missingDragonId = 'dragon-id-not-existing' as Dragon['id'];
 
-    await expect(
-      hurtDragonHandler.execute(
-        new HurtDragonCommand({ dragonId: missingDragonId, damage }),
-      ),
-    ).rejects.toThrow(new DragonNotFoundError(missingDragonId));
+    const result = await hurtDragonHandler.execute(
+      new HurtDragonCommand({ dragonId: missingDragonId, damage }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new DragonNotFoundError(missingDragonId),
+    );
   });
 });

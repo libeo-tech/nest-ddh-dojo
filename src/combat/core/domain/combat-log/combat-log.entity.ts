@@ -5,6 +5,7 @@ export enum Outcome {
   WIN = 'WIN',
   LOSS = 'LOSS',
   DRAW = 'DRAW',
+  ERROR = 'ERROR',
 }
 
 export class CombatLog<X extends Fighter, Y extends Fighter> extends Base {

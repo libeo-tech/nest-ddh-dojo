@@ -12,11 +12,13 @@ export class DragonPresenter {
 
   constructor(private readonly queryBus: QueryBus) {}
 
-  public async getById(dragonId: Dragon['id']): Promise<Dragon> {
-    const { dragon } = await this.queryBus.execute<
+  public async getById(
+    dragonId: Dragon['id'],
+  ): Promise<GetDragonByIdQueryResult> {
+    const result = await this.queryBus.execute<
       GetDragonByIdQuery,
       GetDragonByIdQueryResult
     >(new GetDragonByIdQuery({ dragonId }));
-    return dragon;
+    return result;
   }
 }

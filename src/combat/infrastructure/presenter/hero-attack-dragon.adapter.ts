@@ -9,6 +9,7 @@ import {
   DragonFighter,
   HeroFighter,
 } from '../../core/domain/fight/fighter.entity';
+import { Result } from 'neverthrow';
 
 @Injectable()
 export class HeroAttackDragonAdapter
@@ -19,17 +20,21 @@ export class HeroAttackDragonAdapter
     private readonly dragonFighterPresenter: DragonFighterPresenter,
   ) {}
 
-  public async getAttackStrength(id: Hero['id']): Promise<number> {
-    const attackValue = await this.heroFighterPresenter.getAttackStrength(id);
-    return attackValue;
+  public async getAttackStrength(
+    id: Hero['id'],
+  ): Promise<Result<{ attackValue: number }, Error>> {
+    const result = await this.heroFighterPresenter.getAttackStrength(id);
+    return result;
   }
   public async receiveDamage(
     id: Dragon['id'],
     damage: Damage<HeroFighter>,
-  ): Promise<void> {
-    await this.dragonFighterPresenter.receiveDamage(id, damage);
+  ): Promise<Result<void, Error>> {
+    return this.dragonFighterPresenter.receiveDamage(id, damage);
   }
-  public async isDead(id: Dragon['id']): Promise<boolean> {
+  public async isDead(
+    id: Dragon['id'],
+  ): Promise<Result<{ isDead: boolean }, Error>> {
     const isDead = await this.dragonFighterPresenter.isDead(id);
     return isDead;
   }

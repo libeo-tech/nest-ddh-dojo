@@ -18,7 +18,10 @@ describe('heal hero command', () => {
       currentHp: 1,
     });
     const heal = generateRandomNumber(1, 5);
-    await healHeroCommandHandler.execute(new HealHeroCommand({ heroId, heal }));
+    const result = await healHeroCommandHandler.execute(
+      new HealHeroCommand({ heroId, heal }),
+    );
+    expect(result.isOk()).toBeTruthy();
 
     const hero = await heroMockAdapter.getById(heroId);
     expect(hero.currentHp).toStrictEqual(currentHp + heal);
@@ -27,7 +30,10 @@ describe('heal hero command', () => {
   it('should not heal an uninjured hero', async () => {
     const { id: heroId, currentHp: maxHp } = await heroMockAdapter.create({});
     const heal = generateRandomNumber(1, 5);
-    await healHeroCommandHandler.execute(new HealHeroCommand({ heroId, heal }));
+    const result = await healHeroCommandHandler.execute(
+      new HealHeroCommand({ heroId, heal }),
+    );
+    expect(result.isOk()).toBeTruthy();
 
     const hero = await heroMockAdapter.getById(heroId);
     expect(hero.currentHp).toStrictEqual(maxHp);
@@ -37,10 +43,12 @@ describe('heal hero command', () => {
     const heal = generateRandomNumber(1, 10);
     const missingHeroId = 'Hero-id-not-existing' as Hero['id'];
 
-    await expect(
-      healHeroCommandHandler.execute(
-        new HealHeroCommand({ heroId: missingHeroId, heal }),
-      ),
-    ).rejects.toThrow(new HeroNotFoundError(missingHeroId));
+    const result = await healHeroCommandHandler.execute(
+      new HealHeroCommand({ heroId: missingHeroId, heal }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new HeroNotFoundError(missingHeroId),
+    );
   });
 });

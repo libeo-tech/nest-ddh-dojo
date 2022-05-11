@@ -1,11 +1,11 @@
 import { IQuery } from '@nestjs/cqrs';
 import { Result } from 'neverthrow';
 import { UnknownApplicationError } from '../../../../../common/core/domain/base.error';
-import { Item } from '../../../domain/item.entity';
+import { Hero } from '../../../domain/hero.entity';
 
-export class GetAllItemsQuery implements IQuery {}
+export class GetAllHeroesQuery implements IQuery {}
 
-export type GetAllItemsQueryResult = Result<
-  { items: Item[] },
+export type GetAllHeroesQueryResult = Result<
+  { heroes: Hero[] },
   UnknownApplicationError
 >;

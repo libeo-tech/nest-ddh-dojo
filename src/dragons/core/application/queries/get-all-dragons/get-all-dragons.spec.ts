@@ -13,7 +13,10 @@ describe('get all dragons query', () => {
       dragonMockAdapter.create({}),
     ]);
 
-    const { dragons } = await getAllDragonsQueryHandler.execute();
+    const result = await getAllDragonsQueryHandler.execute();
+    expect(result.isOk()).toBeTruthy();
+
+    const { dragons } = result._unsafeUnwrap();
     expect(dragons.length).toBe(2);
     expect(dragons[0]).toMatchObject(dragon1);
     expect(dragons[1]).toMatchObject(dragon2);

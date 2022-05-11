@@ -21,7 +21,10 @@ describe('hurt hero command', () => {
       value: generateRandomNumber(1, maxHp - 1),
       source: dragonId,
     };
-    await hurtHeroHandler.execute(new HurtHeroCommand({ heroId, damage }));
+    const result = await hurtHeroHandler.execute(
+      new HurtHeroCommand({ heroId, damage }),
+    );
+    expect(result.isOk()).toBeTruthy();
 
     const hero = await heroMockAdapter.getById(heroId);
     expect(hero.currentHp).toStrictEqual(maxHp - damage.value);
@@ -30,7 +33,10 @@ describe('hurt hero command', () => {
   it('should die when losing too much hp', async () => {
     const { id: heroId, currentHp: maxHp } = await heroMockAdapter.create({});
     const damage = { value: maxHp + 1, source: dragonId };
-    await hurtHeroHandler.execute(new HurtHeroCommand({ heroId, damage }));
+    const result = await hurtHeroHandler.execute(
+      new HurtHeroCommand({ heroId, damage }),
+    );
+    expect(result.isOk()).toBeTruthy();
 
     const hero = await heroMockAdapter.getById(heroId);
     expect(hero.currentHp).toStrictEqual(maxHp - damage.value);
@@ -40,10 +46,12 @@ describe('hurt hero command', () => {
     const damage = { value: generateRandomNumber(1, 10), source: dragonId };
     const missingHeroId = 'Hero-id-not-existing' as Hero['id'];
 
-    await expect(
-      hurtHeroHandler.execute(
-        new HurtHeroCommand({ heroId: missingHeroId, damage }),
-      ),
-    ).rejects.toThrow(new HeroNotFoundError(missingHeroId));
+    const result = await hurtHeroHandler.execute(
+      new HurtHeroCommand({ heroId: missingHeroId, damage }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new HeroNotFoundError(missingHeroId),
+    );
   });
 });

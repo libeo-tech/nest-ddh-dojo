@@ -1,13 +1,16 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/domain/base.ports';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { Hero } from '../../../domain/hero.entity';
 import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroGainedXpEvent } from '../../../domain/hero.events';
-import { GainXpCommand } from './gain-xp.command';
+import { GainXpCommand, GainXpCommandResult } from './gain-xp.command';
 
 @CommandHandler(GainXpCommand)
 export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
@@ -17,17 +20,19 @@ export class GainXpCommandHandler implements ICommandHandler<GainXpCommand> {
     private readonly eventBus: EventBus,
   ) {}
 
-  private readonly logger = new Logger(GainXpCommandHandler.name);
-
-  public async execute({ payload }: GainXpCommand): Promise<void> {
-    this.logger.log(`> GainXpCommand: ${JSON.stringify(payload)}`);
+  @WrapInTryCatchWithUnknownApplicationError('HeroModule')
+  @LogPayloadAndResult('HeroModule')
+  public async execute({
+    payload,
+  }: GainXpCommand): Promise<GainXpCommandResult> {
     const { heroId, xpGain } = payload;
 
     const hero = await this.heroPorts.getById(heroId);
     if (!hero) {
-      throw new HeroNotFoundError(heroId);
+      return err(new HeroNotFoundError(heroId));
     }
     await this.heroPorts.update(heroId, { xp: hero.xp + xpGain });
     await this.eventBus.publish(new HeroGainedXpEvent({ heroId }));
+    return ok(void 0);
   }
 }

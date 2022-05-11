@@ -1,8 +1,11 @@
-import { IQuery, IQueryResult } from '@nestjs/cqrs';
+import { IQuery } from '@nestjs/cqrs';
+import { Result } from 'neverthrow';
+import { UnknownApplicationError } from '../../../../../common/core/domain/base.error';
 import { Dragon } from '../../../domain/dragon.entity';
 
 export class GetAllDragonsQuery implements IQuery {}
 
-export class GetAllDragonsQueryResult implements IQueryResult {
-  constructor(public readonly dragons: Dragon[]) {}
-}
+export type GetAllDragonsQueryResult = Result<
+  { dragons: Dragon[] },
+  UnknownApplicationError
+>;

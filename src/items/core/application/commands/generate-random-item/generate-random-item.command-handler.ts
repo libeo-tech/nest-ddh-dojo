@@ -1,10 +1,16 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreatePort } from '../../../../../common/core/domain/base.ports';
 import { Item, ItemWithOwner } from '../../../domain/item.entity';
 import { itemEntityFactory } from '../../../domain/item.entity-factory';
 import { ItemWithOwnerPorts } from '../../../domain/item-with-owner.ports';
-import { GenerateRandomItemCommand } from './generate-random-item.command';
+import {
+  GenerateRandomItemCommand,
+  GenerateRandomItemCommandResult,
+} from './generate-random-item.command';
+import { ok } from 'neverthrow';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 
 @CommandHandler(GenerateRandomItemCommand)
 export class GenerateRandomItemCommandHandler
@@ -19,14 +25,16 @@ export class GenerateRandomItemCommandHandler
     >,
   ) {}
 
-  private readonly logger = new Logger(GenerateRandomItemCommandHandler.name);
-
-  public async execute({ payload }: GenerateRandomItemCommand): Promise<void> {
-    this.logger.log(`> GenerateRandomItemCommand`);
+  @WrapInTryCatchWithUnknownApplicationError('ItemModule')
+  @LogPayloadAndResult('ItemModule')
+  public async execute({
+    payload,
+  }: GenerateRandomItemCommand): Promise<GenerateRandomItemCommandResult> {
     const { ownerId } = payload;
 
     const randomItem = itemEntityFactory();
     const item = await this.itemPorts.create(randomItem);
     await this.itemWithOwnerPorts.attributeOwnerOfItem(item.id, ownerId);
+    return ok({ item });
   }
 }

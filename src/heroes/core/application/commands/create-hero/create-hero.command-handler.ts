@@ -1,8 +1,14 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { ok } from 'neverthrow';
 import { CreatePort } from '../../../../../common/core/domain/base.ports';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { Hero } from '../../../domain/hero.entity';
-import { CreateHeroCommand } from './create-hero.command';
+import {
+  CreateHeroCommand,
+  CreateHeroCommandResult,
+} from './create-hero.command';
 
 @CommandHandler(CreateHeroCommand)
 export class CreateHeroCommandHandler
@@ -10,12 +16,14 @@ export class CreateHeroCommandHandler
 {
   constructor(@Inject(Hero) private readonly heroPorts: CreatePort<Hero>) {}
 
-  private readonly logger = new Logger(CreateHeroCommandHandler.name);
-
-  public async execute({ payload }: CreateHeroCommand): Promise<void> {
-    this.logger.log(`> CreateHeroCommand: ${JSON.stringify(payload)}`);
+  @WrapInTryCatchWithUnknownApplicationError('HeroModule')
+  @LogPayloadAndResult('HeroModule')
+  public async execute({
+    payload,
+  }: CreateHeroCommand): Promise<CreateHeroCommandResult> {
     const { name } = payload;
 
-    await this.heroPorts.create({ name, level: 1 });
+    const hero = await this.heroPorts.create({ name, level: 1 });
+    return ok(hero);
   }
 }

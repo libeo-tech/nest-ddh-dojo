@@ -15,19 +15,24 @@ describe('get hero by id query', () => {
   it('should get a hero by Id', async () => {
     const batman = await heroMockAdapter.create({});
 
-    const { hero } = await getHeroByIdQueryHandler.execute(
+    const result = await getHeroByIdQueryHandler.execute(
       new GetHeroByIdQuery({ heroId: batman.id }),
     );
+    expect(result.isOk()).toBeTruthy();
+
+    const { hero } = result._unsafeUnwrap();
     expect(hero).toMatchObject(batman);
   });
 
   it('should throw if the hero does not exist', async () => {
     const missingHeroId = 'hero-id-not-existing' as Hero['id'];
 
-    await expect(
-      getHeroByIdQueryHandler.execute(
-        new GetHeroByIdQuery({ heroId: missingHeroId }),
-      ),
-    ).rejects.toThrow(new HeroNotFoundError(missingHeroId));
+    const result = await getHeroByIdQueryHandler.execute(
+      new GetHeroByIdQuery({ heroId: missingHeroId }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new HeroNotFoundError(missingHeroId),
+    );
   });
 });

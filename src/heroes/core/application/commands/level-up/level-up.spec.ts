@@ -23,8 +23,9 @@ describe('level up command', () => {
       xp: xpNeeded + 1,
     });
 
-    await levelUpHandler.execute(new LevelUpCommand({ heroId }));
+    const result = await levelUpHandler.execute(new LevelUpCommand({ heroId }));
 
+    expect(result.isOk()).toBeTruthy();
     const { level: newLevel } = await heroMockAdapter.getById(heroId);
     expect(newLevel).toEqual(level + 1);
   });
@@ -35,16 +36,22 @@ describe('level up command', () => {
       xp: 0,
     });
 
-    await expect(
-      levelUpHandler.execute(new LevelUpCommand({ heroId })),
-    ).rejects.toThrow(new HeroDoesNotHaveEnoughXp(heroId));
+    const result = await levelUpHandler.execute(new LevelUpCommand({ heroId }));
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new HeroDoesNotHaveEnoughXp(heroId),
+    );
   });
 
   it('should throw if the hero does not exist', async () => {
     const missingHeroId = 'hero-id-not-existing' as Hero['id'];
 
-    await expect(
-      levelUpHandler.execute(new LevelUpCommand({ heroId: missingHeroId })),
-    ).rejects.toThrow(new HeroNotFoundError(missingHeroId));
+    const result = await levelUpHandler.execute(
+      new LevelUpCommand({ heroId: missingHeroId }),
+    );
+    expect(result.isErr()).toBeTruthy();
+    expect(result._unsafeUnwrapErr()).toEqual(
+      new HeroNotFoundError(missingHeroId),
+    );
   });
 });

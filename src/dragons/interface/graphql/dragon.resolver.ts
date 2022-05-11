@@ -1,8 +1,15 @@
-import { Logger } from '@nestjs/common';
+import {
+  HttpException,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Dragon as DragonSchema } from '../../../graphql';
-import { GenerateNewDragonCommand } from '../../core/application/commands/generate-new-dragon/generate-new-dragon.command';
+import {
+  GenerateNewDragonCommand,
+  GenerateNewDragonCommandResult,
+} from '../../core/application/commands/generate-new-dragon/generate-new-dragon.command';
 import {
   GetAllDragonsQuery,
   GetAllDragonsQueryResult,
@@ -21,10 +28,16 @@ export class DragonResolver {
 
   @Query()
   public async getAllDragons(): Promise<DragonSchema[]> {
-    const { dragons } = await this.queryBus.execute<
+    const result = await this.queryBus.execute<
       GetAllDragonsQuery,
       GetAllDragonsQueryResult
     >(new GetAllDragonsQuery());
+
+    if (result.isErr()) {
+      throw new InternalServerErrorException();
+    }
+
+    const { dragons } = result.value;
     return dragons.map((dragon) => mapDragonEntityToDragonSchema(dragon));
   }
 
@@ -32,9 +45,14 @@ export class DragonResolver {
   public async generateNewDragon(
     @Args('input') dragonProperties: Pick<Dragon, 'level' | 'color'>,
   ): Promise<boolean> {
-    await this.commandBus.execute(
-      new GenerateNewDragonCommand(dragonProperties),
-    );
+    const result = await this.commandBus.execute<
+      GenerateNewDragonCommand,
+      GenerateNewDragonCommandResult
+    >(new GenerateNewDragonCommand(dragonProperties));
+
+    if (result.isErr()) {
+      throw new InternalServerErrorException();
+    }
     return true;
   }
 }

@@ -1,13 +1,19 @@
-import { Inject, Logger } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { err, ok } from 'neverthrow';
 import {
   GetByIdPort,
   UpdatePort,
 } from '../../../../../common/core/domain/base.ports';
+import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { Dragon } from '../../../domain/dragon.entity';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonSlainEvent } from '../../../domain/dragon.events';
-import { HurtDragonCommand } from './hurt-dragon.command';
+import {
+  HurtDragonCommand,
+  HurtDragonCommandResult,
+} from './hurt-dragon.command';
 
 @CommandHandler(HurtDragonCommand)
 export class HurtDragonCommandHandler
@@ -19,15 +25,16 @@ export class HurtDragonCommandHandler
     private eventBus: EventBus,
   ) {}
 
-  private readonly logger = new Logger(HurtDragonCommandHandler.name);
-
-  public async execute({ payload }: HurtDragonCommand): Promise<void> {
-    this.logger.log(`> HurtDragonCommand: ${JSON.stringify(payload)}`);
+  @WrapInTryCatchWithUnknownApplicationError('DragonModule')
+  @LogPayloadAndResult('DragonModule')
+  public async execute({
+    payload,
+  }: HurtDragonCommand): Promise<HurtDragonCommandResult> {
     const { dragonId, damage } = payload;
 
     const dragon = await this.dragonPorts.getById(dragonId);
     if (!dragon) {
-      throw new DragonNotFoundError(dragonId);
+      return err(new DragonNotFoundError(dragonId));
     }
 
     const newHp = dragon.currentHp - damage.value;
@@ -38,5 +45,7 @@ export class HurtDragonCommandHandler
     if (newHp <= 0 && damage.source) {
       await this.eventBus.publish(new DragonSlainEvent({ dragonId }));
     }
+
+    return ok(void 0);
   }
 }

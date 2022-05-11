@@ -18,7 +18,9 @@ export class ItemMockAdapter
     const items = Object.values(this.entities);
     const itemsWithOwner = items.filter(isItemWithOwner);
     return Promise.resolve(
-      itemsWithOwner.filter((item) => item.owner.id === ownerId),
+      itemsWithOwner
+        .filter((item) => item.owner.id === ownerId)
+        .map(({ owner: _, ...item }) => item),
     );
   }
   attributeOwnerOfItem(itemId: Item['id'], ownerId: Hero['id']): Promise<void> {

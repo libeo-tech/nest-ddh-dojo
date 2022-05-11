@@ -1,3 +1,4 @@
+import { ok } from 'neverthrow';
 import { firstValueFrom, of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 import { afterCommandTest } from '../../../../common/utils/rxjs/after-command-test';
@@ -68,7 +69,9 @@ describe('combat sagas', () => {
   });
 
   it('should publish a retaliate event if attack did not kill fighter', async () => {
-    jest.spyOn(fightMockAdapter, 'isDead').mockResolvedValueOnce(false);
+    jest
+      .spyOn(fightMockAdapter, 'isDead')
+      .mockResolvedValueOnce(ok({ isDead: false }));
     await firstValueFrom(
       combatSaga
         .newRoundHasBegun(
@@ -84,7 +87,9 @@ describe('combat sagas', () => {
   });
 
   it('should publish a winning end of combat event if first attack killed fighter', async () => {
-    jest.spyOn(fightMockAdapter, 'isDead').mockResolvedValueOnce(true);
+    jest
+      .spyOn(fightMockAdapter, 'isDead')
+      .mockResolvedValueOnce(ok({ isDead: true }));
     await firstValueFrom(
       combatSaga
         .newRoundHasBegun(
@@ -109,7 +114,9 @@ describe('combat sagas', () => {
   });
 
   it('should publish a new round event if retaliate did not kill fighter', async () => {
-    jest.spyOn(fightMockAdapter, 'isDead').mockResolvedValueOnce(false);
+    jest
+      .spyOn(fightMockAdapter, 'isDead')
+      .mockResolvedValueOnce(ok({ isDead: false }));
     await firstValueFrom(
       combatSaga
         .fighterRetaliate(
@@ -124,7 +131,9 @@ describe('combat sagas', () => {
   });
 
   it('should publish a losing end of combat event if retaliate killed fighter', async () => {
-    jest.spyOn(fightMockAdapter, 'isDead').mockResolvedValueOnce(true);
+    jest
+      .spyOn(fightMockAdapter, 'isDead')
+      .mockResolvedValueOnce(ok({ isDead: true }));
     await firstValueFrom(
       combatSaga
         .fighterRetaliate(
