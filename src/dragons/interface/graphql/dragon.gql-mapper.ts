@@ -1,5 +1,12 @@
-import { ColorEnum, Dragon as DragonSchema } from '../../../graphql';
-import { Dragon as DragonEntity } from '../../core/domain/dragon.entity';
+import {
+  ColorEnum,
+  Dragon as DragonSchema,
+  DragonCreationInput,
+} from '../../../graphql';
+import {
+  Dragon as DragonEntity,
+  DragonColor,
+} from '../../core/domain/dragon.entity';
 
 export const mapDragonEntityToDragonSchema = (
   dragonEntity: DragonEntity,
@@ -10,4 +17,17 @@ export const mapDragonEntityToDragonSchema = (
     currentHp: dragonEntity.currentHp,
     color: ColorEnum[dragonEntity.color.toUpperCase()],
   };
+};
+
+export const mapDragonInputToDragonProperties = (
+  dragonInput: DragonCreationInput = {},
+): Partial<Pick<DragonEntity, 'level' | 'color'>> => {
+  const dragonProperties: Partial<Pick<DragonEntity, 'level' | 'color'>> = {};
+  if (dragonInput.level) {
+    dragonProperties.level = dragonInput.level;
+  }
+  if (dragonInput.color) {
+    dragonProperties.color = DragonColor[dragonInput.color];
+  }
+  return dragonProperties;
 };
