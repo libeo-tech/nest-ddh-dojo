@@ -1,11 +1,7 @@
-import {
-  HttpException,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { Dragon as DragonSchema } from '../../../graphql';
+import { Dragon as DragonSchema, DragonCreationInput } from '../../../graphql';
 import {
   GenerateNewDragonCommand,
   GenerateNewDragonCommandResult,
@@ -14,8 +10,10 @@ import {
   GetAllDragonsQuery,
   GetAllDragonsQueryResult,
 } from '../../core/application/queries/get-all-dragons/get-all-dragons.query';
-import { Dragon } from '../../core/domain/dragon.entity';
-import { mapDragonEntityToDragonSchema } from './dragon.gql-mapper';
+import {
+  mapDragonEntityToDragonSchema,
+  mapDragonInputToDragonProperties,
+} from './dragon.gql-mapper';
 
 @Resolver('dragon')
 export class DragonResolver {
@@ -43,8 +41,9 @@ export class DragonResolver {
 
   @Mutation()
   public async generateNewDragon(
-    @Args('input') dragonProperties: Pick<Dragon, 'level' | 'color'>,
+    @Args('input') dragonInput: DragonCreationInput,
   ): Promise<boolean> {
+    const dragonProperties = mapDragonInputToDragonProperties(dragonInput);
     const result = await this.commandBus.execute<
       GenerateNewDragonCommand,
       GenerateNewDragonCommandResult
