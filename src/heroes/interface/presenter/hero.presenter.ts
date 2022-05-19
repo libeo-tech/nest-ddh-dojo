@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import {
   GainXpCommand,
@@ -8,8 +8,6 @@ import { Hero } from '../../core/domain/hero.entity';
 
 @Injectable()
 export class HeroPresenter {
-  private readonly logger = new Logger(HeroPresenter.name);
-
   constructor(private readonly commandBus: CommandBus) {}
 
   public async gainXp(

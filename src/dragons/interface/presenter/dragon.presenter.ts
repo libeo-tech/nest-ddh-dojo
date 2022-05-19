@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import {
   GetDragonByIdQuery,
@@ -8,8 +8,6 @@ import { Dragon } from '../../core/domain/dragon.entity';
 
 @Injectable()
 export class DragonPresenter {
-  private readonly logger = new Logger(DragonPresenter.name);
-
   constructor(private readonly queryBus: QueryBus) {}
 
   public async getById(

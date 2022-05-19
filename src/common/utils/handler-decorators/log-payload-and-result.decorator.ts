@@ -1,7 +1,10 @@
 import { Logger } from '@nestjs/common';
 
 export const LogPayloadAndResult = (moduleName: string): MethodDecorator => {
-  const logger = new Logger();
+  const logger = new Logger(moduleName);
+  if (process.env.NODE_ENV === 'test') {
+    logger.localInstance.setLogLevels(['error']);
+  }
 
   return (
     target,

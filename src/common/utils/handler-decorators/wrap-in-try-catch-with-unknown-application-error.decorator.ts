@@ -5,7 +5,7 @@ import { UnknownApplicationError } from '../../core/domain/base.error';
 export const WrapInTryCatchWithUnknownApplicationError = (
   moduleName: string,
 ): MethodDecorator => {
-  const logger = new Logger();
+  const logger = new Logger(moduleName);
 
   return (
     target,
