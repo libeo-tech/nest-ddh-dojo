@@ -1,6 +1,5 @@
 import {
   InternalServerErrorException,
-  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -23,8 +22,6 @@ import {
 
 @Resolver('Hero')
 export class HeroResolver {
-  private readonly logger = new Logger(HeroResolver.name);
-
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,

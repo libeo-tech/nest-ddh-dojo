@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import {
@@ -12,8 +12,6 @@ import {
 
 @Injectable()
 export class ItemPresenter {
-  private readonly logger = new Logger(ItemPresenter.name);
-
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,

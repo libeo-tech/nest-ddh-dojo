@@ -1,4 +1,4 @@
-import { InternalServerErrorException, Logger } from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
 import { Item as ItemSchema } from '../../../graphql';
@@ -11,8 +11,6 @@ import { mapItemEntityToItemSchema } from './item.gql-mapper';
 
 @Resolver('Hero')
 export class InventoryResolver {
-  private readonly logger = new Logger(InventoryResolver.name);
-
   constructor(private readonly queryBus: QueryBus) {}
 
   @ResolveField()

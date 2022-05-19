@@ -1,4 +1,4 @@
-import { InternalServerErrorException, Logger } from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Dragon as DragonSchema, DragonCreationInput } from '../../../graphql';
@@ -17,8 +17,6 @@ import {
 
 @Resolver('Dragon')
 export class DragonResolver {
-  private readonly logger = new Logger(DragonResolver.name);
-
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,

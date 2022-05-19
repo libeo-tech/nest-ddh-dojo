@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { FighterPorts } from '../../../combat/core/domain/fight/fighter.ports';
 import { Damage } from '../../../combat/core/domain/attack/damage.object-value';
@@ -24,8 +24,6 @@ import { Hero } from '../../core/domain/hero.entity';
 export class HeroFighterPresenter
   implements FighterPorts<HeroFighter, Fighter>
 {
-  private readonly logger = new Logger(HeroFighterPresenter.name);
-
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
