@@ -15,41 +15,31 @@ import {
   CreateHeroCommand,
   CreateHeroCommandResult,
 } from '../../core/application/commands/create-hero/create-hero.command';
-import { ItemPresenter } from '../../../items/interface/presenter/item.presenter';
 import { Hero } from '../../core/domain/hero.entity';
 import {
   GetAllHeroesQuery,
   GetAllHeroesQueryResult,
 } from '../../core/application/queries/get-all-heroes/get-all-heroes.query';
 
-@Resolver('hero')
+@Resolver('Hero')
 export class HeroResolver {
   private readonly logger = new Logger(HeroResolver.name);
 
   constructor(
-    private readonly itemPresenter: ItemPresenter,
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
 
   @Query()
   public async getHero(@Args('id') heroId: Hero['id']): Promise<HeroSchema> {
-    const [heroResult, inventoryResult] = await Promise.all([
-      this.queryBus.execute<GetHeroByIdQuery, GetHeroByIdQueryResult>(
-        new GetHeroByIdQuery({ heroId }),
-      ),
-      this.itemPresenter.getHeroInventory(heroId),
-    ]);
+    const heroResult = await this.queryBus.execute<
+      GetHeroByIdQuery,
+      GetHeroByIdQueryResult
+    >(new GetHeroByIdQuery({ heroId }));
     if (heroResult.isErr()) {
       throw new NotFoundException(heroResult.error.message);
     }
-    if (inventoryResult.isErr()) {
-      throw new InternalServerErrorException();
-    }
-    return mapHeroEntityToHeroSchema(
-      heroResult.value.hero,
-      inventoryResult.value.items,
-    );
+    return mapHeroEntityToHeroSchema(heroResult.value.hero);
   }
 
   @Query()

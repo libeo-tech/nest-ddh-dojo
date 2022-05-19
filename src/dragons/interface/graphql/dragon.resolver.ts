@@ -15,7 +15,7 @@ import {
   mapDragonInputToDragonProperties,
 } from './dragon.gql-mapper';
 
-@Resolver('dragon')
+@Resolver('Dragon')
 export class DragonResolver {
   private readonly logger = new Logger(DragonResolver.name);
 

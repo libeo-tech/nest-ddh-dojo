@@ -16,6 +16,11 @@ export enum ColorEnum {
     BLACK = "BLACK"
 }
 
+export interface DragonCreationInput {
+    level?: Nullable<number>;
+    color?: Nullable<ColorEnum>;
+}
+
 export interface IMutation {
     attackDragon(heroId: string, dragonId: string): boolean | Promise<boolean>;
     generateNewDragon(input?: Nullable<DragonCreationInput>): boolean | Promise<boolean>;
@@ -27,11 +32,6 @@ export interface Dragon {
     level: number;
     color?: Nullable<ColorEnum>;
     currentHp: number;
-}
-
-export interface DragonCreationInput {
-    level?: Nullable<number>;
-    color?: Nullable<ColorEnum>;
 }
 
 export interface IQuery {

@@ -1,17 +1,12 @@
 import { Hero as HeroSchema } from '../../../graphql';
-import { Item } from '../../../items/core/domain/item.entity';
 import { Hero as HeroEntity } from '../../core/domain/hero.entity';
 
-export const mapHeroEntityToHeroSchema = (
-  hero: HeroEntity,
-  inventory?: Item[],
-): HeroSchema => {
+export const mapHeroEntityToHeroSchema = (hero: HeroEntity): HeroSchema => {
   return {
     id: hero.id,
     name: hero.name,
     xp: hero.xp,
     level: hero.level,
     currentHp: hero.currentHp,
-    inventory,
   };
 };
