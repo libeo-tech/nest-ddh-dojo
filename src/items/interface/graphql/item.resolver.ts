@@ -1,4 +1,4 @@
-import { HttpException, Logger } from '@nestjs/common';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { Query, Resolver } from '@nestjs/graphql';
 import { Item as ItemSchema } from '../../../graphql';
@@ -8,7 +8,7 @@ import {
 } from '../../core/application/queries/get-all-items/get-all-items.query';
 import { mapItemEntityToItemSchema } from './item.gql-mapper';
 
-@Resolver('item')
+@Resolver('Item')
 export class ItemResolver {
   private readonly logger = new Logger(ItemResolver.name);
 
@@ -22,12 +22,7 @@ export class ItemResolver {
     >(new GetAllItemsQuery());
 
     if (result.isErr()) {
-      throw new HttpException(
-        {
-          message: 'UnknownError occurred on getAllItems Query',
-        },
-        500,
-      );
+      throw new InternalServerErrorException();
     }
 
     const { items } = result.value;

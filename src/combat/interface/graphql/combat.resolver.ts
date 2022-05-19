@@ -5,7 +5,7 @@ import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { CombatSagas } from '../../core/application/sagas/combat.saga';
 import { FighterType } from '../../core/domain/fight/fighter.entity';
 
-@Resolver('combat')
+@Resolver('Combat')
 export class CombatResolver {
   private readonly logger = new Logger(CombatResolver.name);
 

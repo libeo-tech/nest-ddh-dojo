@@ -9,7 +9,6 @@ import {
   GetHeroItemsQuery,
   GetHeroItemsQueryResult,
 } from '../../core/application/queries/get-hero-items/get-hero-items.query';
-import { Item } from '../../core/domain/item.entity';
 
 @Injectable()
 export class ItemPresenter {
