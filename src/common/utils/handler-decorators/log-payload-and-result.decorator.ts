@@ -17,7 +17,7 @@ export const LogPayloadAndResult = (moduleName: string): MethodDecorator => {
       module: moduleName,
       method: commandHandlerOrQueryHandlerName,
     };
-    const context: Record<string, any> = {};
+    const context: Record<string, unknown> = {};
 
     descriptor.value = function (...args: unknown[]): unknown {
       context.payload = args;

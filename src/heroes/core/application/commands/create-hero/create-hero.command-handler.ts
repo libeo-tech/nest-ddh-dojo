@@ -5,6 +5,7 @@ import { CreatePort } from '../../../../../common/core/domain/base.ports';
 import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
 import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { Hero } from '../../../domain/hero.entity';
+import { heroEntityFactory } from '../../../domain/hero.entity-factory';
 import {
   CreateHeroCommand,
   CreateHeroCommandResult,
@@ -22,8 +23,8 @@ export class CreateHeroCommandHandler
     payload,
   }: CreateHeroCommand): Promise<CreateHeroCommandResult> {
     const { name } = payload;
-
-    const hero = await this.heroPorts.create({ name, level: 1 });
+    const newHero = heroEntityFactory({ name, level: 1 });
+    const hero = await this.heroPorts.create(newHero);
     return ok(hero);
   }
 }

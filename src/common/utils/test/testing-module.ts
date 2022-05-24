@@ -1,9 +1,12 @@
+import { ModuleMetadata } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
-import { Test } from '@nestjs/testing';
+import { Test, TestingModuleBuilder } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-export const createTestModule = (modules: any[]) => {
+export const createTestModule = (
+  modules: ModuleMetadata['imports'],
+): TestingModuleBuilder => {
   return Test.createTestingModule({
     imports: [
       ...modules,

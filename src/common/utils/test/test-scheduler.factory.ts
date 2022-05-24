@@ -1,7 +1,17 @@
+import { NextNotification, ObservableNotification } from 'rxjs';
+import { TestMessage } from 'rxjs/internal/testing/TestMessage';
 import { TestScheduler } from 'rxjs/testing';
 
-const removeAfterHook = (frame: any): any => {
-  delete frame?.notification?.value?.afterHook;
+const isNextNotification = <T>(
+  notification: ObservableNotification<T>,
+): notification is NextNotification<T> => {
+  return 'value' in notification;
+};
+
+const removeAfterHook = (frame: TestMessage): TestMessage => {
+  if (isNextNotification(frame.notification)) {
+    delete frame.notification.value?.afterHook;
+  }
   return frame;
 };
 

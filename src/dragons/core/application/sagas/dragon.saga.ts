@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ICommand, ofType, Saga } from '@nestjs/cqrs';
+import { ICommand, IEvent, ofType, Saga } from '@nestjs/cqrs';
 import { delay, map, Observable } from 'rxjs';
 import { DragonSlainEvent } from '../../domain/dragon.events';
 import { RespawnDragonCommand } from '../commands/respawn-dragon/respawn-dragon.command';
@@ -7,7 +7,7 @@ import { RespawnDragonCommand } from '../commands/respawn-dragon/respawn-dragon.
 @Injectable()
 export class DragonSagas {
   @Saga()
-  respawnDragon = (events$: Observable<any>): Observable<ICommand> => {
+  respawnDragon = (events$: Observable<IEvent>): Observable<ICommand> => {
     return events$.pipe(
       ofType(DragonSlainEvent),
       delay(1000 * 60),

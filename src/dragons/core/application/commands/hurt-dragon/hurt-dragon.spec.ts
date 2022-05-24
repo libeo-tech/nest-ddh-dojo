@@ -5,12 +5,12 @@ import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-a
 import { HurtDragonCommand } from './hurt-dragon.command';
 import { HurtDragonCommandHandler } from './hurt-dragon.command-handler';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
-import { heroEntityFactory } from '../../../../../heroes/core/domain/hero.entity-factory';
 import { DragonSlainEvent } from '../../../domain/dragon.events';
+import { HeroMockAdapter } from '../../../../../heroes/infrastructure/mock/hero.mock-adapter';
 
 describe('hurt dragon command', () => {
-  const { id: heroId } = heroEntityFactory();
   const dragonMockAdapter = new DragonMockAdapter();
+  const heroMockAdapter = new HeroMockAdapter();
   const hurtDragonHandler = new HurtDragonCommandHandler(
     dragonMockAdapter,
     eventBusMock,
@@ -18,9 +18,11 @@ describe('hurt dragon command', () => {
 
   beforeEach(() => {
     dragonMockAdapter.reset();
+    heroMockAdapter.reset();
   });
 
   it('should lose hp when hurt', async () => {
+    const { id: heroId } = await heroMockAdapter.create({});
     const damage = { value: generateRandomNumber(1, 10), source: heroId };
     const { id: dragonId, currentHp: maxHp } = await dragonMockAdapter.create(
       {},
@@ -35,6 +37,7 @@ describe('hurt dragon command', () => {
   });
 
   it('should die when losing too much hp', async () => {
+    const { id: heroId } = await heroMockAdapter.create({});
     const { id: dragonId, currentHp: maxHp } = await dragonMockAdapter.create(
       {},
     );
@@ -53,6 +56,7 @@ describe('hurt dragon command', () => {
   });
 
   it('should throw if the dragon does not exist', async () => {
+    const { id: heroId } = await heroMockAdapter.create({});
     const damage = { value: generateRandomNumber(1, 10), source: heroId };
     const missingDragonId = 'dragon-id-not-existing' as Dragon['id'];
 

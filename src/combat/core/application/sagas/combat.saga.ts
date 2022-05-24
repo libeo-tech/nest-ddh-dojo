@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { EventBus, ICommand, ofType, Saga } from '@nestjs/cqrs';
+import { EventBus, ICommand, IEvent, ofType, Saga } from '@nestjs/cqrs';
 import { filter, map, Observable, tap } from 'rxjs';
 import { afterCommand } from '../../../../common/utils/rxjs/after-command';
 import { Outcome } from '../../domain/combat-log/combat-log.entity';
@@ -45,7 +45,7 @@ export class CombatSagas {
 
   @Saga()
   newRoundHasBegun = (
-    events$: Observable<any>,
+    events$: Observable<IEvent>,
   ): Observable<AttackCommand<Fighter, Fighter>> => {
     return events$.pipe(
       ofType(NewCombatRoundEvent),
@@ -80,7 +80,7 @@ export class CombatSagas {
 
   @Saga()
   fighterRetaliate = (
-    events$: Observable<any>,
+    events$: Observable<IEvent>,
   ): Observable<AttackCommand<Fighter, Fighter>> => {
     return events$.pipe(
       ofType(FighterRetaliationEvent),
@@ -115,7 +115,7 @@ export class CombatSagas {
   };
 
   @Saga()
-  dragonIsSlain = (events$: Observable<any>): Observable<ICommand> => {
+  dragonIsSlain = (events$: Observable<IEvent>): Observable<ICommand> => {
     return events$.pipe(
       ofType(CombatEndedEvent),
       tap(({ payload }) =>

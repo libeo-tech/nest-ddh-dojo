@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ICommand, ofType, Saga } from '@nestjs/cqrs';
+import { ICommand, IEvent, ofType, Saga } from '@nestjs/cqrs';
 import {
   filter,
   from,
@@ -49,7 +49,7 @@ export class HeroSagas {
   };
 
   @Saga()
-  xpGain = (events$: Observable<any>): Observable<ICommand> => {
+  xpGain = (events$: Observable<IEvent>): Observable<ICommand> => {
     return events$.pipe(
       ofType(HeroGainedXpEvent),
       mergeMap(({ payload: { heroId } }) =>
