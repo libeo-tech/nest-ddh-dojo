@@ -58,9 +58,10 @@ export class CombatSagas {
 
         const isDeadResult = await this.isDefenderDead(fight);
         if (isDeadResult.isErr()) {
-          this.combatLogIPA
-            .getPorts(payload.fight)
-            .logOutcome(payload.logId, Outcome.ERROR);
+          return new CombatEndedEvent({
+            ...payload,
+            outcome: Outcome.ERROR,
+          });
         }
         if (isDeadResult.isOk()) {
           const { isDead } = isDeadResult.value;
@@ -89,9 +90,10 @@ export class CombatSagas {
 
         const isDeadResult = await this.isDefenderDead(fight);
         if (isDeadResult.isErr()) {
-          this.combatLogIPA
-            .getPorts(payload.fight)
-            .logOutcome(payload.logId, Outcome.ERROR);
+          return new CombatEndedEvent({
+            ...payload,
+            outcome: Outcome.ERROR,
+          });
         }
         if (isDeadResult.isOk()) {
           const { isDead } = isDeadResult.value;
