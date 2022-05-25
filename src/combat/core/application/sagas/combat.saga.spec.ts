@@ -1,13 +1,13 @@
-import { ok } from 'neverthrow';
+import { err, ok } from 'neverthrow';
 import { firstValueFrom, of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
-import { afterCommandTest } from '../../../../common/utils/rxjs/after-command-test';
+import { PublishEventCommand } from '../../../../common/core/commands/publish-event.command';
+import { UnknownApplicationError } from '../../../../common/core/domain/base.error';
+import { CommandResultEvent } from '../../../../common/core/domain/command-result.event';
 import { eventBusMock } from '../../../../common/utils/test/event-bus.mock';
 import { testSchedulerFactory } from '../../../../common/utils/test/test-scheduler.factory';
 import { combatLogMockAdapter } from '../../../infrastructure/mock/combat-log.mock-adapter';
 import { combatLogMockIPA } from '../../../infrastructure/mock/combat-log.mock-ipa';
-import { fightMockAdapter } from '../../../infrastructure/mock/fight.mock-adapter';
-import { fightMockIPA } from '../../../infrastructure/mock/fight.mock-ipa';
 import { CombatLog, Outcome } from '../../domain/combat-log/combat-log.entity';
 import { mockFight } from '../../domain/fight/fight.mock';
 import { Fight, reverseFight } from '../../domain/fight/fight.type';
@@ -18,20 +18,12 @@ import {
 } from '../../domain/fight/fighter.entity';
 import { AttackCommand } from '../commands/attack/attack.command';
 import { RewardHeroCommand } from '../commands/reward-hero/reward-hero.command';
-import {
-  CombatEndedEvent,
-  FighterRetaliationEvent,
-  NewCombatRoundEvent,
-} from './combat.event';
+import { CombatEndedEvent, NewCombatRoundEvent } from './combat.event';
 import { CombatSagas } from './combat.saga';
 
 describe('combat sagas', () => {
   const logId = 'logId' as CombatLog<Fighter, Fighter>['id'];
-  const combatSaga = new CombatSagas(
-    combatLogMockIPA,
-    fightMockIPA,
-    eventBusMock,
-  );
+  const combatSaga = new CombatSagas(combatLogMockIPA, eventBusMock);
   let testScheduler: TestScheduler;
 
   beforeEach(() => {
@@ -63,93 +55,119 @@ describe('combat sagas', () => {
 
       const output$ = combatSaga.newRoundHasBegun(events$);
       expectObservable(output$).toBe('-a-|', {
-        a: new AttackCommand(payload),
+        a: new AttackCommand({ ...payload, isRetaliate: false }),
       });
     });
   });
 
-  it('should publish a retaliate event if attack did not kill fighter', async () => {
-    jest
-      .spyOn(fightMockAdapter, 'isDead')
-      .mockResolvedValueOnce(ok({ isDead: false }));
-    await firstValueFrom(
-      combatSaga
-        .newRoundHasBegun(
-          of(new NewCombatRoundEvent({ fight: mockFight, logId })),
-        )
-        .pipe(afterCommandTest()),
-    );
+  it('should trigger a retaliation attack if attack did not kill fighter', async () => {
+    const payload = { fight: mockFight, logId };
+    testScheduler.run(({ hot, expectObservable }) => {
+      const events$ = hot('-r-|', {
+        r: new CommandResultEvent(
+          new AttackCommand({ ...payload, isRetaliate: false }),
+          ok({ isDead: false }),
+        ),
+      });
 
-    expect(fightMockAdapter.isDead).toBeCalledWith(mockFight.defender.id);
-    expect(eventBusMock.publish).toBeCalledWith(
-      new FighterRetaliationEvent({ fight: reverseFight(mockFight), logId }),
-    );
+      const output$ = combatSaga.defenderRetaliate(events$);
+      expectObservable(output$).toBe('-a-|', {
+        a: new AttackCommand({
+          fight: reverseFight(payload.fight),
+          logId: payload.logId,
+          isRetaliate: true,
+        }),
+      });
+    });
   });
 
-  it('should publish a winning end of combat event if first attack killed fighter', async () => {
-    jest
-      .spyOn(fightMockAdapter, 'isDead')
-      .mockResolvedValueOnce(ok({ isDead: true }));
-    await firstValueFrom(
-      combatSaga
-        .newRoundHasBegun(
-          of(new NewCombatRoundEvent({ fight: mockFight, logId })),
-        )
-        .pipe(afterCommandTest()),
-    );
+  it('should start a new round after a retaliation attack', async () => {
+    const payload = { fight: mockFight, logId };
+    testScheduler.run(({ hot, expectObservable }) => {
+      const events$ = hot('-r-|', {
+        r: new CommandResultEvent(
+          new AttackCommand({ ...payload, isRetaliate: true }),
+          ok({ isDead: false }),
+        ),
+      });
 
-    expect(fightMockAdapter.isDead).toBeCalledWith(mockFight.defender.id);
-    expect(eventBusMock.publish).toBeCalledWith(
-      new CombatEndedEvent({ fight: mockFight, outcome: Outcome.WIN, logId }),
-    );
+      const output$ = combatSaga.endOfRound(events$);
+      expectObservable(output$).toBe('-a-|', {
+        a: new PublishEventCommand(
+          new NewCombatRoundEvent({
+            fight: reverseFight(payload.fight),
+            logId: payload.logId,
+          }),
+        ),
+      });
+    });
   });
 
-  it('should trigger an attack when a fighter retaliate', async () => {
-    const command = await firstValueFrom(
-      combatSaga.fighterRetaliate(
-        of(new FighterRetaliationEvent({ fight: mockFight, logId })),
-      ),
-    );
-    expect(command).toBeInstanceOf(AttackCommand);
+  it('should end the fight with a win if fighter dies before retaliation', async () => {
+    const payload = { fight: mockFight, logId };
+    testScheduler.run(({ hot, expectObservable }) => {
+      const events$ = hot('-r-|', {
+        r: new CommandResultEvent(
+          new AttackCommand({ ...payload, isRetaliate: false }),
+          ok({ isDead: true }),
+        ),
+      });
+
+      const output$ = combatSaga.endOfFight(events$);
+      expectObservable(output$).toBe('-a-|', {
+        a: new PublishEventCommand(
+          new CombatEndedEvent({
+            ...payload,
+            outcome: Outcome.WIN,
+          }),
+        ),
+      });
+    });
   });
 
-  it('should publish a new round event if retaliate did not kill fighter', async () => {
-    jest
-      .spyOn(fightMockAdapter, 'isDead')
-      .mockResolvedValueOnce(ok({ isDead: false }));
-    await firstValueFrom(
-      combatSaga
-        .fighterRetaliate(
-          of(new FighterRetaliationEvent({ fight: mockFight, logId })),
-        )
-        .pipe(afterCommandTest()),
-    );
-    expect(fightMockAdapter.isDead).toBeCalledWith(mockFight.defender.id);
-    expect(eventBusMock.publish).toBeCalledWith(
-      new NewCombatRoundEvent({ fight: reverseFight(mockFight), logId }),
-    );
+  it('should end the fight with a loss if fighter dies after retaliation', async () => {
+    const payload = { fight: mockFight, logId };
+    testScheduler.run(({ hot, expectObservable }) => {
+      const events$ = hot('-r-|', {
+        r: new CommandResultEvent(
+          new AttackCommand({ ...payload, isRetaliate: true }),
+          ok({ isDead: true }),
+        ),
+      });
+
+      const output$ = combatSaga.endOfFight(events$);
+      expectObservable(output$).toBe('-a-|', {
+        a: new PublishEventCommand(
+          new CombatEndedEvent({
+            fight: reverseFight(payload.fight),
+            logId: payload.logId,
+            outcome: Outcome.LOSS,
+          }),
+        ),
+      });
+    });
   });
 
-  it('should publish a losing end of combat event if retaliate killed fighter', async () => {
-    jest
-      .spyOn(fightMockAdapter, 'isDead')
-      .mockResolvedValueOnce(ok({ isDead: true }));
-    await firstValueFrom(
-      combatSaga
-        .fighterRetaliate(
-          of(new FighterRetaliationEvent({ fight: mockFight, logId })),
-        )
-        .pipe(afterCommandTest()),
-    );
+  it('should end the fight with an error if attack errored', async () => {
+    const payload = { fight: mockFight, logId };
+    testScheduler.run(({ hot, expectObservable }) => {
+      const events$ = hot('-r-|', {
+        r: new CommandResultEvent(
+          new AttackCommand({ ...payload, isRetaliate: true }),
+          err(new UnknownApplicationError('random error')),
+        ),
+      });
 
-    expect(fightMockAdapter.isDead).toBeCalledWith(mockFight.defender.id);
-    expect(eventBusMock.publish).toBeCalledWith(
-      new CombatEndedEvent({
-        fight: reverseFight(mockFight),
-        outcome: Outcome.LOSS,
-        logId,
-      }),
-    );
+      const output$ = combatSaga.errorOnAttack(events$);
+      expectObservable(output$).toBe('-a-|', {
+        a: new PublishEventCommand(
+          new CombatEndedEvent({
+            ...payload,
+            outcome: Outcome.ERROR,
+          }),
+        ),
+      });
+    });
   });
 
   it('should award a hero when a dragon is slain', async () => {

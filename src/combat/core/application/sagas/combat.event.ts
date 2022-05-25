@@ -37,11 +37,6 @@ export class NewCombatRoundEvent<
   Y extends Fighter,
 > extends CombatEvent<X, Y> {}
 
-export class FighterRetaliationEvent<
-  X extends Fighter,
-  Y extends Fighter,
-> extends CombatEvent<X, Y> {}
-
 export class CombatEndedEvent<
   X extends Fighter,
   Y extends Fighter,
