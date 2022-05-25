@@ -7,8 +7,8 @@
     "username": "postgres",
     "password": "postgres",
     "database": "dojo",
-    "entities": ["dist/src/**/*.orm-entity.js"],
-    "migrations": ["dist/migrations/*.js"],
+    "entities": ["dist/**/*.orm-entity.js"],
+    "migrations": ["migrations/*.ts"],
     "cli": {
       "migrationsDir": "migrations"
     }
@@ -21,8 +21,8 @@
     "username": "postgres",
     "password": "postgres",
     "database": "dojo-test",
-    "entities": ["dist/src/**/*.orm-entity.js"],
-    "migrations": ["dist/migrations/*.js"],
+    "entities": ["dist/**/*.orm-entity.js"],
+    "migrations": ["migrations/*.ts"],
     "cli": {
       "migrationsDir": "migrations"
     }
