@@ -1,16 +1,20 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { AttackCommand, AttackCommandResult } from './attack.command';
 import { FighterIPA } from '../../../domain/fight/fighter.ports';
 import { Fighter } from '../../../domain/fight/fighter.entity';
-import { err, ok } from 'neverthrow';
+import { err } from 'neverthrow';
 import { WrapInTryCatchWithUnknownApplicationError } from '../../../../../common/utils/handler-decorators/wrap-in-try-catch-with-unknown-application-error.decorator';
 import { LogPayloadAndResult } from '../../../../../common/utils/handler-decorators/log-payload-and-result.decorator';
+import { CommandResultEvent } from '../../../../../common/core/domain/command-result.event';
 
 @CommandHandler(AttackCommand)
 export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
   implements ICommandHandler<AttackCommand<X, Y>>
 {
-  constructor(private readonly fighterIPA: FighterIPA<X, Y>) {}
+  constructor(
+    private readonly fighterIPA: FighterIPA<X, Y>,
+    private readonly eventBus: EventBus,
+  ) {}
 
   @WrapInTryCatchWithUnknownApplicationError('CombatModule')
   @LogPayloadAndResult('CombatModule')
@@ -35,7 +39,8 @@ export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
       return err(receiveDamageResult.error);
     }
 
-    command.end();
-    return ok(void 0);
+    const isDeadResult = await fighterPorts.isDead(defender.id);
+    this.eventBus.publish(new CommandResultEvent(command, isDeadResult));
+    return isDeadResult;
   }
 }

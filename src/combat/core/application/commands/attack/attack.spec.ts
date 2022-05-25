@@ -1,4 +1,5 @@
 import { ok } from 'neverthrow';
+import { eventBusMock } from '../../../../../common/utils/test/event-bus.mock';
 import { CombatLog } from '../../../domain/combat-log/combat-log.entity';
 import { mockFight } from '../../../domain/fight/fight.mock';
 import { Fighter } from '../../../domain/fight/fighter.entity';
@@ -11,17 +12,18 @@ describe('attack command', () => {
   const fightAdapter = {
     getAttackStrength: jest.fn().mockResolvedValue(ok({ attackValue })),
     receiveDamage: jest.fn().mockResolvedValue(ok(void 0)),
-    isDead: jest.fn(),
+    isDead: jest.fn().mockResolvedValue(ok({ isDead: false })),
   };
   const fightIPAdapter = {
     getPorts: () => fightAdapter,
   };
-  const attackHandler = new AttackCommandHandler(fightIPAdapter);
+  const attackHandler = new AttackCommandHandler(fightIPAdapter, eventBusMock);
 
   it('should generate an attack based for hero', async () => {
     const attackCommand = new AttackCommand({
       fight: mockFight,
       logId,
+      isRetaliate: false,
     });
     const result = await attackHandler.execute(attackCommand);
     expect(result.isOk()).toBeTruthy();
@@ -32,5 +34,6 @@ describe('attack command', () => {
       source: 'attackerId',
       value: attackValue,
     });
+    expect(fightAdapter.isDead).toHaveBeenCalledWith(defender.id);
   });
 });
