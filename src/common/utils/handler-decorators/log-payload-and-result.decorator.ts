@@ -1,4 +1,5 @@
 import { Logger } from '@nestjs/common';
+import { ICommand } from '@nestjs/cqrs';
 
 export const LogPayloadAndResult = (moduleName: string): MethodDecorator => {
   const logger = new Logger(moduleName);
@@ -19,8 +20,8 @@ export const LogPayloadAndResult = (moduleName: string): MethodDecorator => {
     };
     const context: Record<string, unknown> = {};
 
-    descriptor.value = function (...args: unknown[]): unknown {
-      context.payload = args;
+    descriptor.value = function (...args: ICommand[]): unknown {
+      Object.assign(context, args[0]);
       logger.log({
         ...logTemplate,
         message: `${moduleName} > ${commandHandlerOrQueryHandlerName} > called`,
