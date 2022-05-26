@@ -7,10 +7,7 @@ import { ItemPresenter } from '../../items/interface/presenter/item.presenter';
 import { CombatLogIPA } from '../core/domain/combat-log/combat-log.ports';
 import { FighterIPA } from '../core/domain/fight/fighter.ports';
 import { CombatLogIPAdapter } from './ipa/combat-log.ipa';
-import { FightIPAdapter } from './ipa/fight.ipa';
-import { DragonAttackHeroAdapter } from './presenter/dragon-attack-hero.adapter';
-import { HeroAttackDragonAdapter } from './presenter/hero-attack-dragon.adapter';
-import { HeroAttackHeroAdapter } from './presenter/hero-attack-hero.adapter';
+import { FighterIPAdapter } from './ipa/fighter.ipa';
 import { PveLogAdapter } from './typeorm/pve-log/pve-log.adapter';
 import { PveLog } from './typeorm/pve-log/pve-log.orm-entity';
 import { PvpLogAdapter } from './typeorm/pvp-log/pvp-log.adapter';
@@ -21,13 +18,10 @@ export const CombatInfrastructure = {
     { provide: Dragon, useClass: DragonPresenter },
     { provide: Hero, useClass: HeroPresenter },
     { provide: Item, useClass: ItemPresenter },
-    { provide: FighterIPA, useClass: FightIPAdapter },
+    { provide: FighterIPA, useClass: FighterIPAdapter },
     { provide: CombatLogIPA, useClass: CombatLogIPAdapter },
     PveLogAdapter,
     PvpLogAdapter,
-    HeroAttackDragonAdapter,
-    DragonAttackHeroAdapter,
-    HeroAttackHeroAdapter,
   ],
   repositories: [PveLog, PvpLog],
 };

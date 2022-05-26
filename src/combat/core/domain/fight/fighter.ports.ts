@@ -6,10 +6,13 @@ import { Fight } from './fight.type';
 import { Fighter } from './fighter.entity';
 
 export abstract class FighterIPA<X extends Fighter, Y extends Fighter> {
-  abstract getPorts(fight: Fight<X, Y>): FighterPorts<X, Y>;
+  abstract getPorts(fight: Fight<X, Y>): {
+    attackerPorts: AttackerPorts<X>;
+    defenderPorts: DefenderPorts<X, Y>;
+  };
 }
 
-export abstract class FighterPorts<X extends Fighter, Y extends Fighter> {
+export abstract class AttackerPorts<X extends Fighter> {
   abstract getAttackStrength(
     id: X['id'],
   ): Promise<
@@ -18,6 +21,8 @@ export abstract class FighterPorts<X extends Fighter, Y extends Fighter> {
       FighterNotFoundError | UnknownApplicationError
     >
   >;
+}
+export abstract class DefenderPorts<X extends Fighter, Y extends Fighter> {
   abstract receiveDamage(
     id: Y['id'],
     damage: Damage<X>,

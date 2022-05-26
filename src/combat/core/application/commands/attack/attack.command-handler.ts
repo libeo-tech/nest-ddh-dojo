@@ -22,16 +22,18 @@ export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
     command: AttackCommand<X, Y>,
   ): Promise<AttackCommandResult> {
     const { fight } = command.payload;
-    const fighterPorts = this.fighterIPA.getPorts(fight);
+    const { attackerPorts, defenderPorts } = this.fighterIPA.getPorts(fight);
     const { attacker, defender } = fight;
 
-    const attackValueResult = await fighterPorts.getAttackStrength(attacker.id);
+    const attackValueResult = await attackerPorts.getAttackStrength(
+      attacker.id,
+    );
     if (attackValueResult.isErr()) {
       return err(attackValueResult.error);
     }
     const { attackValue } = attackValueResult.value;
 
-    const receiveDamageResult = await fighterPorts.receiveDamage(defender.id, {
+    const receiveDamageResult = await defenderPorts.receiveDamage(defender.id, {
       value: attackValue,
       source: attacker.id,
     });
@@ -39,7 +41,7 @@ export class AttackCommandHandler<X extends Fighter, Y extends Fighter>
       return err(receiveDamageResult.error);
     }
 
-    const isDeadResult = await fighterPorts.isDead(defender.id);
+    const isDeadResult = await defenderPorts.isDead(defender.id);
     this.eventBus.publish(new CommandResultEvent(command, isDeadResult));
     return isDeadResult;
   }
