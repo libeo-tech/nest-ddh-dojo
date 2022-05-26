@@ -15,7 +15,12 @@ describe('attack command', () => {
     isDead: jest.fn().mockResolvedValue(ok({ isDead: false })),
   };
   const fightIPAdapter = {
-    getPorts: () => fightAdapter,
+    getPorts: () => {
+      return {
+        attackerPorts: fightAdapter,
+        defenderPorts: fightAdapter,
+      };
+    },
   };
   const attackHandler = new AttackCommandHandler(fightIPAdapter, eventBusMock);
 
