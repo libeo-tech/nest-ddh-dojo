@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { FighterPorts } from '../../../combat/core/domain/fight/fighter.ports';
+import {
+  AttackerPorts,
+  DefenderPorts,
+} from '../../../combat/core/domain/fight/fighter.ports';
 import { Damage } from '../../../combat/core/domain/attack/damage.object-value';
 import {
   Fighter,
@@ -22,7 +25,9 @@ import { Dragon } from '../../core/domain/dragon.entity';
 
 @Injectable()
 export class DragonFighterPresenter
-  implements FighterPorts<DragonFighter, Fighter>
+  implements
+    AttackerPorts<DragonFighter>,
+    DefenderPorts<DragonFighter, Fighter>
 {
   constructor(
     private readonly commandBus: CommandBus,
