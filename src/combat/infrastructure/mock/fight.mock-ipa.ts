@@ -1,7 +1,12 @@
 import { FighterIPA } from '../../core/domain/fight/fighter.ports';
 import { Fighter } from '../../core/domain/fight/fighter.entity';
-import { fightMockAdapter } from './fight.mock-adapter';
+import { attackerMockAdapter, defenderMockAdapter } from './fight.mock-adapter';
 
 export const fightMockIPA: FighterIPA<Fighter, Fighter> = {
-  getPorts: () => fightMockAdapter,
+  getPorts: () => {
+    return {
+      attackerPorts: attackerMockAdapter,
+      defenderPorts: defenderMockAdapter,
+    };
+  },
 };

@@ -1,8 +1,14 @@
-import { FighterPorts } from '../../core/domain/fight/fighter.ports';
+import {
+  AttackerPorts,
+  DefenderPorts,
+} from '../../core/domain/fight/fighter.ports';
 import { Fighter } from '../../core/domain/fight/fighter.entity';
 
-export const fightMockAdapter: FighterPorts<Fighter, Fighter> = {
+export const attackerMockAdapter: AttackerPorts<Fighter> = {
   getAttackStrength: jest.fn(),
+};
+
+export const defenderMockAdapter: DefenderPorts<Fighter, Fighter> = {
   receiveDamage: jest.fn(),
   isDead: jest.fn(),
 };
