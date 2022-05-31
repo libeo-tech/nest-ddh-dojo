@@ -19,6 +19,11 @@ import { PublishEventCommand } from '../../../../common/core/commands/publish-ev
 import { afterCommand } from '../../../../common/utils/rxjs/after-command';
 import { publishEvent } from '../../../../common/utils/rxjs/publish-event';
 
+const afterAttackCommand = afterCommand<
+  AttackCommand<Fighter, Fighter>,
+  AttackCommandResult
+>(AttackCommand);
+
 @Injectable()
 export class CombatSagas {
   constructor(
@@ -57,9 +62,7 @@ export class CombatSagas {
     events$: Observable<IEvent>,
   ): Observable<AttackCommand<Fighter, Fighter>> => {
     return events$.pipe(
-      afterCommand<AttackCommand<Fighter, Fighter>, AttackCommandResult>(
-        AttackCommand,
-      ),
+      afterAttackCommand,
       filter(({ result }) => result.isOk() && !result.value.isDead),
       filter(({ command: { payload } }) => !payload.isRetaliate),
       map(
@@ -78,9 +81,7 @@ export class CombatSagas {
     events$: Observable<IEvent>,
   ): Observable<PublishEventCommand<NewCombatRoundEvent<Fighter, Fighter>>> => {
     return events$.pipe(
-      afterCommand<AttackCommand<Fighter, Fighter>, AttackCommandResult>(
-        AttackCommand,
-      ),
+      afterAttackCommand,
       filter(({ result }) => result.isOk() && !result.value.isDead),
       filter(({ command: { payload } }) => payload.isRetaliate),
       publishEvent(
@@ -98,7 +99,7 @@ export class CombatSagas {
     events$: Observable<IEvent>,
   ): Observable<PublishEventCommand<CombatEndedEvent<Fighter, Fighter>>> => {
     return events$.pipe(
-      afterCommand(AttackCommand),
+      afterAttackCommand,
       filter(({ result }) => result.isErr()),
       publishEvent(
         ({ command: { payload } }) =>
@@ -116,9 +117,7 @@ export class CombatSagas {
     events$: Observable<IEvent>,
   ): Observable<PublishEventCommand<CombatEndedEvent<Fighter, Fighter>>> => {
     const $endOfFight = events$.pipe(
-      afterCommand<AttackCommand<Fighter, Fighter>, AttackCommandResult>(
-        AttackCommand,
-      ),
+      afterAttackCommand,
       filter(({ result }) => result.isOk() && result.value.isDead),
     );
 
