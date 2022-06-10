@@ -1,24 +1,24 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { Connection } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Item } from '../infrastructure/typeorm/item.orm-entity';
 import { createTestModule } from '../../common/utils/test/testing-module';
 import { ItemModule } from '../item.module';
 
 describe('Items module (e2e)', () => {
   let app: INestApplication;
-  let connection: Connection;
+  let entityManager: EntityManager;
 
   beforeAll(async () => {
     const moduleFixture = await createTestModule([ItemModule]).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
-    connection = await moduleFixture.get(Connection);
+    entityManager = await moduleFixture.get(EntityManager);
   });
 
   beforeEach(async () => {
-    await connection.synchronize(true);
+    await entityManager.connection.synchronize(true);
   });
 
   afterAll(async () => {
@@ -31,8 +31,9 @@ describe('Items module (e2e)', () => {
       { name: 'Excalibur' },
       { name: 'BFG-9000' },
     ];
+
     await Promise.all(
-      connection.manager.create(Item, items).map((item) => item.save()),
+      items.map((item) => entityManager.save(Item, { ...item })),
     );
 
     const { body } = await request(app.getHttpServer())

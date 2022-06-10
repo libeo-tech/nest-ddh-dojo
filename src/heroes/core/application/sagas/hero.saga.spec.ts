@@ -1,9 +1,10 @@
-import { lastValueFrom, of } from 'rxjs';
+import { lastValueFrom, of, from } from 'rxjs';
 import { HeroGainedXpEvent } from '../../domain/hero.events';
 import { getXpNeededForNextLevel } from '../../domain/xp/xp.service';
 import { LevelUpCommand } from '../commands/level-up/level-up.command';
 import { HeroMockAdapter } from '../../../infrastructure/mock/hero.mock-adapter';
 import { HeroSagas } from './hero.saga';
+import { HealHeroCommand } from '../commands/heal-hero/heal-hero.command';
 
 describe('hero saga', () => {
   const heroMockAdapter = new HeroMockAdapter();
@@ -11,6 +12,14 @@ describe('hero saga', () => {
 
   beforeEach(() => {
     heroMockAdapter.reset();
+  });
+
+  it('should heal a hero if he does not have all its hp', async () => {
+    const hero = await heroMockAdapter.create({ currentHp: 1 });
+    Reflect.set(saga, 'everyMinuteForHeroesTimer', from([hero]));
+
+    const result = await lastValueFrom(saga.healHero());
+    expect(result).toEqual(new HealHeroCommand({ heroId: hero.id, heal: 1 }));
   });
 
   it('should trigger a level-up if hero has gained enough xp', async () => {
