@@ -1,24 +1,24 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { Connection } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Dragon } from '../infrastructure/typeorm/dragon.orm-entity';
 import { createTestModule } from '../../common/utils/test/testing-module';
 import { DragonModule } from '../dragon.module';
 
 describe('Dragons module (e2e)', () => {
   let app: INestApplication;
-  let connection: Connection;
+  let entityManager: EntityManager;
 
   beforeAll(async () => {
     const moduleFixture = await createTestModule([DragonModule]).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
-    connection = await moduleFixture.get(Connection);
+    entityManager = await moduleFixture.get(EntityManager);
   });
 
   beforeEach(async () => {
-    await connection.synchronize(true);
+    await entityManager.connection.synchronize(true);
   });
 
   afterAll(async () => {
@@ -37,7 +37,7 @@ describe('Dragons module (e2e)', () => {
 
     expect(body.data.generateNewDragon).toBeTruthy();
 
-    const allDragons = await connection.manager.find(Dragon);
+    const allDragons = await entityManager.find(Dragon);
     expect(allDragons).toHaveLength(1);
   });
 
@@ -47,8 +47,9 @@ describe('Dragons module (e2e)', () => {
       { level: 2, currentHp: 10 },
       { level: 3, currentHp: 15 },
     ];
+
     await Promise.all(
-      connection.manager.create(Dragon, dragons).map((dragon) => dragon.save()),
+      dragons.map((dragon) => entityManager.save(Dragon, { ...dragon })),
     );
 
     const { body } = await request(app.getHttpServer())

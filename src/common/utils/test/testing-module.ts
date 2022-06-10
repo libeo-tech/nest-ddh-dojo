@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { Test, TestingModuleBuilder } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 export const createTestModule = (
   modules: ModuleMetadata['imports'],
@@ -11,7 +12,8 @@ export const createTestModule = (
     imports: [
       ...modules,
       ConfigModule.forRoot(),
-      GraphQLModule.forRoot({
+      GraphQLModule.forRoot<ApolloDriverConfig>({
+        driver: ApolloDriver,
         typePaths: ['./**/*.graphql'],
       }),
       TypeOrmModule.forRoot({

@@ -1,13 +1,13 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { Connection } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Hero } from '../infrastructure/typeorm/hero.orm-entity';
 import { createTestModule } from '../../common/utils/test/testing-module';
 import { HeroModule } from '../hero.module';
 
 describe('Heroes module (e2e)', () => {
   let app: INestApplication;
-  let connection: Connection;
+  let entityManager: EntityManager;
   const heroName = 'Superman';
 
   beforeAll(async () => {
@@ -15,11 +15,11 @@ describe('Heroes module (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
-    connection = await moduleFixture.get(Connection);
+    entityManager = await moduleFixture.get(EntityManager);
   });
 
   beforeEach(async () => {
-    await connection.synchronize(true);
+    await entityManager.connection.synchronize();
   });
 
   afterAll(async () => {
@@ -38,7 +38,7 @@ describe('Heroes module (e2e)', () => {
 
     expect(body.data.createHero).toBeTruthy();
 
-    const hero = await connection.manager.findOne(Hero, {
+    const hero = await entityManager.findOneBy(Hero, {
       name: heroName,
     });
     expect(hero).toBeDefined();
@@ -46,7 +46,7 @@ describe('Heroes module (e2e)', () => {
 
   it('should get a hero', async () => {
     const hero = { name: heroName, level: 1, currentHp: 5 };
-    const { id: heroId } = await connection.manager.create(Hero, hero).save();
+    const { id: heroId } = await entityManager.save(Hero, { ...hero });
 
     const { body } = await request(app.getHttpServer())
       .post('/graphql')
