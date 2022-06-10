@@ -64,8 +64,6 @@ describe('Dragons module (e2e)', () => {
       })
       .expect(200);
 
-    dragons.forEach((dragon) =>
-      expect(body.data.getAllDragons).toContainEqual(dragon),
-    );
+    expect(body.data.getAllDragons).toEqual(expect.arrayContaining(dragons));
   });
 });

@@ -47,6 +47,6 @@ describe('Items module (e2e)', () => {
       })
       .expect(200);
 
-    items.forEach((item) => expect(body.data.getAllItems).toContainEqual(item));
+    expect(body.data.getAllItems).toEqual(expect.arrayContaining(items));
   });
 });
