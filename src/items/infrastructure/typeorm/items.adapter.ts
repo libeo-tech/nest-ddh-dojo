@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, In, Repository } from 'typeorm';
 import { BaseOrmAdapter } from '../../../common/infrastructure/base.orm-adapter';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { ItemWithOwnerPorts } from '../../core/domain/item-with-owner.ports';
@@ -29,11 +29,15 @@ export class ItemAdapter
     itemId: Item['id'],
     ownerId: Hero['id'],
   ): Promise<void> {
-    await this.itemsRepository.update(itemId, { ownerId });
+    const item = await this.itemsRepository.findOneById(itemId);
+    item.ownerId = ownerId;
+    await this.itemsRepository.save(item);
   }
 
   async getItemsByOwnerId(ownerId: Hero['id']): Promise<Item[]> {
-    const items = await this.itemsRepository.find({ ownerId });
+    const items = await this.itemsRepository.find({
+      where: { ownerId: In([ownerId]) },
+    });
     return items.map(mapItemOrmEntityToItemEntity);
   }
 }

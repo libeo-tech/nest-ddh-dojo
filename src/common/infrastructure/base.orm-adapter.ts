@@ -13,7 +13,7 @@ export abstract class BaseOrmAdapter<U extends Base, V extends BaseOrmEntity>
   abstract entitiesRepository: Repository<V>;
 
   async getById(entityId: U['id']): Promise<U | undefined> {
-    const entity = await this.entitiesRepository.findOne(entityId);
+    const entity = await this.entitiesRepository.findOneById(entityId);
     return !!entity ? this.mapOrmEntityToEntity(entity) : undefined;
   }
 
@@ -25,7 +25,8 @@ export abstract class BaseOrmAdapter<U extends Base, V extends BaseOrmEntity>
   async create(entityProperties: Partial<U>): Promise<U> {
     const ormProperties =
       this.mapEntityPropertiesToOrmEntityProperties(entityProperties);
-    const entity = await this.entitiesRepository.save(ormProperties);
+    const entity = await this.entitiesRepository.create(ormProperties);
+    await this.entitiesRepository.save(entity);
     return this.mapOrmEntityToEntity(entity);
   }
 
@@ -35,9 +36,15 @@ export abstract class BaseOrmAdapter<U extends Base, V extends BaseOrmEntity>
   ): Promise<U | undefined> {
     const ormProperties =
       this.mapEntityPropertiesToOrmEntityProperties(entityProperties);
-    await this.entitiesRepository.update(entityId, ormProperties);
-    const entity = await this.entitiesRepository.findOne(entityId);
-    return !!entity ? this.mapOrmEntityToEntity(entity) : undefined;
+    const entity = await this.entitiesRepository.findOneById(entityId);
+    if (!entity) {
+      return undefined;
+    }
+    const updatedEntity = await this.entitiesRepository.save({
+      ...entity,
+      ...ormProperties,
+    });
+    return this.mapOrmEntityToEntity(updatedEntity);
   }
 
   async delete(entityId: U['id']): Promise<void> {
