@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, In, Repository } from 'typeorm';
-import { BaseOrmAdapter } from '../../../common/infrastructure/base.orm-adapter';
+import { BaseOrmAdapter } from '../../../common/infrastructure/typeorm/base.orm-adapter';
 import { Hero } from '../../../heroes/core/domain/hero.entity';
 import { ItemWithOwnerPorts } from '../../core/domain/item-with-owner.ports';
 import { Item } from '../../core/domain/item.entity';

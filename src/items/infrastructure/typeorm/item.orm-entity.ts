@@ -1,6 +1,6 @@
 import { Item as ItemEntity } from '../../core/domain/item.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { BaseOrmEntity } from '../../../common/infrastructure/base.orm-entity';
+import { BaseOrmEntity } from '../../../common/infrastructure/typeorm/base.orm-entity';
 import { Hero } from '../../../heroes/infrastructure/typeorm/hero.orm-entity';
 
 @Entity()

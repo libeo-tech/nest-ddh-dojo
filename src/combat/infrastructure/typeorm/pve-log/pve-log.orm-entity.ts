@@ -3,7 +3,7 @@ import {
   Outcome,
 } from '../../../core/domain/combat-log/combat-log.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { BaseOrmEntity } from '../../../../common/infrastructure/base.orm-entity';
+import { BaseOrmEntity } from '../../../../common/infrastructure/typeorm/base.orm-entity';
 import { Hero as HeroOrmEntity } from '../../../../heroes/infrastructure/typeorm/hero.orm-entity';
 import { Dragon as DragonOrmEntity } from '../../../../dragons/infrastructure/typeorm/dragon.orm-entity';
 import {

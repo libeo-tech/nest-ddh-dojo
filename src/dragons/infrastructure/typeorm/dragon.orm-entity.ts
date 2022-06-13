@@ -1,6 +1,6 @@
 import { Dragon as DragonEntity } from '../../core/domain/dragon.entity';
 import { Column, Entity } from 'typeorm';
-import { BaseOrmEntity } from '../../../common/infrastructure/base.orm-entity';
+import { BaseOrmEntity } from '../../../common/infrastructure/typeorm/base.orm-entity';
 import { DragonColor } from '../../core/domain/dragon.entity';
 
 @Entity()

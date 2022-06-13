@@ -1,5 +1,5 @@
-import { Base } from '../core/domain/base.entity';
-import { BasePorts } from '../core/domain/base.ports';
+import { Base } from '../../core/domain/base.entity';
+import { BasePorts } from '../../core/domain/base.ports';
 
 export abstract class MockAdapter<T extends Base> implements BasePorts<T> {
   abstract entityName: string;

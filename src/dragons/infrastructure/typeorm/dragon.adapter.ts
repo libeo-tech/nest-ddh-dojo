@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
-import { BaseOrmAdapter } from '../../../common/infrastructure/base.orm-adapter';
+import { BaseOrmAdapter } from '../../../common/infrastructure/typeorm/base.orm-adapter';
 import { Dragon } from '../../core/domain/dragon.entity';
 import { Dragon as DragonOrmEntity } from './dragon.orm-entity';
 import { mapDragonOrmEntityToDragonEntity } from './dragon.orm-mapper';
