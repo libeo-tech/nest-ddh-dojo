@@ -40,14 +40,7 @@ model item {
   updatedAt DateTime @default(now()) @db.Timestamp(6)
   version   Int      @default(1)
   name      String   @db.VarChar
-  ownerId   String?  @db.Uuid
-  hero      hero?    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3b030ef7f2840a721547a3c492e")
-}
-
-model migrations {
-  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
-  timestamp BigInt
-  name      String @db.VarChar
+  owner      hero?    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3b030ef7f2840a721547a3c492e")
 }
 
 model pve_log {
