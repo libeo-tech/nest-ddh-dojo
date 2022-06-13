@@ -1,0 +1,18 @@
+model dragon {
+  id        String            @id(map: "PK_097761d2985fe54fda971ff9af8") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt DateTime          @default(now()) @db.Timestamp(6)
+  version   Int               @default(1)
+  level     BigInt            @default(1)
+  color     dragon_color_enum @default(red)
+  currentHp BigInt            @default(1)
+}
+
+enum dragon_color_enum {
+  red
+  green
+  blue
+  yellow
+  white
+  black
+}

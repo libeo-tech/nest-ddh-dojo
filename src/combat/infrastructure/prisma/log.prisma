@@ -1,0 +1,6 @@
+enum combat_outcome_enum {
+  WIN
+  LOSS
+  DRAW
+  ERROR
+}

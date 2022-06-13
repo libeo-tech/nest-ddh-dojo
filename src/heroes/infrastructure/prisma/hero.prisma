@@ -1,0 +1,11 @@
+model hero {
+  id                               String    @id(map: "PK_313d51d6899322b85f2df99ccde") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt                        DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt                        DateTime  @default(now()) @db.Timestamp(6)
+  version                          Int       @default(1)
+  name                             String    @db.VarChar
+  level                            BigInt    @default(1)
+  xp                               BigInt    @default(0)
+  currentHp                        BigInt    @default(1)
+  equippedItem                     String?   @db.VarChar
+}

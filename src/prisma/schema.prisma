@@ -1,0 +1,90 @@
+//******** AUTO GENERATED FILE, DO NOT EDIT.  *********
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum combat_outcome_enum {
+  WIN
+  LOSS
+  DRAW
+  ERROR
+}
+
+
+model pve_log {
+  id             String               @id(map: "PK_bb06eee49372bccc0e80cdc762c") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt      DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime             @default(now()) @db.Timestamp(6)
+  version        Int                  @default(1)
+  numberOfRounds BigInt               @default(0)
+  outcome        pve_log_outcome_enum @default(DRAW)
+  dragonId       String               @db.Uuid
+  dragon         dragon               @relation(fields: [dragonId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bbcbf059672bbb3aee4f45a049a")
+  heroId         String               @db.Uuid
+  hero           hero                 @relation(fields: [heroId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_9fbe3ba5b3c07061f8a22cb906d")
+}
+
+
+model pvp_log {
+  id                            String               @id(map: "PK_21475004db4a6cdb8e873859c1c") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt                     DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt                     DateTime             @default(now()) @db.Timestamp(6)
+  version                       Int                  @default(1)
+  numberOfRounds                BigInt               @default(0)
+  outcome                       pvp_log_outcome_enum @default(DRAW)
+  attackerId                    String               @db.Uuid
+  attacker                 @relation("heroTopvp_log_attackerId", fields: [attackerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_767d68b2142f4e9e109154c14bf")
+  defenderId                    String               @db.Uuid
+  defender                 @relation("heroTopvp_log_defenderId", fields: [defenderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4bb3e1eea91e6c0769b509cc382")
+}
+
+
+model dragon {
+  id        String            @id(map: "PK_097761d2985fe54fda971ff9af8") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt DateTime          @default(now()) @db.Timestamp(6)
+  version   Int               @default(1)
+  level     BigInt            @default(1)
+  color     dragon_color_enum @default(red)
+  currentHp BigInt            @default(1)
+}
+
+enum dragon_color_enum {
+  red
+  green
+  blue
+  yellow
+  white
+  black
+}
+
+
+model hero {
+  id                               String    @id(map: "PK_313d51d6899322b85f2df99ccde") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt                        DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt                        DateTime  @default(now()) @db.Timestamp(6)
+  version                          Int       @default(1)
+  name                             String    @db.VarChar
+  level                            BigInt    @default(1)
+  xp                               BigInt    @default(0)
+  currentHp                        BigInt    @default(1)
+  equippedItem                     String?   @db.VarChar
+}
+
+
+model item {
+  id        String   @id(map: "PK_d3c0c71f23e7adcf952a1d13423") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  version   Int      @default(1)
+  name      String   @db.VarChar
+  ownerId   String   @db.Uuid
+  owner     hero?    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3b030ef7f2840a721547a3c492e")
+}
