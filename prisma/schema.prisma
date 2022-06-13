@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,96 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model dragon {
+  id        String            @id(map: "PK_097761d2985fe54fda971ff9af8") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt DateTime          @default(now()) @db.Timestamp(6)
+  version   Int               @default(1)
+  level     BigInt            @default(1)
+  color     dragon_color_enum @default(red)
+  currentHp BigInt            @default(1)
+  pve_log   pve_log[]
+}
+
+model hero {
+  id                               String    @id(map: "PK_313d51d6899322b85f2df99ccde") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt                        DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt                        DateTime  @default(now()) @db.Timestamp(6)
+  version                          Int       @default(1)
+  name                             String    @db.VarChar
+  level                            BigInt    @default(1)
+  xp                               BigInt    @default(0)
+  currentHp                        BigInt    @default(1)
+  equippedItem                     String?   @db.VarChar
+  item                             item[]
+  pve_log                          pve_log[]
+  pvp_log_heroTopvp_log_attackerId pvp_log[] @relation("heroTopvp_log_attackerId")
+  pvp_log_heroTopvp_log_defenderId pvp_log[] @relation("heroTopvp_log_defenderId")
+}
+
+model item {
+  id        String   @id(map: "PK_d3c0c71f23e7adcf952a1d13423") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  version   Int      @default(1)
+  name      String   @db.VarChar
+  ownerId   String?  @db.Uuid
+  hero      hero?    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3b030ef7f2840a721547a3c492e")
+}
+
+model migrations {
+  id        Int    @id(map: "PK_8c82d7f526340ab734260ea46be") @default(autoincrement())
+  timestamp BigInt
+  name      String @db.VarChar
+}
+
+model pve_log {
+  id             String               @id(map: "PK_bb06eee49372bccc0e80cdc762c") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt      DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime             @default(now()) @db.Timestamp(6)
+  version        Int                  @default(1)
+  heroId         String               @db.Uuid
+  dragonId       String               @db.Uuid
+  numberOfRounds BigInt               @default(0)
+  outcome        pve_log_outcome_enum @default(DRAW)
+  dragon         dragon               @relation(fields: [dragonId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bbcbf059672bbb3aee4f45a049a")
+  hero           hero                 @relation(fields: [heroId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_9fbe3ba5b3c07061f8a22cb906d")
+}
+
+model pvp_log {
+  id                            String               @id(map: "PK_21475004db4a6cdb8e873859c1c") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt                     DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt                     DateTime             @default(now()) @db.Timestamp(6)
+  version                       Int                  @default(1)
+  attackerId                    String               @db.Uuid
+  defenderId                    String               @db.Uuid
+  numberOfRounds                BigInt               @default(0)
+  outcome                       pvp_log_outcome_enum @default(DRAW)
+  hero_heroTopvp_log_attackerId hero                 @relation("heroTopvp_log_attackerId", fields: [attackerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_767d68b2142f4e9e109154c14bf")
+  hero_heroTopvp_log_defenderId hero                 @relation("heroTopvp_log_defenderId", fields: [defenderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4bb3e1eea91e6c0769b509cc382")
+}
+
+enum dragon_color_enum {
+  red
+  green
+  blue
+  yellow
+  white
+  black
+}
+
+enum pve_log_outcome_enum {
+  WIN
+  LOSS
+  DRAW
+  ERROR
+}
+
+enum pvp_log_outcome_enum {
+  WIN
+  LOSS
+  DRAW
+  ERROR
 }
