@@ -1,9 +1,9 @@
-model item {
-  id        String   @id(map: "PK_d3c0c71f23e7adcf952a1d13423") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+model Item {
+  id        String   @id() @default(uuid()) @db.Uuid
   createdAt DateTime @default(now()) @db.Timestamp(6)
   updatedAt DateTime @default(now()) @db.Timestamp(6)
   version   Int      @default(1)
   name      String   @db.VarChar
-  ownerId   String   @db.Uuid
-  owner     hero?    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_3b030ef7f2840a721547a3c492e")
+  ownerId   String?  @db.Uuid
+  owner     Hero?    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
