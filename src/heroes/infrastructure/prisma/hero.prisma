@@ -1,5 +1,5 @@
-model hero {
-  id                               String    @id(map: "PK_313d51d6899322b85f2df99ccde") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+model Hero {
+  id                               String    @id() @default(uuid()) @db.Uuid
   createdAt                        DateTime  @default(now()) @db.Timestamp(6)
   updatedAt                        DateTime  @default(now()) @db.Timestamp(6)
   version                          Int       @default(1)
@@ -8,8 +8,8 @@ model hero {
   xp                               Int       @default(0)
   currentHp                        Int       @default(1)
   equippedItem                     String?   @db.VarChar
-  inventory                        item[]
-  pve_log                          pve_log[]
-  attacker                         pvp_log[] @relation("attacker")
-  defender                         pvp_log[] @relation("defender")
+  inventory                        Item[]
+  pveLog                           PveLog[]
+  attacker                         PvpLog[]  @relation("attacker")
+  defender                         PvpLog[]  @relation("defender")
 }
