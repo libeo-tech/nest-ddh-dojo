@@ -22,7 +22,8 @@
     "typeorm:migration:run": "npm run typeorm:migration migration:run",
     "typeorm:migration:generate": "npm run typeorm:migration migration:generate -- -n",
     "typeorm:migration:revert": "npm run typeorm:migration migration:revert",
-    "gql-typings:generate": "ts-node scripts/generate-typings"
+    "gql-typings:generate": "ts-node scripts/generate-typings",
+    "prisma:generate": "prisma-merge && prisma generate --schema=./src/prisma/schema.prisma"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.14",

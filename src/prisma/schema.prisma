@@ -23,8 +23,8 @@ model pve_log {
   createdAt      DateTime             @default(now()) @db.Timestamp(6)
   updatedAt      DateTime             @default(now()) @db.Timestamp(6)
   version        Int                  @default(1)
-  numberOfRounds BigInt               @default(0)
-  outcome        pve_log_outcome_enum @default(DRAW)
+  numberOfRounds Int                  @default(0)
+  outcome        combat_outcome_enum  @default(DRAW)
   dragonId       String               @db.Uuid
   dragon         dragon               @relation(fields: [dragonId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bbcbf059672bbb3aee4f45a049a")
   heroId         String               @db.Uuid
@@ -37,12 +37,12 @@ model pvp_log {
   createdAt                     DateTime             @default(now()) @db.Timestamp(6)
   updatedAt                     DateTime             @default(now()) @db.Timestamp(6)
   version                       Int                  @default(1)
-  numberOfRounds                BigInt               @default(0)
-  outcome                       pvp_log_outcome_enum @default(DRAW)
+  numberOfRounds                Int                  @default(0)
+  outcome                       combat_outcome_enum  @default(DRAW)
   attackerId                    String               @db.Uuid
-  attacker                 @relation("heroTopvp_log_attackerId", fields: [attackerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_767d68b2142f4e9e109154c14bf")
+  attacker                      hero                 @relation("attacker", fields: [attackerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_767d68b2142f4e9e109154c14bf")
   defenderId                    String               @db.Uuid
-  defender                 @relation("heroTopvp_log_defenderId", fields: [defenderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4bb3e1eea91e6c0769b509cc382")
+  defender                      hero                 @relation("defender", fields: [defenderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4bb3e1eea91e6c0769b509cc382")
 }
 
 
@@ -51,9 +51,10 @@ model dragon {
   createdAt DateTime          @default(now()) @db.Timestamp(6)
   updatedAt DateTime          @default(now()) @db.Timestamp(6)
   version   Int               @default(1)
-  level     BigInt            @default(1)
+  level     Int               @default(1)
   color     dragon_color_enum @default(red)
-  currentHp BigInt            @default(1)
+  currentHp Int               @default(1)
+  pveLog    pve_log[]
 }
 
 enum dragon_color_enum {
@@ -72,10 +73,14 @@ model hero {
   updatedAt                        DateTime  @default(now()) @db.Timestamp(6)
   version                          Int       @default(1)
   name                             String    @db.VarChar
-  level                            BigInt    @default(1)
-  xp                               BigInt    @default(0)
-  currentHp                        BigInt    @default(1)
+  level                            Int       @default(1)
+  xp                               Int       @default(0)
+  currentHp                        Int       @default(1)
   equippedItem                     String?   @db.VarChar
+  inventory                        item[]
+  pve_log                          pve_log[]
+  attacker                         pvp_log[] @relation("attacker")
+  defender                         pvp_log[] @relation("defender")
 }
 
 

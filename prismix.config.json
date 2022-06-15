@@ -1,7 +1,0 @@
-{
-  "mixers": [
-    {
-      "input": ["./src/**/*.prisma"]
-    }
-  ]
-}

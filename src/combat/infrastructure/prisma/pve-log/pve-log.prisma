@@ -3,8 +3,8 @@ model pve_log {
   createdAt      DateTime             @default(now()) @db.Timestamp(6)
   updatedAt      DateTime             @default(now()) @db.Timestamp(6)
   version        Int                  @default(1)
-  numberOfRounds BigInt               @default(0)
-  outcome        pve_log_outcome_enum @default(DRAW)
+  numberOfRounds Int                  @default(0)
+  outcome        combat_outcome_enum  @default(DRAW)
   dragonId       String               @db.Uuid
   dragon         dragon               @relation(fields: [dragonId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_bbcbf059672bbb3aee4f45a049a")
   heroId         String               @db.Uuid

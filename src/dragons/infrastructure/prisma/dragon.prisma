@@ -3,9 +3,10 @@ model dragon {
   createdAt DateTime          @default(now()) @db.Timestamp(6)
   updatedAt DateTime          @default(now()) @db.Timestamp(6)
   version   Int               @default(1)
-  level     BigInt            @default(1)
+  level     Int               @default(1)
   color     dragon_color_enum @default(red)
-  currentHp BigInt            @default(1)
+  currentHp Int               @default(1)
+  pveLog    pve_log[]
 }
 
 enum dragon_color_enum {

@@ -3,10 +3,10 @@ model pvp_log {
   createdAt                     DateTime             @default(now()) @db.Timestamp(6)
   updatedAt                     DateTime             @default(now()) @db.Timestamp(6)
   version                       Int                  @default(1)
-  numberOfRounds                BigInt               @default(0)
-  outcome                       pvp_log_outcome_enum @default(DRAW)
+  numberOfRounds                Int                  @default(0)
+  outcome                       combat_outcome_enum  @default(DRAW)
   attackerId                    String               @db.Uuid
-  attacker                 @relation("heroTopvp_log_attackerId", fields: [attackerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_767d68b2142f4e9e109154c14bf")
+  attacker                      hero                 @relation("attacker", fields: [attackerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_767d68b2142f4e9e109154c14bf")
   defenderId                    String               @db.Uuid
-  defender                 @relation("heroTopvp_log_defenderId", fields: [defenderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4bb3e1eea91e6c0769b509cc382")
+  defender                      hero                 @relation("defender", fields: [defenderId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_4bb3e1eea91e6c0769b509cc382")
 }
