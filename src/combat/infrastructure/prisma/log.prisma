@@ -1,4 +1,4 @@
-enum combat_outcome_enum {
+enum CombatOutcomeEnum {
   WIN
   LOSS
   DRAW

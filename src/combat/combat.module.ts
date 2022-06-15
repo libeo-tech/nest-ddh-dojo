@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { DragonModule } from '../dragons/dragon.module';
 import { HeroModule } from '../heroes/hero.module';
 import { ItemModule } from '../items/item.module';
@@ -9,13 +8,7 @@ import { CombatInfrastructure } from './infrastructure/combat.infrastructure';
 import { CombatInterface } from './interface/combat.interface';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([...CombatInfrastructure.repositories]),
-    CqrsModule,
-    HeroModule,
-    DragonModule,
-    ItemModule,
-  ],
+  imports: [CqrsModule, HeroModule, DragonModule, ItemModule],
   providers: [
     ...CombatInterface.resolvers,
     ...CombatInfrastructure.providers,
