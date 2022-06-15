@@ -4,6 +4,7 @@ import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapt
 import { HealHeroCommand } from './heal-hero.command';
 import { HealHeroCommandHandler } from './heal-hero.command-handler';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
+import { heroEntityFactory } from '../../../domain/hero.entity-factory';
 
 describe('heal hero command', () => {
   const heroMockAdapter = new HeroMockAdapter();
@@ -14,9 +15,11 @@ describe('heal hero command', () => {
   });
 
   it('should gain hp when heal for an injured hero', async () => {
-    const { id: heroId, currentHp } = await heroMockAdapter.create({
-      currentHp: 1,
-    });
+    const { id: heroId, currentHp } = await heroMockAdapter.create(
+      heroEntityFactory({
+        currentHp: 1,
+      }),
+    );
     const heal = generateRandomNumber(1, 5);
     const result = await healHeroCommandHandler.execute(
       new HealHeroCommand({ heroId, heal }),
@@ -28,7 +31,9 @@ describe('heal hero command', () => {
   });
 
   it('should not heal an uninjured hero', async () => {
-    const { id: heroId, currentHp: maxHp } = await heroMockAdapter.create({});
+    const { id: heroId, currentHp: maxHp } = await heroMockAdapter.create(
+      heroEntityFactory(),
+    );
     const heal = generateRandomNumber(1, 5);
     const result = await healHeroCommandHandler.execute(
       new HealHeroCommand({ heroId, heal }),

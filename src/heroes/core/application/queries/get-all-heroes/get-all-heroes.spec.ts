@@ -1,4 +1,5 @@
 import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapter';
+import { heroEntityFactory } from '../../../domain/hero.entity-factory';
 import { GetAllHeroesQueryHandler } from './get-all-heroes.query-handler';
 
 describe('get all heroes query', () => {
@@ -9,8 +10,8 @@ describe('get all heroes query', () => {
 
   it('should return all heroes', async () => {
     const [hero1, hero2] = await Promise.all([
-      heroMockAdapter.create({}),
-      heroMockAdapter.create({}),
+      heroMockAdapter.create(heroEntityFactory()),
+      heroMockAdapter.create(heroEntityFactory()),
     ]);
 
     const result = await getAllHeroesQueryHandler.execute();

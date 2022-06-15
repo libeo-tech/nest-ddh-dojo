@@ -5,6 +5,7 @@ import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapter';
 import { GainXpCommand } from './gain-xp.command';
 import { GainXpCommandHandler } from './gain-xp.command-handler';
+import { heroEntityFactory } from '../../../domain/hero.entity-factory';
 
 describe('gain xp command', () => {
   const heroMockAdapter = new HeroMockAdapter();
@@ -16,7 +17,9 @@ describe('gain xp command', () => {
 
   it('should increase the xp of a hero by xpGain', async () => {
     const xpGain = generateRandomNumber(1, 100);
-    const { id: heroId, xp } = await heroMockAdapter.create({});
+    const { id: heroId, xp } = await heroMockAdapter.create(
+      heroEntityFactory(),
+    );
     const result = await gainXpHandler.execute(
       new GainXpCommand({ heroId, xpGain }),
     );

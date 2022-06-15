@@ -1,4 +1,5 @@
 import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-adapter';
+import { dragonEntityFactory } from '../../../domain/dragon.entity-factory';
 import { GetAllDragonsQueryHandler } from './get-all-dragons.query-handler';
 
 describe('get all dragons query', () => {
@@ -9,8 +10,8 @@ describe('get all dragons query', () => {
 
   it('should return all dragons', async () => {
     const [dragon1, dragon2] = await Promise.all([
-      dragonMockAdapter.create({}),
-      dragonMockAdapter.create({}),
+      dragonMockAdapter.create(dragonEntityFactory()),
+      dragonMockAdapter.create(dragonEntityFactory()),
     ]);
 
     const result = await getAllDragonsQueryHandler.execute();

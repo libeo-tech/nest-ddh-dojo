@@ -5,6 +5,7 @@ import { HurtHeroCommand } from './hurt-hero.command';
 import { HurtHeroCommandHandler } from './hurt-hero.command-handler';
 import { generateRandomNumber } from '../../../../../common/utils/random/random-number';
 import { dragonEntityFactory } from '../../../../../dragons/core/domain/dragon.entity-factory';
+import { heroEntityFactory } from '../../../domain/hero.entity-factory';
 
 describe('hurt hero command', () => {
   const { id: dragonId } = dragonEntityFactory();
@@ -16,7 +17,9 @@ describe('hurt hero command', () => {
   });
 
   it('should lose hp when hurt', async () => {
-    const { id: heroId, currentHp: maxHp } = await heroMockAdapter.create({});
+    const { id: heroId, currentHp: maxHp } = await heroMockAdapter.create(
+      heroEntityFactory(),
+    );
     const damage = {
       value: generateRandomNumber(1, maxHp - 1),
       source: dragonId,
@@ -31,7 +34,9 @@ describe('hurt hero command', () => {
   });
 
   it('should die when losing too much hp', async () => {
-    const { id: heroId, currentHp: maxHp } = await heroMockAdapter.create({});
+    const { id: heroId, currentHp: maxHp } = await heroMockAdapter.create(
+      heroEntityFactory(),
+    );
     const damage = { value: maxHp + 1, source: dragonId };
     const result = await hurtHeroHandler.execute(
       new HurtHeroCommand({ heroId, damage }),

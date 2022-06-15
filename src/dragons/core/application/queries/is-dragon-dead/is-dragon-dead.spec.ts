@@ -3,6 +3,7 @@ import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-adapter';
 import { IsDragonDeadQueryHandler } from './is-dragon-dead.query-handler';
 import { IsDragonDeadQuery } from './is-dragon-dead.query';
+import { dragonEntityFactory } from '../../../domain/dragon.entity-factory';
 
 describe('is dragon dead query', () => {
   const dragonMockAdapter = new DragonMockAdapter();
@@ -15,7 +16,7 @@ describe('is dragon dead query', () => {
   });
 
   it('should return false for a dragon with more than 0 hp', async () => {
-    const dragon = await dragonMockAdapter.create({});
+    const dragon = await dragonMockAdapter.create(dragonEntityFactory());
 
     const result = await isDragonDeadQueryHandler.execute(
       new IsDragonDeadQuery({ dragonId: dragon.id }),
@@ -27,7 +28,9 @@ describe('is dragon dead query', () => {
   });
 
   it('should return true for a dragon with less than 0 hp', async () => {
-    const dragon = await dragonMockAdapter.create({ currentHp: -1 });
+    const dragon = await dragonMockAdapter.create(
+      dragonEntityFactory({ currentHp: -1 }),
+    );
 
     const result = await isDragonDeadQueryHandler.execute(
       new IsDragonDeadQuery({ dragonId: dragon.id }),

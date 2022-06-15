@@ -3,6 +3,7 @@ import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapter';
 import { IsHeroDeadQueryHandler } from './is-hero-dead.query-handler';
 import { IsHeroDeadQuery } from './is-hero-dead.query';
+import { heroEntityFactory } from '../../../domain/hero.entity-factory';
 
 describe('is hero dead query', () => {
   const heroMockAdapter = new HeroMockAdapter();
@@ -13,7 +14,7 @@ describe('is hero dead query', () => {
   });
 
   it('should return false for a hero with more than 0 hp', async () => {
-    const batman = await heroMockAdapter.create({});
+    const batman = await heroMockAdapter.create(heroEntityFactory());
 
     const result = await isHeroDeadQueryHandler.execute(
       new IsHeroDeadQuery({ heroId: batman.id }),
@@ -25,7 +26,9 @@ describe('is hero dead query', () => {
   });
 
   it('should return true for a hero with less than 0 hp', async () => {
-    const batman = await heroMockAdapter.create({ currentHp: -1 });
+    const batman = await heroMockAdapter.create(
+      heroEntityFactory({ currentHp: -1 }),
+    );
 
     const result = await isHeroDeadQueryHandler.execute(
       new IsHeroDeadQuery({ heroId: batman.id }),

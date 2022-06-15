@@ -1,4 +1,5 @@
 import { ItemMockAdapter } from '../../../../infrastructure/mock/item.mock-adapter';
+import { itemEntityFactory } from '../../../domain/item.entity-factory';
 import { GetAllItemsQueryHandler } from './get-all-items.query-handler';
 
 describe('get all items query', () => {
@@ -11,8 +12,8 @@ describe('get all items query', () => {
 
   it('should return all items', async () => {
     const [item1, item2] = await Promise.all([
-      itemMockAdapter.create({}),
-      itemMockAdapter.create({}),
+      itemMockAdapter.create(itemEntityFactory()),
+      itemMockAdapter.create(itemEntityFactory()),
     ]);
 
     const result = await getAllItemsQueryHandler.execute();

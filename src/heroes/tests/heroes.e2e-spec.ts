@@ -1,13 +1,12 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
-import { Hero } from '../infrastructure/typeorm/hero.orm-entity';
 import { createTestModule } from '../../common/utils/test/testing-module';
 import { HeroModule } from '../hero.module';
+import { PrismaService } from '../../prisma/prisma.service';
 
 describe('Heroes module (e2e)', () => {
   let app: INestApplication;
-  let entityManager: EntityManager;
+  let prisma: PrismaService;
   const heroName = 'Superman';
 
   beforeAll(async () => {
@@ -15,11 +14,11 @@ describe('Heroes module (e2e)', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
-    entityManager = await moduleFixture.get(EntityManager);
+    prisma = await moduleFixture.get(PrismaService);
   });
 
   beforeEach(async () => {
-    await entityManager.connection.synchronize();
+    await prisma.truncate();
   });
 
   afterAll(async () => {
@@ -38,15 +37,17 @@ describe('Heroes module (e2e)', () => {
 
     expect(body.data.createHero).toBeTruthy();
 
-    const hero = await entityManager.findOneBy(Hero, {
-      name: heroName,
+    const hero = await prisma.hero.findFirst({
+      where: {
+        name: heroName,
+      },
     });
     expect(hero).toBeDefined();
   });
 
   it('should get a hero', async () => {
     const hero = { name: heroName, level: 1, currentHp: 5 };
-    const { id: heroId } = await entityManager.save(Hero, { ...hero });
+    const { id: heroId } = await prisma.hero.create({ data: hero });
 
     const { body } = await request(app.getHttpServer())
       .post('/graphql')
