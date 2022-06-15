@@ -3,6 +3,7 @@ import { HeroNotFoundError } from '../../../domain/hero.error';
 import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapter';
 import { GetHeroByIdQuery } from './get-hero-by-id.query';
 import { GetHeroByIdQueryHandler } from './get-hero-by-id.query-handler';
+import { heroEntityFactory } from '../../../domain/hero.entity-factory';
 
 describe('get hero by id query', () => {
   const heroMockAdapter = new HeroMockAdapter();
@@ -13,7 +14,7 @@ describe('get hero by id query', () => {
   });
 
   it('should get a hero by Id', async () => {
-    const batman = await heroMockAdapter.create({});
+    const batman = await heroMockAdapter.create(heroEntityFactory());
 
     const result = await getHeroByIdQueryHandler.execute(
       new GetHeroByIdQuery({ heroId: batman.id }),

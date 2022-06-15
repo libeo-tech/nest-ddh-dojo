@@ -1,8 +1,7 @@
-import { Dragon as DragonOrmEntity } from './typeorm/dragon.orm-entity';
-import { DragonAdapter } from './typeorm/dragon.adapter';
+import { DragonAdapter } from './prisma/dragon.adapter';
 import { Dragon } from '../core/domain/dragon.entity';
+import { PrismaService } from '../../prisma/prisma.service';
 
 export const DragonInfrastructure = {
-  providers: [{ provide: Dragon, useClass: DragonAdapter }],
-  repositories: [DragonOrmEntity],
+  providers: [PrismaService, { provide: Dragon, useClass: DragonAdapter }],
 };

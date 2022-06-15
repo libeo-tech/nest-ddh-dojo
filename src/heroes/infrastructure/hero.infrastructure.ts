@@ -1,8 +1,7 @@
+import { PrismaService } from '../../prisma/prisma.service';
 import { Hero } from '../core/domain/hero.entity';
-import { Hero as HeroOrmEntity } from './typeorm/hero.orm-entity';
-import { HeroAdapter } from './typeorm/heroes.adapter';
+import { HeroAdapter } from './prisma/hero.adapter';
 
 export const HeroInfrastructure = {
-  providers: [{ provide: Hero, useClass: HeroAdapter }],
-  repositories: [HeroOrmEntity],
+  providers: [PrismaService, { provide: Hero, useClass: HeroAdapter }],
 };

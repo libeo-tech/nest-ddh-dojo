@@ -1,0 +1,9 @@
+model Item {
+  id        String   @id() @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  version   Int      @default(1)
+  name      String   @db.VarChar
+  ownerId   String?  @db.Uuid
+  owner     Hero?    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

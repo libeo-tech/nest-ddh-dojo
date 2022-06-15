@@ -1,5 +1,6 @@
 import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-adapter';
 import { Dragon } from '../../../domain/dragon.entity';
+import { dragonEntityFactory } from '../../../domain/dragon.entity-factory';
 import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { RespawnDragonCommand } from './respawn-dragon.command';
 import { RespawnDragonCommandHandler } from './respawn-dragon.command-handler';
@@ -15,7 +16,9 @@ describe('generate random dragon command', () => {
   });
 
   it('should respawn a given dragon if exists', async () => {
-    const { id: dragonId } = await dragonMockAdapter.create({ currentHp: 0 });
+    const { id: dragonId } = await dragonMockAdapter.create(
+      dragonEntityFactory({ currentHp: 0 }),
+    );
 
     const result = await respawnDragonCommandHandler.execute(
       new RespawnDragonCommand({ dragonId }),

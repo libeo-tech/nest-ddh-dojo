@@ -1,4 +1,4 @@
-import { MockAdapter } from '../../../common/infrastructure/base.mock-adapter';
+import { MockAdapter } from '../../../common/infrastructure/mock/base.mock-adapter';
 import { Dragon } from '../../core/domain/dragon.entity';
 import { dragonEntityFactory } from '../../core/domain/dragon.entity-factory';
 

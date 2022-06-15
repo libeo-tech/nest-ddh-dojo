@@ -17,12 +17,9 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./jest-e2e.json --runInBand",
-    "typeorm:migration": "ts-node --transpile-only --project ./tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config ./ormconfig.json",
-    "typeorm:migration:run": "npm run typeorm:migration migration:run",
-    "typeorm:migration:generate": "npm run typeorm:migration migration:generate -- -n",
-    "typeorm:migration:revert": "npm run typeorm:migration migration:revert",
-    "gql-typings:generate": "ts-node scripts/generate-typings"
+    "test:e2e": "DATABASE_NAME=dojo-test jest --config ./jest-e2e.json --runInBand",
+    "gql-typings:generate": "ts-node scripts/generate-typings",
+    "prisma:generate": "prisma-merge && prisma generate"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.14",
@@ -32,16 +29,16 @@
     "@nestjs/cqrs": "^8.0.4",
     "@nestjs/graphql": "^10.0.15",
     "@nestjs/platform-express": "^8.4.6",
-    "@nestjs/typeorm": "^8.1.2",
+    "@prisma/client": "^3.15.1",
     "apollo-server-core": "^3.8.2",
     "apollo-server-express": "^3.8.2",
     "graphql": "^16.5.0",
     "neverthrow": "^4.3.1",
     "pg": "^8.7.3",
+    "prisma": "^3.15.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.5.5",
-    "typeorm": "^0.3.6"
+    "rxjs": "^7.5.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.6",
@@ -58,6 +55,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^28.0.4",
     "prettier": "^2.6.2",
+    "prisma-merge": "^0.2.0",
     "supertest": "^6.2.3",
     "ts-jest": "^28.0.4",
     "ts-loader": "^9.3.0",
@@ -85,5 +83,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "schema": "./src/prisma/schema.prisma"
   }
 }

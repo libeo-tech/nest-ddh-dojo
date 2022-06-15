@@ -1,0 +1,19 @@
+model Dragon {
+  id        String            @id() @default(uuid()) @db.Uuid
+  createdAt DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt DateTime          @default(now()) @db.Timestamp(6)
+  version   Int               @default(1)
+  level     Int               @default(1)
+  color     DragonColorEnum   @default(RED)
+  currentHp Int               @default(1)
+  pveLog    PveLog[]
+}
+
+enum DragonColorEnum {
+  RED
+  GREEN
+  BLUE
+  YELLOW
+  WHITE
+  BLACK
+}

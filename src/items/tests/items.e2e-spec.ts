@@ -1,24 +1,23 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
-import { Item } from '../infrastructure/typeorm/item.orm-entity';
 import { createTestModule } from '../../common/utils/test/testing-module';
 import { ItemModule } from '../item.module';
+import { PrismaService } from '../../prisma/prisma.service';
 
 describe('Items module (e2e)', () => {
   let app: INestApplication;
-  let entityManager: EntityManager;
+  let prisma: PrismaService;
 
   beforeAll(async () => {
     const moduleFixture = await createTestModule([ItemModule]).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
-    entityManager = await moduleFixture.get(EntityManager);
+    prisma = await moduleFixture.get(PrismaService);
   });
 
   beforeEach(async () => {
-    await entityManager.connection.synchronize(true);
+    await prisma.truncate();
   });
 
   afterAll(async () => {
@@ -31,10 +30,7 @@ describe('Items module (e2e)', () => {
       { name: 'Excalibur' },
       { name: 'BFG-9000' },
     ];
-
-    await Promise.all(
-      items.map((item) => entityManager.save(Item, { ...item })),
-    );
+    await prisma.item.createMany({ data: items });
 
     const { body } = await request(app.getHttpServer())
       .post('/graphql')

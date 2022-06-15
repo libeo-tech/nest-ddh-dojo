@@ -1,0 +1,12 @@
+model PveLog {
+  id             String               @id() @default(uuid()) @db.Uuid
+  createdAt      DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime             @default(now()) @db.Timestamp(6)
+  version        Int                  @default(1)
+  numberOfRounds Int                  @default(0)
+  outcome        CombatOutcomeEnum    @default(DRAW)
+  dragonId       String               @db.Uuid
+  dragon         Dragon               @relation(fields: [dragonId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  heroId         String               @db.Uuid
+  hero           Hero                 @relation(fields: [heroId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

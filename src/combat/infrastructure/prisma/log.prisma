@@ -1,0 +1,6 @@
+enum CombatOutcomeEnum {
+  WIN
+  LOSS
+  DRAW
+  ERROR
+}

@@ -1,5 +1,6 @@
 import { heroEntityFactory } from '../../../../../heroes/core/domain/hero.entity-factory';
 import { ItemMockAdapter } from '../../../../infrastructure/mock/item.mock-adapter';
+import { itemEntityFactory } from '../../../domain/item.entity-factory';
 import { GetHeroItemsQuery } from './get-hero-items.query';
 import { GetHeroItemsQueryHandler } from './get-hero-items.query-handler';
 
@@ -16,8 +17,8 @@ describe('get all hero items query', () => {
   it('should get all items belonging to a hero', async () => {
     const batman = heroEntityFactory({ name: 'Batman' });
     const [item1, item2] = await Promise.all([
-      itemMockAdapter.create({}),
-      itemMockAdapter.create({}),
+      itemMockAdapter.create(itemEntityFactory()),
+      itemMockAdapter.create(itemEntityFactory()),
     ]);
     await Promise.all([
       itemMockAdapter.attributeOwnerOfItem(item1.id, batman.id),

@@ -7,6 +7,7 @@ import { getXpNeededForNextLevel } from '../../../domain/xp/xp.service';
 import { HeroMockAdapter } from '../../../../infrastructure/mock/hero.mock-adapter';
 import { LevelUpCommand } from './level-up.command';
 import { LevelUpCommandHandler } from './level-up.command-handler';
+import { heroEntityFactory } from '../../../domain/hero.entity-factory';
 
 describe('level up command', () => {
   const heroMockAdapter = new HeroMockAdapter();
@@ -17,7 +18,9 @@ describe('level up command', () => {
   });
 
   it('should increase the level of a hero by 1 for a hero with enough xp', async () => {
-    const { id: heroId, level } = await heroMockAdapter.create({});
+    const { id: heroId, level } = await heroMockAdapter.create(
+      heroEntityFactory(),
+    );
     const xpNeeded = getXpNeededForNextLevel(level);
     await heroMockAdapter.update(heroId, {
       xp: xpNeeded + 1,
@@ -31,7 +34,7 @@ describe('level up command', () => {
   });
 
   it('should throw if the hero does not have enough xp', async () => {
-    const { id: heroId } = await heroMockAdapter.create({});
+    const { id: heroId } = await heroMockAdapter.create(heroEntityFactory());
     await heroMockAdapter.update(heroId, {
       xp: 0,
     });

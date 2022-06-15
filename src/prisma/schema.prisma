@@ -1,0 +1,95 @@
+//******** AUTO GENERATED FILE, DO NOT EDIT.  *********
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum CombatOutcomeEnum {
+  WIN
+  LOSS
+  DRAW
+  ERROR
+}
+
+
+model PveLog {
+  id             String               @id() @default(uuid()) @db.Uuid
+  createdAt      DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime             @default(now()) @db.Timestamp(6)
+  version        Int                  @default(1)
+  numberOfRounds Int                  @default(0)
+  outcome        CombatOutcomeEnum    @default(DRAW)
+  dragonId       String               @db.Uuid
+  dragon         Dragon               @relation(fields: [dragonId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  heroId         String               @db.Uuid
+  hero           Hero                 @relation(fields: [heroId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+
+model PvpLog {
+  id                            String               @id() @default(uuid()) @db.Uuid
+  createdAt                     DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt                     DateTime             @default(now()) @db.Timestamp(6)
+  version                       Int                  @default(1)
+  numberOfRounds                Int                  @default(0)
+  outcome                       CombatOutcomeEnum    @default(DRAW)
+  attackerId                    String               @db.Uuid
+  attacker                      Hero                 @relation("attacker", fields: [attackerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  defenderId                    String               @db.Uuid
+  defender                      Hero                 @relation("defender", fields: [defenderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+
+model Dragon {
+  id        String            @id() @default(uuid()) @db.Uuid
+  createdAt DateTime          @default(now()) @db.Timestamp(6)
+  updatedAt DateTime          @default(now()) @db.Timestamp(6)
+  version   Int               @default(1)
+  level     Int               @default(1)
+  color     DragonColorEnum   @default(RED)
+  currentHp Int               @default(1)
+  pveLog    PveLog[]
+}
+
+enum DragonColorEnum {
+  RED
+  GREEN
+  BLUE
+  YELLOW
+  WHITE
+  BLACK
+}
+
+
+model Hero {
+  id                               String    @id() @default(uuid()) @db.Uuid
+  createdAt                        DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt                        DateTime  @default(now()) @db.Timestamp(6)
+  version                          Int       @default(1)
+  name                             String    @db.VarChar
+  level                            Int       @default(1)
+  xp                               Int       @default(0)
+  currentHp                        Int       @default(1)
+  equippedItem                     String?   @db.VarChar
+  inventory                        Item[]
+  pveLog                           PveLog[]
+  attacker                         PvpLog[]  @relation("attacker")
+  defender                         PvpLog[]  @relation("defender")
+}
+
+
+model Item {
+  id        String   @id() @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @db.Timestamp(6)
+  version   Int      @default(1)
+  name      String   @db.VarChar
+  ownerId   String?  @db.Uuid
+  owner     Hero?    @relation(fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

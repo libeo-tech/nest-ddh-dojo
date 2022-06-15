@@ -13,7 +13,7 @@ export interface UpdatePort<T extends Base> {
 }
 
 export interface CreatePort<T extends Base> {
-  create(properties: Partial<T>): Promise<T>;
+  create(properties: Omit<T, 'id'>): Promise<T>;
 }
 
 export interface DeletePort<T extends Base> {
@@ -30,7 +30,7 @@ export abstract class BasePorts<T extends Base>
 {
   abstract getById(id: T['id']): Promise<T | undefined>;
   abstract getAll(): Promise<T[]>;
-  abstract create(properties: Partial<T>): Promise<T>;
+  abstract create(properties: Omit<T, 'id'>): Promise<T>;
   abstract update(
     entityId: T['id'],
     properties: Partial<T>,

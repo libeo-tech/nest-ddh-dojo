@@ -1,0 +1,15 @@
+model Hero {
+  id                               String    @id() @default(uuid()) @db.Uuid
+  createdAt                        DateTime  @default(now()) @db.Timestamp(6)
+  updatedAt                        DateTime  @default(now()) @db.Timestamp(6)
+  version                          Int       @default(1)
+  name                             String    @db.VarChar
+  level                            Int       @default(1)
+  xp                               Int       @default(0)
+  currentHp                        Int       @default(1)
+  equippedItem                     String?   @db.VarChar
+  inventory                        Item[]
+  pveLog                           PveLog[]
+  attacker                         PvpLog[]  @relation("attacker")
+  defender                         PvpLog[]  @relation("defender")
+}

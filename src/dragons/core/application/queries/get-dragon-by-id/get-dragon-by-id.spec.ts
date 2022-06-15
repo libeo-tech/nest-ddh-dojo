@@ -3,6 +3,7 @@ import { DragonNotFoundError } from '../../../domain/dragon.error';
 import { DragonMockAdapter } from '../../../../infrastructure/mock/dragon.mock-adapter';
 import { GetDragonByIdQuery } from './get-dragon-by-id.query';
 import { GetDragonByIdQueryHandler } from './get-dragon-by-id.query-handler';
+import { dragonEntityFactory } from '../../../domain/dragon.entity-factory';
 
 describe('get dragon by id query', () => {
   const dragonMockAdapter = new DragonMockAdapter();
@@ -15,7 +16,7 @@ describe('get dragon by id query', () => {
   });
 
   it('should get a dragon by Id', async () => {
-    const smaug = await dragonMockAdapter.create({});
+    const smaug = await dragonMockAdapter.create(dragonEntityFactory());
 
     const result = await getDragonByIdQueryHandler.execute(
       new GetDragonByIdQuery({ dragonId: smaug.id }),

@@ -1,0 +1,12 @@
+model PvpLog {
+  id                            String               @id() @default(uuid()) @db.Uuid
+  createdAt                     DateTime             @default(now()) @db.Timestamp(6)
+  updatedAt                     DateTime             @default(now()) @db.Timestamp(6)
+  version                       Int                  @default(1)
+  numberOfRounds                Int                  @default(0)
+  outcome                       CombatOutcomeEnum    @default(DRAW)
+  attackerId                    String               @db.Uuid
+  attacker                      Hero                 @relation("attacker", fields: [attackerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  defenderId                    String               @db.Uuid
+  defender                      Hero                 @relation("defender", fields: [defenderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

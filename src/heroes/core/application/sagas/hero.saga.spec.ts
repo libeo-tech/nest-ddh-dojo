@@ -5,6 +5,7 @@ import { LevelUpCommand } from '../commands/level-up/level-up.command';
 import { HeroMockAdapter } from '../../../infrastructure/mock/hero.mock-adapter';
 import { HeroSagas } from './hero.saga';
 import { HealHeroCommand } from '../commands/heal-hero/heal-hero.command';
+import { heroEntityFactory } from '../../domain/hero.entity-factory';
 
 describe('hero saga', () => {
   const heroMockAdapter = new HeroMockAdapter();
@@ -15,7 +16,9 @@ describe('hero saga', () => {
   });
 
   it('should heal a hero if he does not have all its hp', async () => {
-    const hero = await heroMockAdapter.create({ currentHp: 1 });
+    const hero = await heroMockAdapter.create(
+      heroEntityFactory({ currentHp: 1 }),
+    );
     Reflect.set(saga, 'everyMinuteForHeroesTimer', from([hero]));
 
     const result = await lastValueFrom(saga.healHero());
@@ -23,7 +26,7 @@ describe('hero saga', () => {
   });
 
   it('should trigger a level-up if hero has gained enough xp', async () => {
-    const hero = await heroMockAdapter.create({});
+    const hero = await heroMockAdapter.create(heroEntityFactory());
     const xpDelta = getXpNeededForNextLevel(hero.level) - hero.xp;
     heroMockAdapter.update(hero.id, { xp: hero.xp + xpDelta });
 
@@ -35,7 +38,7 @@ describe('hero saga', () => {
   });
 
   it('should not trigger a level-up if hero does not have enough xp', async () => {
-    const hero = await heroMockAdapter.create({});
+    const hero = await heroMockAdapter.create(heroEntityFactory());
     heroMockAdapter.update(hero.id, { xp: 0 });
 
     const observable = saga.xpGain(

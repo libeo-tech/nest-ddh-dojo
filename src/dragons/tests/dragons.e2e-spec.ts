@@ -1,24 +1,23 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
-import { Dragon } from '../infrastructure/typeorm/dragon.orm-entity';
 import { createTestModule } from '../../common/utils/test/testing-module';
 import { DragonModule } from '../dragon.module';
+import { PrismaService } from '../../prisma/prisma.service';
 
 describe('Dragons module (e2e)', () => {
   let app: INestApplication;
-  let entityManager: EntityManager;
+  let prisma: PrismaService;
 
   beforeAll(async () => {
     const moduleFixture = await createTestModule([DragonModule]).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
-    entityManager = await moduleFixture.get(EntityManager);
+    prisma = await moduleFixture.get(PrismaService);
   });
 
   beforeEach(async () => {
-    await entityManager.connection.synchronize(true);
+    await prisma.truncate();
   });
 
   afterAll(async () => {
@@ -37,7 +36,7 @@ describe('Dragons module (e2e)', () => {
 
     expect(body.data.generateNewDragon).toBeTruthy();
 
-    const allDragons = await entityManager.find(Dragon);
+    const allDragons = await prisma.dragon.findMany();
     expect(allDragons).toHaveLength(1);
   });
 
@@ -48,9 +47,7 @@ describe('Dragons module (e2e)', () => {
       { level: 3, currentHp: 15 },
     ];
 
-    await Promise.all(
-      dragons.map((dragon) => entityManager.save(Dragon, { ...dragon })),
-    );
+    await prisma.dragon.createMany({ data: dragons });
 
     const { body } = await request(app.getHttpServer())
       .post('/graphql')
