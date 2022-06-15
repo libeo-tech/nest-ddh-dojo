@@ -1,19 +1,19 @@
-model dragon {
-  id        String            @id(map: "PK_097761d2985fe54fda971ff9af8") @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+model Dragon {
+  id        String            @id() @default(uuid()) @db.Uuid
   createdAt DateTime          @default(now()) @db.Timestamp(6)
   updatedAt DateTime          @default(now()) @db.Timestamp(6)
   version   Int               @default(1)
   level     Int               @default(1)
-  color     dragon_color_enum @default(red)
+  color     DragonColorEnum   @default(RED)
   currentHp Int               @default(1)
-  pveLog    pve_log[]
+  pveLog    PveLog[]
 }
 
-enum dragon_color_enum {
-  red
-  green
-  blue
-  yellow
-  white
-  black
+enum DragonColorEnum {
+  RED
+  GREEN
+  BLUE
+  YELLOW
+  WHITE
+  BLACK
 }

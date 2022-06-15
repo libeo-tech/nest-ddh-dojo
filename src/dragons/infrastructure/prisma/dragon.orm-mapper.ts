@@ -3,8 +3,8 @@ import {
   DragonColor,
 } from '../../core/domain/dragon.entity';
 import {
-  dragon as DragonOrmEntity,
-  dragon_color_enum,
+  Dragon as DragonOrmEntity,
+  DragonColorEnum,
   Prisma,
 } from '@prisma/client';
 
@@ -15,16 +15,16 @@ export const mapDragonOrmEntityToDragonEntity = (
     id: dragonOrmEntity.id as DragonEntity['id'],
     currentHp: dragonOrmEntity.currentHp,
     level: +dragonOrmEntity.level,
-    color: DragonColor[dragonOrmEntity.color.toUpperCase()],
+    color: DragonColor[dragonOrmEntity.color],
   };
 };
 
 export const mapEntityPropertiesToOrmEntityProperties = (
   entityProperties: Partial<DragonEntity>,
-): Prisma.dragonCreateInput => {
+): Prisma.OptionalFlat<DragonOrmEntity> => {
   const { color, ...fields } = entityProperties;
   if (color) {
-    fields['color'] = dragon_color_enum[color.toLowerCase()];
+    fields['color'] = DragonColorEnum[color];
   }
   return fields;
 };
