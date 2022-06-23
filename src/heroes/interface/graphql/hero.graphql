@@ -5,10 +5,12 @@ type Hero {
   level: Int!
   currentHp: Int!
   inventory: [Item!]
+  equippedItem: ID
 }
 
 type Mutation {
   createHero(name: String!): Boolean!
+  equipItem(heroId: ID!, itemId: ID!): Boolean!
 }
 
 type Query {

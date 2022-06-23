@@ -10,5 +10,6 @@ export const mapHeroOrmEntityToHeroEntity = (
     xp: +heroOrmEntity.xp,
     level: +heroOrmEntity.level,
     currentHp: +heroOrmEntity.currentHp,
+    equippedItem: heroOrmEntity.equippedItem,
   };
 };

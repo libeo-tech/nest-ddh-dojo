@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,6 +20,15 @@ import {
   GetAllHeroesQuery,
   GetAllHeroesQueryResult,
 } from '../../core/application/queries/get-all-heroes/get-all-heroes.query';
+import {
+  EquipItemCommand,
+  EquipItemCommandResult,
+} from '../../core/application/commands/equip-item/equip-item.command';
+import { Item } from '../../../items/core/domain/item.entity';
+import {
+  HeroDoesNotOwnItem,
+  HeroNotFoundError,
+} from '../../core/domain/hero.error';
 
 @Resolver('Hero')
 export class HeroResolver {
@@ -63,5 +73,27 @@ export class HeroResolver {
       throw new InternalServerErrorException();
     }
     return result.isOk();
+  }
+
+  @Mutation()
+  public async equipItem(
+    @Args('heroId') heroId: Hero['id'],
+    @Args('itemId') itemId: Item['id'],
+  ): Promise<boolean> {
+    const result = await this.commandBus.execute<
+      EquipItemCommand,
+      EquipItemCommandResult
+    >(new EquipItemCommand({ heroId, itemId }));
+    if (result.isErr()) {
+      switch (result.error.constructor) {
+        case HeroNotFoundError:
+          throw new NotFoundException(result.error.message);
+        case HeroDoesNotOwnItem:
+          throw new BadRequestException(result.error.message);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+    return true;
   }
 }
