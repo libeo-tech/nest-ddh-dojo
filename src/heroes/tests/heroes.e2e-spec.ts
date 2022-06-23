@@ -12,10 +12,9 @@ describe('Heroes module (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture = await createTestModule([HeroModule]).compile();
+    app = await moduleFixture.createNestApplication().init();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-    entityManager = await moduleFixture.get(EntityManager);
+    entityManager = moduleFixture.get(EntityManager);
   });
 
   beforeEach(async () => {
