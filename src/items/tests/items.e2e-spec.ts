@@ -11,10 +11,9 @@ describe('Items module (e2e)', () => {
 
   beforeAll(async () => {
     const moduleFixture = await createTestModule([ItemModule]).compile();
+    app = await moduleFixture.createNestApplication().init();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-    entityManager = await moduleFixture.get(EntityManager);
+    entityManager = moduleFixture.get(EntityManager);
   });
 
   beforeEach(async () => {
