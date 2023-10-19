@@ -1,5 +1,6 @@
 import { CommandHandlerType, QueryHandlerType } from '@nestjs/cqrs';
 import { CreateHeroCommandHandler } from './commands/create-hero/create-hero.command-handler';
+import { EquipItemCommandHandler } from './commands/equip-item/equip-item.command-handler';
 import { GainXpCommandHandler } from './commands/gain-xp/gain-xp.command-handler';
 import { HealHeroCommandHandler } from './commands/heal-hero/heal-hero.command-handler';
 import { HurtHeroCommandHandler } from './commands/hurt-hero/hurt-hero.command-handler';
@@ -18,6 +19,7 @@ const HeroQueryHandler: QueryHandlerType[] = [
 ];
 const HeroCommandHandler: CommandHandlerType[] = [
   CreateHeroCommandHandler,
+  EquipItemCommandHandler,
   GainXpCommandHandler,
   HealHeroCommandHandler,
   HurtHeroCommandHandler,

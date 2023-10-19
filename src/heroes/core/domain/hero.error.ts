@@ -1,3 +1,4 @@
+import { Item } from '../../../items/core/domain/item.entity';
 import { Hero } from './hero.entity';
 
 class HeroError extends Error {
@@ -21,5 +22,13 @@ export class HeroDoesNotHaveEnoughXp extends HeroError {
       heroId,
       `Hero with id ${heroId} does not have enough xp to reach the next level`,
     );
+  }
+}
+
+export class HeroDoesNotOwnItem extends HeroError {
+  public itemId: Item['id'];
+  constructor(heroId: Hero['id'], itemId: Item['id']) {
+    super(heroId, `Hero with id ${heroId} does not own item with id ${itemId}`);
+    this.itemId = itemId;
   }
 }
